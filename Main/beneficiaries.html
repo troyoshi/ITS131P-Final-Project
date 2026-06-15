@@ -32,6 +32,12 @@
             background-color: #d4edda;
             color: #155724;
         }
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .card { background: rgba(255, 255, 255, 0.92) !important; backdrop-filter: blur(6px); }
+        th, td { padding: 0.75rem !important; border-bottom: 1px solid var(--border-color); }
+        th { background-color: rgba(0, 0, 0, 0.04); font-weight: 600; }
+        .status-badge { padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: inline-block; background-color: #d4edda; color: #155724; }
     </style>
 </head>
 
@@ -48,12 +54,14 @@
             <a href="dashboard.html">Dashboard</a>
             <a href="beneficiaries.html"
                 style="background-color: rgba(255, 255, 255, 0.2); font-weight: bold;">Beneficiaries</a>
+            <a href="beneficiaries.html" style="background-color: rgba(255, 255, 255, 0.2); font-weight: bold;">Beneficiaries</a>
             <a href="inventory.html">Inventory</a>
             <a href="distribution.html">Distribution</a>
             <a href="evacuation.html">Evacuation</a>
             <a href="reports.html">Reports</a>
             <a href="index.html"
                 style="margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1.5rem;">Logout</a>
+            <a href="index.html" style="margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1.5rem;">Logout</a>
         </aside>
 
         <div class="main-content" style="background: url('images/sidebar.png') center/cover no-repeat fixed;">
@@ -62,6 +70,7 @@
                 <a href="#" class="btn-primary"
                     style="padding: 0.5rem 1rem; font-size: 0.9rem; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">+ Register
                     Family</a>
+                <a href="#" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">+ Register Family</a>
             </div>
 
             <div class="card">
@@ -89,6 +98,37 @@
                             <td>Maria Clara</td>
                             <td>3</td>
                             <td>Brgy. Sto. Niño</td>
+                            <td>#HH-1025</td>
+                            <td>Carolyne Vicencio</td>
+                            <td>9</td>
+                            <td>Brgy. Fort Bonifacio</td>
+                            <td><span class="status-badge">Verified</span></td>
+                        </tr>
+                        <tr>
+                            <td>#HH-1067</td>
+                            <td>Benedict Sevilla</td>
+                            <td>3</td>
+                            <td>Brgy. Old Zaniga</td>
+                            <td><span class="status-badge">Verified</span></td>
+                        </tr>                        <tr>
+                            <td>#HH-1023</td>
+                            <td>Alfred Rasco</td>
+                            <td>3</td>
+                            <td>Brgy. Mckinley</td>
+                            <td><span class="status-badge">Verified</span></td>
+                        </tr>
+                        <tr>
+                            <td>#HH-1012</td>
+                            <td>Francis Flores</td>
+                            <td>3</td>
+                            <td>Brgy. Moonwalk</td>
+                            <td><span class="status-badge">Verified</span></td>
+                        </tr>
+                        <tr>
+                            <td>#HH-1003</td>
+                            <td>Olivia Rodrigo</td>
+                            <td>3</td>
+                            <td>Brgy. GirlSoInLoveAve</td>
                             <td><span class="status-badge">Verified</span></td>
                         </tr>
                     </tbody>
