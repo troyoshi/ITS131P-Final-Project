@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     forms.forEach(form => {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            alert('This is a prototype. Form submission is simulated.');
+            alert('Submission successful! (This is a placeholder action.)');
 
             if (form.id === 'loginForm') {
                 window.location.href = 'dashboard.html';

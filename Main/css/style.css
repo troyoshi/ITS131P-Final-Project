@@ -73,10 +73,16 @@ nav {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    opacity: 0.7;
+    filter: brightness(0.85);
+    transition: filter 0.4s ease, transform 0.4s ease;
     color: var(--white);
     text-align: center;
     padding: 6rem 20px;
+}
+
+.head:hover {
+    filter: brightness(1);
+    transform: translateY(-2px);
 }
 
 .head h1 {
@@ -123,6 +129,13 @@ nav {
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     border: 1px solid var(--border-color);
+    transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+.card:hover {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 1px rgba(7, 195, 161, 0.35), 0 18px 30px rgba(7, 195, 161, 0.18);
+    transform: translateY(-5px);
 }
 
 .form-group {
