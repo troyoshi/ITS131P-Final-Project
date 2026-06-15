@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evacuation | CDRC System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .card { background: rgba(255, 255, 255, 0.92) !important; backdrop-filter: blur(6px); }
+        th, td { padding: 0.75rem !important; border-bottom: 1px solid var(--border-color); }
+        th { background-color: rgba(0, 0, 0, 0.04); font-weight: 600; }
+        .status-badge { padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: inline-block; }
+        .status-badge.open { background-color: #d4edda; color: #155724; }
+        .status-badge.full { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <nav>
+            <a href="#" class="logo">CDRC Portal</a>
+        </nav>
+    </header>
+
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="beneficiaries.html">Beneficiaries</a>
+            <a href="inventory.html">Inventory</a>
+            <a href="distribution.html">Distribution</a>
+            <a href="evacuation.html" style="background-color: rgba(255, 255, 255, 0.2); font-weight: bold;">Evacuation</a>
+            <a href="reports.html">Reports</a>
+            <a href="index.html" style="margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1.5rem;">Logout</a>
+        </aside>
+
+        <div class="main-content" style="background: url('images/sidebar.png') center/cover no-repeat fixed;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
+                <h2 style="color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.6);">Evacuation Centers</h2>
+                <a href="#" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">+ Register Shelter</a>
+            </div>
+
+            <div class="card">
+                <h3>Active Shelters</h3>
+                <table style="width:100%; border-collapse:collapse; margin-top:1rem;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;">Center Name</th>
+                            <th style="text-align:left;">Address</th>
+                            <th style="text-align:left;">Capacity</th>
+                            <th style="text-align:left;">Current Occupancy</th>
+                            <th style="text-align:left;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>San Jose Gym</td>
+                            <td>Zone 4, Central Proper</td>
+                            <td>150 Families</td>
+                            <td>95 / 150</td>
+                            <td><span class="status-badge open">Open</span></td>
+                        </tr>
+                        <tr>
+                            <td>Sto. Niño Elementary School</td>
+                            <td>Poblacion Main Road</td>
+                            <td>80 Families</td>
+                            <td>80 / 80</td>
+                            <td><span class="status-badge full">Full</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
