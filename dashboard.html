@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | CDRC System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <h2 style="margin-bottom: 2rem;">CDRC Portal</h2>
+            <nav>
+                <a href="#" style="background: rgba(255,255,255,0.2);">Dashboard</a>
+                <a href="#">Beneficiary Records</a>
+                <a href="#">Inventory Management</a>
+                <a href="#">Distribution Logs</a>
+                <a href="#">Evacuation Centers</a>
+                <a href="#">Generate Reports</a>
+                <a href="index.html" style="margin-top: 2rem; color: #ff6b6b;">Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; background: transparent; box-shadow: none;">
+                <h2>System Overview</h2>
+                <div>Welcome, <strong>Admin User</strong></div>
+            </header>
+
+            <div class="grid-3">
+                <div class="card" style="border-left: 5px solid var(--primary-color);">
+                    <h3>Total Beneficiaries</h3>
+                    <p style="font-size: 2rem; font-weight: bold; color: var(--primary-color);">1,240</p>
+                </div>
+                <div class="card" style="border-left: 5px solid var(--secondary-color);">
+                    <h3>Relief Packs Available</h3>
+                    <p style="font-size: 2rem; font-weight: bold; color: var(--secondary-color);">850</p>
+                </div>
+                <div class="card" style="border-left: 5px solid #27ae60;">
+                    <h3>Active Evacuation Centers</h3>
+                    <p style="font-size: 2rem; font-weight: bold; color: #27ae60;">4</p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 2rem;">
+                <h3>Recent Distribution Activities</h3>
+                <table style="width: 100%; margin-top: 1rem; border-collapse: collapse;">
+                    <tr style="background: var(--border-color); text-align: left;">
+                        <th style="padding: 0.8rem;">Date</th>
+                        <th style="padding: 0.8rem;">Location</th>
+                        <th style="padding: 0.8rem;">Packs Distributed</th>
+                        <th style="padding: 0.8rem;">Status</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.8rem; border-bottom: 1px solid var(--border-color);">Oct 12, 2026</td>
+                        <td style="padding: 0.8rem; border-bottom: 1px solid var(--border-color);">Brgy. San Jose</td>
+                        <td style="padding: 0.8rem; border-bottom: 1px solid var(--border-color);">150</td>
+                        <td style="padding: 0.8rem; border-bottom: 1px solid var(--border-color); color: green;">
+                            Completed</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.8rem; border-bottom: 1px solid var(--border-color);">Oct 14, 2026</td>
+                        <td style="padding: 0.8rem; border-bottom: 1px solid var(--border-color);">Brgy. Sto. Nino</td>
+                        <td style="padding: 0.8rem; border-bottom: 1px solid var(--border-color);">200</td>
+                        <td style="padding: 0.8rem; border-bottom: 1px solid var(--border-color); color: orange;">In
+                            Progress</td>
+                    </tr>
+                </table>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>
