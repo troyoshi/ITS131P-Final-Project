@@ -1,12 +1,11 @@
-/* css/style.css */
 :root {
-    --primary-color: #0056b3;
-    --secondary-color: #f39c12;
+    --primary-color: #07c3a1;
+    --secondary-color: #0be19d;
     --text-color: #333333;
     --light-bg: #f4f7f6;
     --white: #ffffff;
     --border-color: #dddddd;
-}
+}   
 
 * {
     margin: 0;
@@ -21,7 +20,6 @@ body {
     line-height: 1.6;
 }
 
-/* Navigation */
 header {
     background-color: var(--white);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -70,20 +68,23 @@ nav {
     border-radius: 5px;
 }
 
-/* Hero Section */
-.hero {
-    background: linear-gradient(rgba(0, 86, 179, 0.8), rgba(0, 86, 179, 0.8)), url('https://via.placeholder.com/1200x600') center/cover;
+.head {
+    background-image: url('/css/images/bg1.jpeg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    opacity: 0.7;
     color: var(--white);
     text-align: center;
     padding: 6rem 20px;
 }
 
-.hero h1 {
+.head h1 {
     font-size: 3rem;
     margin-bottom: 1rem;
 }
 
-.hero p {
+.head p {
     font-size: 1.2rem;
     max-width: 600px;
     margin: 0 auto 2rem;
@@ -98,14 +99,12 @@ nav {
     font-weight: bold;
 }
 
-/* Generic Container */
 .container {
     max-width: 1200px;
     margin: 3rem auto;
     padding: 0 20px;
 }
 
-/* Grid Layouts */
 .grid-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -118,7 +117,6 @@ nav {
     gap: 2rem;
 }
 
-/* Cards */
 .card {
     background: var(--white);
     padding: 2rem;
@@ -127,7 +125,6 @@ nav {
     border: 1px solid var(--border-color);
 }
 
-/* Forms */
 .form-group {
     margin-bottom: 1rem;
 }
@@ -145,7 +142,6 @@ nav {
     border-radius: 4px;
 }
 
-/* Dashboard Layout */
 .dashboard-wrapper {
     display: flex;
     min-height: 100vh;
@@ -177,7 +173,6 @@ nav {
     background-color: var(--light-bg);
 }
 
-/* Footer */
 footer {
     background-color: #333;
     color: #fff;
@@ -186,11 +181,9 @@ footer {
     margin-top: auto;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .nav-links {
         display: none;
-        /* Add JS toggle for mobile in real app */
     }
 
     .grid-2 {
