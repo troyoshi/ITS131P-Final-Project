@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Features — CDRC Relief Tracker</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: none; }
+    .page-hero { background: var(--navy); padding: 120px 0 72px; text-align: center; position: relative; overflow: hidden; }
+    .page-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 120%, rgba(232,75,26,0.18) 0%, transparent 60%); }
+    .page-hero h1 { color: white; font-size: clamp(32px,5vw,52px); position: relative; z-index:1; }
+    .page-hero p { color: var(--gray-300); font-size: 17px; margin-top: 16px; max-width: 560px; margin-left: auto; margin-right: auto; position: relative; z-index:1; }
+    .breadcrumb { position: relative; z-index:1; font-size: 13px; color: var(--gray-500); margin-bottom: 20px; }
+    .breadcrumb a { color: var(--teal-lt); }
+
+    .big-feature {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+      align-items: center; padding: 72px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .big-feature:last-child { border-bottom: none; }
+    .big-feature.reverse .feat-visual { order: -1; }
+    .feat-visual {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+      border-radius: 16px; aspect-ratio: 4/3;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .feat-visual-inner { text-align: center; z-index: 1; position: relative; }
+    .feat-visual-icon { font-size: 56px; display: block; margin-bottom: 12px; }
+    .feat-visual-label { font-family: 'Outfit',sans-serif; font-size: 13px; color: var(--gray-300); font-weight: 600; }
+    .feat-visual::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 80%, rgba(0,157,138,0.2) 0%, transparent 60%);
+    }
+    .feat-content .tag { margin-bottom: 8px; }
+    .feat-content h2 { font-size: clamp(22px,3vw,32px); margin-bottom: 16px; }
+    .feat-content p { color: var(--gray-700); line-height: 1.75; margin-bottom: 20px; }
+    .feat-list { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+    .feat-list li {
+      display: flex; gap: 12px; align-items: flex-start;
+      font-size: 14px; color: var(--gray-700);
+    }
+    .feat-list li::before { content: '✓'; color: var(--teal); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+    .users-section { background: var(--navy); padding: 80px 0; }
+    .users-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 48px; }
+    .user-card {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; padding: 36px 28px;
+    }
+    .user-card-icon { font-size: 40px; margin-bottom: 20px; }
+    .user-card h3 { font-size: 20px; color: white; margin-bottom: 12px; }
+    .user-card ul { display: flex; flex-direction: column; gap: 8px; }
+    .user-card li { font-size: 13px; color: var(--gray-300); display: flex; gap: 10px; }
+    .user-card li::before { content: '•'; color: var(--teal); flex-shrink: 0; }
+
+    .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 48px; }
+    .scope-card { border-radius: 12px; padding: 36px; }
+    .scope-card.in { background: rgba(0,157,138,0.08); border: 1.5px solid rgba(0,157,138,0.2); }
+    .scope-card.out { background: rgba(122,138,154,0.08); border: 1.5px solid var(--gray-100); }
+    .scope-card h3 { font-size: 18px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; }
+    .scope-card li { font-size: 14px; color: var(--gray-700); margin-bottom: 10px; display: flex; gap: 10px; }
+    .scope-in li::before { content: '✓'; color: var(--teal); font-weight: 700; }
+    .scope-out li::before { content: '✗'; color: var(--gray-500); font-weight: 700; }
+
+    @media(max-width:768px) {
+      .big-feature { grid-template-columns: 1fr; gap: 32px; }
+      .big-feature.reverse .feat-visual { order: 0; }
+      .users-grid { grid-template-columns: 1fr; }
+      .scope-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a class="logo" href="../index.html"><div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg></div><div class="logo-text"><strong>CDRC Relief Tracker</strong><span>Citizens' Disaster Response Center</span></div></a>
+    <div class="nav-links" id="navLinks">
+      <a href="../index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="features.html" class="active">Features</a>
+      <a href="contact.html">Contact</a>
+      <a href="login.html" class="btn btn-primary nav-cta">System Login</a>
+    </div>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> / Features</div>
+    <h1>System Features</h1>
+    <p>Everything the CDRC Relief Tracker offers — built for efficient, transparent disaster response operations.</p>
+  </div>
+</div>
+
+<!-- FEATURES DETAIL -->
+<section class="section">
+  <div class="container">
+
+    <div class="big-feature fade-in">
+      <div class="feat-content">
+        <div class="tag">Core Module 1</div>
+        <h2>Beneficiary Registration & Management</h2>
+        <p>The system provides a structured way to register and manage all disaster-affected families. Staff can log detailed beneficiary information and access it instantly during distribution operations.</p>
+        <ul class="feat-list">
+          <li>Register households with complete demographic information</li>
+          <li>Search and filter beneficiaries by location, name, or status</li>
+          <li>Link beneficiaries to specific evacuation centers</li>
+          <li>Track distribution history per family</li>
+          <li>Flag special needs (medical, elderly, infants)</li>
+        </ul>
+      </div>
+      <div class="feat-visual">
+        <div class="feat-visual-inner">
+          <span class="feat-visual-icon">👥</span>
+          <span class="feat-visual-label">Beneficiary Records</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="big-feature reverse fade-in">
+      <div class="feat-visual" style="background:linear-gradient(135deg,var(--teal) 0%,var(--navy-mid) 100%);">
+        <div class="feat-visual-inner">
+          <span class="feat-visual-icon">📦</span>
+          <span class="feat-visual-label">Inventory Dashboard</span>
+        </div>
+      </div>
+      <div class="feat-content">
+        <div class="tag">Core Module 2</div>
+        <h2>Relief Inventory Tracking</h2>
+        <p>Maintain accurate counts of all relief goods — from rice and canned goods to medicines and hygiene kits — across all distribution centers with automatic transaction logging.</p>
+        <ul class="feat-list">
+          <li>Add incoming goods with donor and date information</li>
+          <li>Log outgoing distributions and deduct from stock automatically</li>
+          <li>View current stock levels by item category</li>
+          <li>Transaction history for full audit trail</li>
+          <li>Low stock indicators for proactive restocking</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="big-feature fade-in">
+      <div class="feat-content">
+        <div class="tag">Core Module 3</div>
+        <h2>Evacuation Center Management</h2>
+        <p>Track all active and inactive evacuation centers in your area. Monitor capacity, occupancy, and status of each center to coordinate relief efforts more effectively.</p>
+        <ul class="feat-list">
+          <li>Register evacuation centers with location and capacity</li>
+          <li>Monitor current occupancy against maximum capacity</li>
+          <li>Set center status (Active, Full, Closed)</li>
+          <li>Assign beneficiaries to specific centers</li>
+          <li>View center-specific distribution summaries</li>
+        </ul>
+      </div>
+      <div class="feat-visual" style="background:linear-gradient(135deg,var(--orange) 0%,var(--navy) 100%);">
+        <div class="feat-visual-inner">
+          <span class="feat-visual-icon">🏕️</span>
+          <span class="feat-visual-label">Center Overview</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="big-feature reverse fade-in">
+      <div class="feat-visual" style="background:linear-gradient(135deg,var(--navy-mid) 0%,var(--teal) 100%);">
+        <div class="feat-visual-inner">
+          <span class="feat-visual-icon">📊</span>
+          <span class="feat-visual-label">Reports & Analytics</span>
+        </div>
+      </div>
+      <div class="feat-content">
+        <div class="tag">Core Module 4</div>
+        <h2>Reports & Distribution Records</h2>
+        <p>Generate comprehensive reports for administrators and donors. Every distribution is logged with timestamps, quantities, and responsible staff for complete operational accountability.</p>
+        <ul class="feat-list">
+          <li>Distribution summary reports by date range</li>
+          <li>Beneficiary status and coverage reports</li>
+          <li>Inventory utilization reports</li>
+          <li>Per-center breakdown of all operations</li>
+          <li>Printable formats for stakeholder sharing</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="big-feature fade-in">
+      <div class="feat-content">
+        <div class="tag">Core Module 5</div>
+        <h2>User Management & Role-Based Access</h2>
+        <p>The system supports three distinct user roles — each with appropriate access and capabilities to match their responsibilities in disaster response operations.</p>
+        <ul class="feat-list">
+          <li><strong>Administrators:</strong> Full access — users, reports, all records, system settings</li>
+          <li><strong>Staff:</strong> Manage beneficiaries, inventory, distributions, and generate reports</li>
+          <li><strong>Volunteers:</strong> Assist in registration, update distribution records, view centers</li>
+          <li>Secure login with role-based dashboard views</li>
+          <li>Activity logging for accountability</li>
+        </ul>
+      </div>
+      <div class="feat-visual" style="background:linear-gradient(135deg,#1e3a5f 0%,var(--navy) 100%);">
+        <div class="feat-visual-inner">
+          <span class="feat-visual-icon">🔐</span>
+          <span class="feat-visual-label">Access Control</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- USER ROLES -->
+<section class="users-section">
+  <div class="container">
+    <div class="section-header" style="color:white;">
+      <div class="tag" style="color:var(--teal-lt);">Target Users</div>
+      <h2 style="color:white;">Built For Every Role in CDRC</h2>
+      <p style="color:var(--gray-300);">The system adapts to each team member's responsibilities and access needs.</p>
+    </div>
+    <div class="users-grid fade-in">
+      <div class="user-card">
+        <div class="user-card-icon">🛡️</div>
+        <h3>Administrators</h3>
+        <ul>
+          <li>Manage all user accounts and system settings</li>
+          <li>Monitor all relief operations across centers</li>
+          <li>Access complete reports and analytics</li>
+          <li>Maintain beneficiary and inventory records</li>
+          <li>Configure data backup and recovery</li>
+        </ul>
+      </div>
+      <div class="user-card">
+        <div class="user-card-icon">👔</div>
+        <h3>CDRC Staff</h3>
+        <ul>
+          <li>Register and update beneficiary records</li>
+          <li>Manage incoming and outgoing inventory</li>
+          <li>Record and track relief distributions</li>
+          <li>Generate operational reports</li>
+          <li>Manage evacuation center info</li>
+        </ul>
+      </div>
+      <div class="user-card">
+        <div class="user-card-icon">🙋</div>
+        <h3>Volunteers</h3>
+        <ul>
+          <li>Assist in beneficiary registration</li>
+          <li>Update distribution records in the field</li>
+          <li>Monitor evacuation center activities</li>
+          <li>View assigned center information</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCOPE -->
+<section class="section" style="background:var(--off-white);">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="tag">System Scope</div>
+      <h2>What's Included & What's Not</h2>
+    </div>
+    <div class="scope-grid fade-in">
+      <div class="scope-card in">
+        <h3 style="color:var(--teal);">✅ In Scope</h3>
+        <ul class="scope-in">
+          <li>Centralized web-based platform for relief operations</li>
+          <li>Role-based access (Admin, Staff, Volunteer)</li>
+          <li>Beneficiary registration and records management</li>
+          <li>Relief goods inventory tracking and availability</li>
+          <li>Distribution activity recording and monitoring</li>
+          <li>Evacuation center information management</li>
+          <li>Reports on beneficiaries, inventory, and distributions</li>
+          <li>MySQL database storage</li>
+          <li>Data backup and recovery functions</li>
+        </ul>
+      </div>
+      <div class="scope-card out">
+        <h3 style="color:var(--gray-500);">🚫 Out of Scope</h3>
+        <ul class="scope-out">
+          <li>Online donation or payment processing</li>
+          <li>Real-time GPS tracking of relief vehicles</li>
+          <li>Offline desktop application</li>
+          <li>Disaster prediction or weather forecasting</li>
+          <li>Early warning systems</li>
+          <li>Integration with government DRRM systems</li>
+          <li>Automated SMS or Email notifications</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><a class="logo" href="../index.html"><div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg></div><div class="logo-text"><strong>CDRC Relief Tracker</strong><span>Citizens' Disaster Response Center</span></div></a><p style="margin-top:16px;">Community-based disaster relief tracking for the Philippines.</p></div>
+      <div class="footer-col"><h4>Navigation</h4><a href="../index.html">Home</a><a href="about.html">About</a><a href="features.html">Features</a><a href="contact.html">Contact</a></div>
+      <div class="footer-col"><h4>System</h4><a href="login.html">Login</a><a href="dashboard.html">Dashboard</a><a href="records.html">Records</a><a href="reports.html">Reports</a></div>
+      <div class="footer-col"><h4>Contact</h4><a href="#">cdrc@cdrc.org.ph</a><a href="#">+63 2 8921 1765</a><a href="#">Quezon City, PH</a></div>
+    </div>
+    <div class="footer-bottom"><span style="color:var(--gray-500);">© 2025 Citizens' Disaster Response Center.</span><span>ITS131P Group 9</span></div>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+</body>
+</html>

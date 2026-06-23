@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile — CDRC Relief Tracker</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body { background: var(--off-white); }
+    .sidebar { width: 240px; flex-shrink: 0; background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
+    .sidebar-logo { padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .sidebar-nav { padding: 16px 10px; flex: 1; overflow-y: auto; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; color: var(--gray-300); font-size: 13.5px; font-weight: 500; transition: all 0.2s; cursor: pointer; margin-bottom: 2px; text-decoration: none; }
+    .sidebar-nav a:hover { color: white; background: rgba(255,255,255,0.07); }
+    .sidebar-nav a.active { color: white; background: rgba(0,157,138,0.18); border-left: 3px solid var(--teal); padding-left: 9px; }
+    .sidebar-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray-700); padding: 14px 12px 6px; display: block; }
+    .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+    .sidebar-footer { padding: 16px; border-top: 1px solid rgba(255,255,255,0.07); }
+    .sidebar-user { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; }
+    .sidebar-user-name { font-size: 13px; font-weight: 600; color: white; }
+    .sidebar-user-role { font-size: 11px; color: var(--gray-500); }
+    .dash-main { margin-left: 240px; flex: 1; min-width: 0; }
+    .dash-topbar { background: white; padding: 0 28px; height: 62px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--gray-100); box-shadow: 0 1px 4px rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 50; }
+    .topbar-title { font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 700; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .topbar-icon-btn { width: 36px; height: 36px; border-radius: 8px; background: var(--off-white); display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; border: none; position: relative; }
+    .notif-badge { position: absolute; top: -2px; right: -2px; width: 14px; height: 14px; border-radius: 50%; background: var(--orange); color: white; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+    .user-chip { display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 5px; border-radius: 100px; background: var(--off-white); cursor: pointer; }
+    .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--teal); color: white; font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .user-name { font-size: 13px; font-weight: 600; }
+    .user-role { font-size: 11px; color: var(--gray-500); }
+    .dash-content { padding: 28px; }
+    .page-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+    .page-header-row h2 { font-size: 22px; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; }
+    .badge-green { background: rgba(34,197,94,0.1); color: #15803d; }
+    .badge-teal { background: rgba(0,157,138,0.1); color: var(--teal); }
+
+    /* Profile layout */
+    .profile-layout { display: grid; grid-template-columns: 280px 1fr; gap: 24px; }
+    
+    /* Left card */
+    .profile-left-card { background: white; border: 1px solid var(--gray-100); border-radius: 12px; overflow: hidden; }
+    .profile-banner { height: 80px; background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%); position: relative; }
+    .profile-avatar-wrap { padding: 0 24px 24px; margin-top: -32px; }
+    .profile-avatar-big { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--navy)); display: flex; align-items: center; justify-content: center; font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 800; color: white; border: 3px solid white; margin-bottom: 14px; position: relative; }
+    .avatar-edit { position: absolute; bottom: 0; right: 0; width: 22px; height: 22px; background: var(--teal); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; border: 2px solid white; }
+    .profile-name { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .profile-sub { font-size: 13px; color: var(--gray-500); margin-bottom: 16px; }
+    .profile-stats { display: flex; border-top: 1px solid var(--gray-100); }
+    .ps-item { flex: 1; padding: 14px 8px; text-align: center; border-right: 1px solid var(--gray-100); }
+    .ps-item:last-child { border-right: none; }
+    .ps-num { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; color: var(--navy); }
+    .ps-label { font-size: 10px; color: var(--gray-500); margin-top: 2px; }
+    .profile-meta { padding: 20px 24px; border-top: 1px solid var(--gray-100); }
+    .meta-item { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; font-size: 13px; }
+    .meta-icon { font-size: 14px; margin-top: 1px; flex-shrink: 0; }
+    .meta-label { font-size: 11px; color: var(--gray-500); }
+    .meta-val { font-weight: 500; }
+
+    /* Right: Tab card */
+    .profile-right-card { background: white; border: 1px solid var(--gray-100); border-radius: 12px; overflow: hidden; }
+    .tab-nav { display: flex; border-bottom: 1px solid var(--gray-100); padding: 0 24px; }
+    .tab-btn { padding: 14px 16px; font-size: 13.5px; font-weight: 600; color: var(--gray-500); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+    .tab-btn:hover { color: var(--navy); }
+    .tab-btn.active { color: var(--teal); border-bottom-color: var(--teal); }
+    .tab-content { display: none; padding: 28px 24px; }
+    .tab-content.active { display: block; }
+
+    /* Form fields */
+    .form-section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--gray-500); margin-bottom: 18px; padding-bottom: 10px; border-bottom: 1px solid var(--gray-100); }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--gray-700); margin-bottom: 7px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 13px; border: 1.5px solid var(--gray-100); border-radius: var(--radius); font-size: 13.5px; background: white; color: var(--text); font-family: 'Inter', sans-serif; transition: border-color 0.2s; outline: none; }
+    .form-group input:focus, .form-group select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,157,138,0.1); }
+    .form-group input[readonly] { background: var(--off-white); color: var(--gray-500); cursor: not-allowed; }
+    .form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 8px; }
+
+    /* Activity log */
+    .activity-log { display: flex; flex-direction: column; gap: 0; }
+    .log-item { display: flex; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--gray-100); align-items: flex-start; }
+    .log-item:last-child { border-bottom: none; }
+    .log-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+    .log-icon.teal { background: rgba(0,157,138,0.1); }
+    .log-icon.navy { background: rgba(13,34,64,0.07); }
+    .log-icon.orange { background: rgba(232,75,26,0.1); }
+    .log-text { font-size: 13px; color: var(--gray-700); line-height: 1.5; }
+    .log-time { font-size: 11px; color: var(--gray-400); margin-top: 3px; color: var(--gray-500); }
+
+    /* Security form */
+    .security-section { margin-bottom: 32px; }
+    .security-section + .security-section { padding-top: 24px; border-top: 1px solid var(--gray-100); }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--gray-100); }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle-info h5 { font-size: 14px; margin-bottom: 3px; }
+    .toggle-info p { font-size: 12px; color: var(--gray-500); }
+    .toggle { position: relative; width: 42px; height: 24px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; inset: 0; background: var(--gray-300); border-radius: 24px; cursor: pointer; transition: 0.2s; }
+    .toggle-slider::before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.2s; }
+    .toggle input:checked + .toggle-slider { background: var(--teal); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+    @media(max-width:1024px) { .profile-layout { grid-template-columns: 1fr; } .form-row-3 { grid-template-columns: 1fr 1fr; } }
+    @media(max-width:768px) { .dash-main { margin-left: 0; } .form-row-2 { grid-template-columns: 1fr; } .form-row-3 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<div style="display:flex; min-height:100vh;">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg></div>
+        <div class="logo-text"><strong>Relief Tracker</strong><span>CDRC</span></div>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <span class="sidebar-section-label">Main</span>
+      <a href="dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
+      <a href="records.html"><span class="nav-icon">👥</span> Beneficiaries</a>
+      <a href="#"><span class="nav-icon">📦</span> Inventory</a>
+      <a href="#"><span class="nav-icon">🏕️</span> Evac Centers</a>
+      <a href="#"><span class="nav-icon">📋</span> Distributions</a>
+      <span class="sidebar-section-label">Reporting</span>
+      <a href="reports.html"><span class="nav-icon">📊</span> Reports</a>
+      <a href="#"><span class="nav-icon">📁</span> Export Data</a>
+      <span class="sidebar-section-label">Administration</span>
+      <a href="#"><span class="nav-icon">👤</span> User Management</a>
+      <a href="profile.html" class="active"><span class="nav-icon">⚙️</span> Profile Settings</a>
+      <a href="#"><span class="nav-icon">💾</span> Backup & Restore</a>
+      <span class="sidebar-section-label">Links</span>
+      <a href="../index.html"><span class="nav-icon">🌐</span> Public Website</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar">JA</div>
+        <div><div class="sidebar-user-name">Juan Admin</div><div class="sidebar-user-role">Administrator</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="dash-main">
+    <div class="dash-topbar">
+      <div class="topbar-title">Profile & Settings</div>
+      <div class="topbar-right">
+        <button class="topbar-icon-btn">🔔<div class="notif-badge">3</div></button>
+        <div class="user-chip">
+          <div class="user-avatar">JA</div>
+          <div><div class="user-name">Juan Admin</div><div class="user-role">Administrator</div></div>
+        </div>
+        <button class="btn btn-outline" style="padding:7px 16px;font-size:13px;" onclick="window.location.href='login.html'">Sign Out</button>
+      </div>
+    </div>
+
+    <div class="dash-content">
+      <div class="page-header-row">
+        <div>
+          <h2>My Profile</h2>
+          <p style="font-size:13px;color:var(--gray-500);margin-top:4px;">Manage your account information and system preferences</p>
+        </div>
+      </div>
+
+      <div class="profile-layout">
+        <!-- LEFT: Profile card -->
+        <div>
+          <div class="profile-left-card">
+            <div class="profile-banner"></div>
+            <div class="profile-avatar-wrap">
+              <div class="profile-avatar-big">
+                JA
+                <div class="avatar-edit">✏️</div>
+              </div>
+              <div class="profile-name">Juan B. Admin</div>
+              <div class="profile-sub">System Administrator</div>
+              <span class="badge badge-teal">Active Account</span>
+            </div>
+            <div class="profile-stats">
+              <div class="ps-item"><div class="ps-num">248</div><div class="ps-label">Actions</div></div>
+              <div class="ps-item"><div class="ps-num">12</div><div class="ps-label">Reports</div></div>
+              <div class="ps-item"><div class="ps-num">5</div><div class="ps-label">Months</div></div>
+            </div>
+            <div class="profile-meta">
+              <div class="meta-item">
+                <span class="meta-icon">✉️</span>
+                <div><div class="meta-label">Email</div><div class="meta-val">juan.admin@cdrc.org.ph</div></div>
+              </div>
+              <div class="meta-item">
+                <span class="meta-icon">📞</span>
+                <div><div class="meta-label">Contact</div><div class="meta-val">+63 917 123 4567</div></div>
+              </div>
+              <div class="meta-item">
+                <span class="meta-icon">🏢</span>
+                <div><div class="meta-label">Department</div><div class="meta-val">Operations – Main Office</div></div>
+              </div>
+              <div class="meta-item">
+                <span class="meta-icon">📅</span>
+                <div><div class="meta-label">Member Since</div><div class="meta-val">January 2025</div></div>
+              </div>
+              <div class="meta-item">
+                <span class="meta-icon">🔑</span>
+                <div><div class="meta-label">Last Login</div><div class="meta-val">Today, 8:04 AM</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Tabs -->
+        <div class="profile-right-card">
+          <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab(this,'personal')">Personal Info</button>
+            <button class="tab-btn" onclick="switchTab(this,'security')">Security</button>
+            <button class="tab-btn" onclick="switchTab(this,'preferences')">Preferences</button>
+            <button class="tab-btn" onclick="switchTab(this,'activity')">Activity Log</button>
+          </div>
+
+          <!-- Personal Info -->
+          <div class="tab-content active" id="tab-personal">
+            <div class="form-section-title">Basic Information</div>
+            <div class="form-row-2">
+              <div class="form-group"><label>First Name</label><input type="text" value="Juan"></div>
+              <div class="form-group"><label>Last Name</label><input type="text" value="Admin"></div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group"><label>Middle Initial</label><input type="text" value="B."></div>
+              <div class="form-group"><label>Username</label><input type="text" value="juan.admin" readonly></div>
+            </div>
+            <div class="form-section-title" style="margin-top:8px;">Contact Information</div>
+            <div class="form-row-2">
+              <div class="form-group"><label>Email Address</label><input type="email" value="juan.admin@cdrc.org.ph"></div>
+              <div class="form-group"><label>Mobile Number</label><input type="tel" value="+63 917 123 4567"></div>
+            </div>
+            <div class="form-section-title" style="margin-top:8px;">Role & Assignment</div>
+            <div class="form-row-3">
+              <div class="form-group"><label>Role</label><select disabled><option selected>Administrator</option><option>Staff</option><option>Volunteer</option></select></div>
+              <div class="form-group"><label>Department</label><input type="text" value="Operations"></div>
+              <div class="form-group"><label>Assigned Center</label><select><option>Main Office</option><option>Brgy. Masaya</option><option>Brgy. Maliwanag</option></select></div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-outline">Discard Changes</button>
+              <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+            </div>
+          </div>
+
+          <!-- Security -->
+          <div class="tab-content" id="tab-security">
+            <div class="security-section">
+              <div class="form-section-title">Change Password</div>
+              <div class="form-group"><label>Current Password</label><input type="password" placeholder="Enter current password"></div>
+              <div class="form-row-2">
+                <div class="form-group"><label>New Password</label><input type="password" placeholder="Minimum 8 characters"></div>
+                <div class="form-group"><label>Confirm Password</label><input type="password" placeholder="Re-enter new password"></div>
+              </div>
+              <div style="background:var(--off-white);border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:12px;color:var(--gray-500);">
+                Password must be at least 8 characters and include uppercase, lowercase, and a number.
+              </div>
+              <div class="form-actions">
+                <button class="btn btn-primary" onclick="savePassword()">Update Password</button>
+              </div>
+            </div>
+            <div class="security-section">
+              <div class="form-section-title">Login Security</div>
+              <div class="toggle-row">
+                <div class="toggle-info"><h5>Session Timeout</h5><p>Automatically log out after 30 minutes of inactivity</p></div>
+                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info"><h5>Login Notifications</h5><p>Receive an email whenever your account is accessed</p></div>
+                <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info"><h5>Remember Device</h5><p>Skip password re-entry on this device for 7 days</p></div>
+                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preferences -->
+          <div class="tab-content" id="tab-preferences">
+            <div class="form-section-title">Display & Regional</div>
+            <div class="form-row-2">
+              <div class="form-group"><label>Language</label><select><option>English (Philippine)</option><option>Filipino</option></select></div>
+              <div class="form-group"><label>Date Format</label><select><option>MM/DD/YYYY</option><option>DD/MM/YYYY</option><option>YYYY-MM-DD</option></select></div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group"><label>Timezone</label><select><option selected>Asia/Manila (UTC+8)</option></select></div>
+              <div class="form-group"><label>Records Per Page</label><select><option>10</option><option>25</option><option>50</option><option>100</option></select></div>
+            </div>
+            <div class="form-section-title" style="margin-top:8px;">Notifications</div>
+            <div class="toggle-row">
+              <div class="toggle-info"><h5>Low Inventory Alerts</h5><p>Notify when any stock item falls below 20%</p></div>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info"><h5>New Beneficiary Alerts</h5><p>Notify when new beneficiaries are registered</p></div>
+              <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info"><h5>Daily Summary Email</h5><p>Receive an end-of-day operations summary</p></div>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="form-actions" style="margin-top:24px;">
+              <button class="btn btn-primary" onclick="savePrefs()">Save Preferences</button>
+            </div>
+          </div>
+
+          <!-- Activity Log -->
+          <div class="tab-content" id="tab-activity">
+            <div class="form-section-title">Recent Account Activity</div>
+            <div class="activity-log">
+              <div class="log-item">
+                <div class="log-icon teal">✅</div>
+                <div>
+                  <div class="log-text">Successfully logged in from Quezon City, Philippines</div>
+                  <div class="log-time">Today, 8:04 AM · Chrome on Windows</div>
+                </div>
+              </div>
+              <div class="log-item">
+                <div class="log-icon navy">📊</div>
+                <div>
+                  <div class="log-text">Generated Distribution Report for June 1–15, 2025</div>
+                  <div class="log-time">Today, 9:32 AM</div>
+                </div>
+              </div>
+              <div class="log-item">
+                <div class="log-icon teal">📦</div>
+                <div>
+                  <div class="log-text">Updated inventory — Added 200 rice sacks to main warehouse</div>
+                  <div class="log-time">Today, 10:15 AM</div>
+                </div>
+              </div>
+              <div class="log-item">
+                <div class="log-icon navy">👤</div>
+                <div>
+                  <div class="log-text">Created new volunteer account for Francis G.</div>
+                  <div class="log-time">Yesterday, 4:15 PM</div>
+                </div>
+              </div>
+              <div class="log-item">
+                <div class="log-icon orange">⚠️</div>
+                <div>
+                  <div class="log-text">System alert acknowledged — water supply low at Brgy. Maliwanag</div>
+                  <div class="log-time">Yesterday, 2:40 PM</div>
+                </div>
+              </div>
+              <div class="log-item">
+                <div class="log-icon teal">📋</div>
+                <div>
+                  <div class="log-text">Approved distribution batch for Brgy. Pag-asa — 58 families</div>
+                  <div class="log-time">Jun 14, 2025, 3:20 PM</div>
+                </div>
+              </div>
+              <div class="log-item">
+                <div class="log-icon navy">🔐</div>
+                <div>
+                  <div class="log-text">Password changed successfully</div>
+                  <div class="log-time">Jun 12, 2025, 9:00 AM</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+<script>
+  function switchTab(btn, id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+  }
+  function saveProfile() {
+    const btn = event.target;
+    btn.textContent = '✓ Saved!';
+    btn.style.background = 'var(--teal)';
+    setTimeout(() => { btn.textContent = 'Save Changes'; btn.style.background = ''; }, 2000);
+  }
+  function savePassword() {
+    alert('Password updated successfully.');
+  }
+  function savePrefs() {
+    const btn = event.target;
+    btn.textContent = '✓ Saved!';
+    btn.style.background = 'var(--teal)';
+    setTimeout(() => { btn.textContent = 'Save Preferences'; btn.style.background = ''; }, 2000);
+  }
+</script>
+</body>
+</html>

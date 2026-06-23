@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports — CDRC Relief Tracker</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body { background: var(--off-white); }
+    .sidebar { width: 240px; flex-shrink: 0; background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
+    .sidebar-logo { padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .sidebar-nav { padding: 16px 10px; flex: 1; overflow-y: auto; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; color: var(--gray-300); font-size: 13.5px; font-weight: 500; transition: all 0.2s; cursor: pointer; margin-bottom: 2px; text-decoration: none; }
+    .sidebar-nav a:hover { color: white; background: rgba(255,255,255,0.07); }
+    .sidebar-nav a.active { color: white; background: rgba(0,157,138,0.18); border-left: 3px solid var(--teal); padding-left: 9px; }
+    .sidebar-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray-700); padding: 14px 12px 6px; display: block; }
+    .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+    .sidebar-footer { padding: 16px; border-top: 1px solid rgba(255,255,255,0.07); }
+    .sidebar-user { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; transition: background 0.2s; cursor: pointer; }
+    .sidebar-user:hover { background: rgba(255,255,255,0.06); }
+    .sidebar-user-name { font-size: 13px; font-weight: 600; color: white; }
+    .sidebar-user-role { font-size: 11px; color: var(--gray-500); }
+    .dash-main { margin-left: 240px; flex: 1; min-width: 0; }
+    .dash-topbar { background: white; padding: 0 28px; height: 62px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--gray-100); box-shadow: 0 1px 4px rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 50; }
+    .topbar-title { font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 700; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .topbar-icon-btn { width: 36px; height: 36px; border-radius: 8px; background: var(--off-white); display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; border: none; position: relative; }
+    .notif-badge { position: absolute; top: -2px; right: -2px; width: 14px; height: 14px; border-radius: 50%; background: var(--orange); color: white; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+    .user-chip { display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 5px; border-radius: 100px; background: var(--off-white); cursor: pointer; }
+    .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--teal); color: white; font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .user-name { font-size: 13px; font-weight: 600; }
+    .user-role { font-size: 11px; color: var(--gray-500); }
+    .dash-content { padding: 28px; }
+    .page-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+    .page-header-row h2 { font-size: 22px; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; }
+    .badge-green { background: rgba(34,197,94,0.1); color: #15803d; }
+    .badge-orange { background: rgba(232,75,26,0.1); color: var(--orange); }
+    .badge-teal { background: rgba(0,157,138,0.1); color: var(--teal); }
+    .badge-gray { background: var(--gray-100); color: var(--gray-500); }
+
+    /* Report type cards */
+    .report-types { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 32px; }
+    .rtype-card {
+      background: white; border: 1.5px solid var(--gray-100); border-radius: 12px;
+      padding: 24px; cursor: pointer; transition: all 0.2s; text-align: center;
+    }
+    .rtype-card:hover { border-color: var(--teal); box-shadow: 0 4px 20px rgba(0,157,138,0.12); transform: translateY(-2px); }
+    .rtype-card.selected { border-color: var(--teal); background: rgba(0,157,138,0.04); }
+    .rtype-icon { font-size: 32px; margin-bottom: 10px; }
+    .rtype-card h4 { font-size: 14px; margin-bottom: 6px; }
+    .rtype-card p { font-size: 12px; color: var(--gray-500); line-height: 1.5; }
+
+    /* Date filter bar */
+    .filter-bar {
+      background: white; border: 1px solid var(--gray-100); border-radius: 12px;
+      padding: 18px 22px; margin-bottom: 24px;
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    .filter-bar label { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+    .filter-bar input[type="date"], .filter-bar select {
+      padding: 8px 12px; border: 1.5px solid var(--gray-100); border-radius: 8px;
+      font-size: 13px; font-family: 'Inter', sans-serif; outline: none; background: white;
+      transition: border-color 0.2s;
+    }
+    .filter-bar input:focus, .filter-bar select:focus { border-color: var(--teal); }
+    .filter-divider { color: var(--gray-300); font-size: 12px; }
+
+    /* Two-column layout */
+    .report-layout { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; margin-bottom: 20px; }
+    .report-card { background: white; border: 1px solid var(--gray-100); border-radius: 12px; overflow: hidden; }
+    .rc-header { padding: 18px 22px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: space-between; }
+    .rc-header h4 { font-size: 14px; font-weight: 700; }
+    .rc-body { padding: 20px 22px; }
+
+    /* Bar chart (CSS) */
+    .bar-chart { display: flex; align-items: flex-end; gap: 10px; height: 140px; }
+    .bc-group { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+    .bc-bars { display: flex; gap: 4px; align-items: flex-end; height: 110px; }
+    .bc-bar { width: 18px; border-radius: 3px 3px 0 0; }
+    .bc-bar.dist { background: var(--teal); }
+    .bc-bar.bene { background: var(--navy-lt); }
+    .bc-label { font-size: 10px; color: var(--gray-500); white-space: nowrap; }
+
+    /* Pie-ish donut (CSS) */
+    .donut-wrap { display: flex; align-items: center; gap: 24px; }
+    .donut { width: 120px; height: 120px; border-radius: 50%; flex-shrink: 0;
+      background: conic-gradient(var(--teal) 0% 71%, var(--orange) 71% 100%);
+      display: flex; align-items: center; justify-content: center; position: relative; }
+    .donut-inner { width: 72px; height: 72px; background: white; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .donut-pct { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 800; color: var(--navy); line-height: 1; }
+    .donut-lbl { font-size: 9px; color: var(--gray-500); }
+    .donut-legend { display: flex; flex-direction: column; gap: 8px; }
+    .dl-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+    .dl-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Data table */
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--gray-500); padding: 10px 14px; border-bottom: 1px solid var(--gray-100); }
+    .data-table td { padding: 11px 14px; font-size: 13px; border-bottom: 1px solid var(--gray-100); }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: var(--off-white); }
+
+    /* Summary stats row */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--gray-100); border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+    .stat-cell { background: white; padding: 18px 16px; text-align: center; }
+    .stat-num { font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 800; line-height: 1; }
+    .stat-lbl { font-size: 11px; color: var(--gray-500); margin-top: 4px; }
+
+    /* Print section */
+    .print-actions { display: flex; gap: 10px; }
+
+    @media(max-width:1024px) { .report-types { grid-template-columns: repeat(2, 1fr); } .report-layout { grid-template-columns: 1fr; } }
+    @media(max-width:768px) { .dash-main { margin-left: 0; } .report-types { grid-template-columns: 1fr 1fr; } .stats-row { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+
+<div style="display:flex; min-height:100vh;">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg></div>
+        <div class="logo-text"><strong>Relief Tracker</strong><span>CDRC</span></div>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <span class="sidebar-section-label">Main</span>
+      <a href="dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
+      <a href="records.html"><span class="nav-icon">👥</span> Beneficiaries</a>
+      <a href="#"><span class="nav-icon">📦</span> Inventory</a>
+      <a href="#"><span class="nav-icon">🏕️</span> Evac Centers</a>
+      <a href="#"><span class="nav-icon">📋</span> Distributions</a>
+      <span class="sidebar-section-label">Reporting</span>
+      <a href="reports.html" class="active"><span class="nav-icon">📊</span> Reports</a>
+      <a href="#"><span class="nav-icon">📁</span> Export Data</a>
+      <span class="sidebar-section-label">Administration</span>
+      <a href="#"><span class="nav-icon">👤</span> User Management</a>
+      <a href="profile.html"><span class="nav-icon">⚙️</span> Profile Settings</a>
+      <a href="#"><span class="nav-icon">💾</span> Backup & Restore</a>
+      <span class="sidebar-section-label">Links</span>
+      <a href="../index.html"><span class="nav-icon">🌐</span> Public Website</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user" onclick="window.location.href='profile.html'">
+        <div class="user-avatar">JA</div>
+        <div><div class="sidebar-user-name">Juan Admin</div><div class="sidebar-user-role">Administrator</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="dash-main">
+    <div class="dash-topbar">
+      <div class="topbar-title">Reports</div>
+      <div class="topbar-right">
+        <div class="print-actions">
+          <button class="btn btn-outline" style="padding:7px 16px;font-size:13px;" onclick="window.print()">🖨 Print</button>
+          <button class="btn btn-teal" style="padding:7px 16px;font-size:13px;">⬇ Export PDF</button>
+        </div>
+        <button class="topbar-icon-btn">🔔<div class="notif-badge">3</div></button>
+        <div class="user-chip" onclick="window.location.href='profile.html'">
+          <div class="user-avatar">JA</div>
+          <div><div class="user-name">Juan Admin</div><div class="user-role">Administrator</div></div>
+        </div>
+        <button class="btn btn-outline" style="padding:7px 16px;font-size:13px;" onclick="window.location.href='login.html'">Sign Out</button>
+      </div>
+    </div>
+
+    <div class="dash-content">
+      <div class="page-header-row">
+        <div>
+          <h2>Reports & Analytics</h2>
+          <p style="font-size:13px;color:var(--gray-500);margin-top:4px;">Generate and review operational reports for CDRC relief activities</p>
+        </div>
+      </div>
+
+      <!-- Report type selector -->
+      <div class="report-types">
+        <div class="rtype-card selected" onclick="selectReport(this, 'distribution')">
+          <div class="rtype-icon">📋</div>
+          <h4>Distribution Report</h4>
+          <p>Summary of all relief items distributed to beneficiaries by date and center</p>
+        </div>
+        <div class="rtype-card" onclick="selectReport(this, 'beneficiary')">
+          <div class="rtype-icon">👥</div>
+          <h4>Beneficiary Report</h4>
+          <p>Registered beneficiaries, household data, and relief service status</p>
+        </div>
+        <div class="rtype-card" onclick="selectReport(this, 'inventory')">
+          <div class="rtype-icon">📦</div>
+          <h4>Inventory Report</h4>
+          <p>Stock levels, utilization rates, and transaction history for all relief goods</p>
+        </div>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <label>Date Range</label>
+        <input type="date" value="2025-06-01">
+        <span class="filter-divider">to</span>
+        <input type="date" value="2025-06-15">
+        <label style="margin-left:8px;">Center</label>
+        <select>
+          <option>All Centers</option>
+          <option>Brgy. Masaya</option>
+          <option>Brgy. Maliwanag</option>
+          <option>Brgy. Pag-asa</option>
+          <option>Brgy. Maligaya</option>
+        </select>
+        <button class="btn btn-primary" style="padding:8px 20px;font-size:13px;margin-left:auto;">Generate Report</button>
+      </div>
+
+      <!-- Summary stats -->
+      <div class="stats-row">
+        <div class="stat-cell">
+          <div class="stat-num">892</div>
+          <div class="stat-lbl">Total Distributions</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num">1,248</div>
+          <div class="stat-lbl">Beneficiaries Covered</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num" style="color:var(--teal);">3,482</div>
+          <div class="stat-lbl">Relief Packs Distributed</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num" style="color:var(--orange);">356</div>
+          <div class="stat-lbl">Families Still Pending</div>
+        </div>
+      </div>
+
+      <!-- Charts + breakdown -->
+      <div class="report-layout">
+        <!-- Bar chart -->
+        <div class="report-card">
+          <div class="rc-header">
+            <h4>Distributions by Day — June 2025</h4>
+            <span class="badge badge-teal">Jun 1–15</span>
+          </div>
+          <div class="rc-body">
+            <div style="display:flex;gap:12px;margin-bottom:12px;">
+              <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-500);"><span style="width:10px;height:10px;border-radius:2px;background:var(--teal);display:inline-block;"></span>Distributions</span>
+              <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-500);"><span style="width:10px;height:10px;border-radius:2px;background:var(--navy-lt);display:inline-block;"></span>Beneficiaries</span>
+            </div>
+            <div class="bar-chart">
+              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:48px;"></div><div class="bc-bar bene" style="height:60px;"></div></div><span class="bc-label">Jun 1</span></div>
+              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:72px;"></div><div class="bc-bar bene" style="height:80px;"></div></div><span class="bc-label">Jun 2</span></div>
+              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:55px;"></div><div class="bc-bar bene" style="height:65px;"></div></div><span class="bc-label">Jun 3</span></div>
+              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:90px;"></div><div class="bc-bar bene" style="height:100px;"></div></div><span class="bc-label">Jun 4</span></div>
+              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:40px;"></div><div class="bc-bar bene" style="height:50px;"></div></div><span class="bc-label">Jun 5</span></div>
+              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:30px;"></div><div class="bc-bar bene" style="height:38px;"></div></div><span class="bc-label">Jun 6</span></div>
+              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:85px;"></div><div class="bc-bar bene" style="height:95px;"></div></div><span class="bc-label">Jun 7</span></div>
+              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:65px;"></div><div class="bc-bar bene" style="height:75px;"></div></div><span class="bc-label">Jun 8</span></div>
+              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:78px;"></div><div class="bc-bar bene" style="height:88px;"></div></div><span class="bc-label">Jun 9</span></div>
+              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:60px;"></div><div class="bc-bar bene" style="height:70px;"></div></div><span class="bc-label">Jun 10</span></div>
+              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:100px;"></div><div class="bc-bar bene" style="height:108px;"></div></div><span class="bc-label">Jun 11</span></div>
+              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:45px;"></div><div class="bc-bar bene" style="height:55px;"></div></div><span class="bc-label">Jun 12</span></div>
+              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:82px;"></div><div class="bc-bar bene" style="height:90px;"></div></div><span class="bc-label">Jun 13</span></div>
+              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:70px;"></div><div class="bc-bar bene" style="height:80px;"></div></div><span class="bc-label">Jun 14</span></div>
+              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:88px;"></div><div class="bc-bar bene" style="height:95px;"></div></div><span class="bc-label">Jun 15</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Donut + breakdown -->
+        <div class="report-card">
+          <div class="rc-header">
+            <h4>Service Coverage</h4>
+            <span class="badge badge-gray">Overall</span>
+          </div>
+          <div class="rc-body">
+            <div class="donut-wrap" style="margin-bottom:24px;">
+              <div class="donut">
+                <div class="donut-inner">
+                  <div class="donut-pct">71%</div>
+                  <div class="donut-lbl">Served</div>
+                </div>
+              </div>
+              <div class="donut-legend">
+                <div class="dl-item"><div class="dl-dot" style="background:var(--teal);"></div><div><div style="font-weight:600;font-size:13px;">892 Served</div><div style="font-size:11px;color:var(--gray-500);">71% of total</div></div></div>
+                <div class="dl-item"><div class="dl-dot" style="background:var(--orange);"></div><div><div style="font-weight:600;font-size:13px;">356 Pending</div><div style="font-size:11px;color:var(--gray-500);">29% of total</div></div></div>
+              </div>
+            </div>
+            <h5 style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--gray-500);margin-bottom:12px;">By Center</h5>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span>Brgy. Masaya</span><span style="font-weight:600;">312 / 420</span></div>
+                <div style="height:7px;background:var(--gray-100);border-radius:100px;"><div style="height:100%;width:74%;background:var(--teal);border-radius:100px;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span>Brgy. Maliwanag</span><span style="font-weight:600;">218 / 310</span></div>
+                <div style="height:7px;background:var(--gray-100);border-radius:100px;"><div style="height:100%;width:70%;background:var(--teal);border-radius:100px;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span>Brgy. Pag-asa</span><span style="font-weight:600;">198 / 280</span></div>
+                <div style="height:7px;background:var(--gray-100);border-radius:100px;"><div style="height:100%;width:71%;background:var(--teal);border-radius:100px;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span>Brgy. Maligaya</span><span style="font-weight:600;">164 / 238</span></div>
+                <div style="height:7px;background:var(--gray-100);border-radius:100px;"><div style="height:100%;width:69%;background:var(--orange);border-radius:100px;"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detailed table -->
+      <div class="report-card" style="margin-bottom:0;">
+        <div class="rc-header">
+          <h4>Distribution Detail — June 1–15, 2025</h4>
+          <button class="btn btn-outline" style="padding:6px 14px;font-size:12px;">⬇ Export CSV</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Center</th>
+                <th>Families Served</th>
+                <th>Rice Sacks</th>
+                <th>Canned Goods</th>
+                <th>Water (L)</th>
+                <th>Hygiene Kits</th>
+                <th>Staff In-Charge</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Jun 15</td><td>Brgy. Masaya</td><td>89</td><td>89</td><td>178</td><td>445</td><td>44</td><td>Ana Reyes</td><td><span class="badge badge-green">Completed</span></td></tr>
+              <tr><td>Jun 14</td><td>Brgy. Maliwanag</td><td>74</td><td>74</td><td>148</td><td>370</td><td>37</td><td>Ben Lim</td><td><span class="badge badge-green">Completed</span></td></tr>
+              <tr><td>Jun 14</td><td>Brgy. Pag-asa</td><td>58</td><td>58</td><td>116</td><td>290</td><td>29</td><td>Francis Go</td><td><span class="badge badge-green">Completed</span></td></tr>
+              <tr><td>Jun 13</td><td>Brgy. Maligaya</td><td>82</td><td>82</td><td>164</td><td>410</td><td>41</td><td>Ana Reyes</td><td><span class="badge badge-green">Completed</span></td></tr>
+              <tr><td>Jun 12</td><td>Brgy. Masaya</td><td>45</td><td>45</td><td>90</td><td>225</td><td>22</td><td>Ben Lim</td><td><span class="badge badge-green">Completed</span></td></tr>
+              <tr><td>Jun 11</td><td>Brgy. Maliwanag</td><td>100</td><td>100</td><td>200</td><td>0</td><td>50</td><td>Francis Go</td><td><span class="badge badge-orange">Partial</span></td></tr>
+              <tr><td>Jun 10</td><td>Brgy. Pag-asa</td><td>60</td><td>60</td><td>120</td><td>300</td><td>30</td><td>Ana Reyes</td><td><span class="badge badge-green">Completed</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="padding:14px 22px;border-top:1px solid var(--gray-100);display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:13px;color:var(--gray-500);">Showing 7 of 15 entries for Jun 1–15, 2025</span>
+          <div style="display:flex;gap:8px;">
+            <button style="padding:6px 12px;border:1.5px solid var(--gray-100);border-radius:6px;font-size:13px;cursor:pointer;background:white;font-family:'Inter',sans-serif;">← Prev</button>
+            <button style="padding:6px 12px;border:1.5px solid var(--teal);border-radius:6px;font-size:13px;cursor:pointer;background:var(--teal);color:white;font-family:'Inter',sans-serif;">1</button>
+            <button style="padding:6px 12px;border:1.5px solid var(--gray-100);border-radius:6px;font-size:13px;cursor:pointer;background:white;font-family:'Inter',sans-serif;">2</button>
+            <button style="padding:6px 12px;border:1.5px solid var(--gray-100);border-radius:6px;font-size:13px;cursor:pointer;background:white;font-family:'Inter',sans-serif;">Next →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+<script>
+  function selectReport(card, type) {
+    document.querySelectorAll('.rtype-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+  }
+</script>
+</body>
+</html>
