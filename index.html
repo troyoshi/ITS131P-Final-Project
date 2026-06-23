@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CDRC Relief Tracker — Disaster Relief Distribution System</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: none; }
+    .fade-in:nth-child(2) { transition-delay: 0.1s; }
+    .fade-in:nth-child(3) { transition-delay: 0.2s; }
+    .fade-in:nth-child(4) { transition-delay: 0.3s; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container">
+    <a class="logo" href="index.html">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <strong>CDRC Relief Tracker</strong>
+        <span>Citizens' Disaster Response Center</span>
+      </div>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html" class="active">Home</a>
+      <a href="pages/about.html">About</a>
+      <a href="pages/features.html">Features</a>
+      <a href="pages/contact.html">Contact</a>
+      <a href="pages/login.html" class="btn btn-primary nav-cta">System Login</a>
+    </div>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">Disaster Relief Operations Platform</div>
+      <h1 class="hero-title">Track Every<br><span>Relief Effort</span><br>In Real Time</h1>
+      <p class="hero-desc">
+        A centralized web-based system for CDRC that manages beneficiary registration, 
+        relief inventory, evacuation centers, and distribution records — all from one dashboard.
+      </p>
+      <div class="hero-actions">
+        <a href="pages/login.html" class="btn btn-primary">Access System →</a>
+        <a href="pages/about.html" class="btn btn-secondary">Learn More</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-num"><span class="counter" data-target="1200">0</span>+</div>
+          <div class="hero-stat-label">Beneficiaries Registered</div>
+        </div>
+        <div>
+          <div class="hero-stat-num"><span class="counter" data-target="48">0</span></div>
+          <div class="hero-stat-label">Active Operations</div>
+        </div>
+        <div>
+          <div class="hero-stat-num"><span class="counter" data-target="17">0</span></div>
+          <div class="hero-stat-label">Partner Communities</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-card-main">
+        <div class="hero-card-title">Distribution Overview — This Week</div>
+        <div class="mini-chart">
+          <div class="bar" style="--fill:0.6;height:60%"></div>
+          <div class="bar" style="--fill:0.85;height:85%"></div>
+          <div class="bar" style="--fill:0.4;height:40%"></div>
+          <div class="bar" style="--fill:0.95;height:95%"></div>
+          <div class="bar" style="--fill:0.7;height:70%"></div>
+          <div class="bar" style="--fill:0.55;height:55%"></div>
+          <div class="bar" style="--fill:1;height:100%"></div>
+        </div>
+        <div class="chart-labels">
+          <span>Mon</span><span>Tue</span><span>Wed</span>
+          <span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
+        <div class="hero-card-rows">
+          <div class="hrow">
+            <span class="hrow-label">Rice Sacks Available</span>
+            <span class="hrow-val ok">342 units</span>
+          </div>
+          <div class="hrow">
+            <span class="hrow-label">Families Served Today</span>
+            <span class="hrow-val">89</span>
+          </div>
+          <div class="hrow">
+            <span class="hrow-label">Water Supply</span>
+            <span class="hrow-val warn">Low — 12%</span>
+          </div>
+          <div class="hrow">
+            <span class="hrow-label">Active Centers</span>
+            <span class="hrow-val ok">4 of 6</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-card-sm card-a">
+        <div class="sm-icon orange">🏠</div>
+        <div class="sm-text">
+          <strong>6 Centers</strong>
+          <span>3 provinces active</span>
+        </div>
+      </div>
+      <div class="hero-card-sm card-b">
+        <div class="sm-icon teal">✓</div>
+        <div class="sm-text">
+          <strong>Distribution Done</strong>
+          <span>Brgy. Masaya — just now</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES STRIP -->
+<div class="features-strip">
+  <div class="container">
+    <div class="strip-item"><span class="strip-icon">👥</span> Beneficiary Registration</div>
+    <div class="strip-item"><span class="strip-icon">📦</span> Inventory Tracking</div>
+    <div class="strip-item"><span class="strip-icon">🏕️</span> Evacuation Centers</div>
+    <div class="strip-item"><span class="strip-icon">📊</span> Distribution Records</div>
+    <div class="strip-item"><span class="strip-icon">🔐</span> Role-Based Access</div>
+    <div class="strip-item"><span class="strip-icon">💾</span> Backup & Recovery</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section" style="background:var(--off-white);">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="tag">How It Works</div>
+      <h2>From Registration to Distribution</h2>
+      <p>A streamlined workflow that keeps every relief operation organized and accountable.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;">
+      <div class="fade-in" style="text-align:center;padding:32px 20px;">
+        <div style="width:64px;height:64px;background:var(--navy);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:26px;">👤</div>
+        <div style="font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;color:var(--orange);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Step 1</div>
+        <h3 style="font-size:16px;margin-bottom:8px;">Register Beneficiaries</h3>
+        <p style="font-size:13px;color:var(--gray-500);line-height:1.65;">Staff and volunteers log affected families into the system with all necessary details.</p>
+      </div>
+      <div class="fade-in" style="text-align:center;padding:32px 20px;">
+        <div style="width:64px;height:64px;background:var(--teal);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:26px;">📦</div>
+        <div style="font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;color:var(--orange);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Step 2</div>
+        <h3 style="font-size:16px;margin-bottom:8px;">Manage Inventory</h3>
+        <p style="font-size:13px;color:var(--gray-500);line-height:1.65;">Track incoming and outgoing relief goods in real time with stock-level alerts.</p>
+      </div>
+      <div class="fade-in" style="text-align:center;padding:32px 20px;">
+        <div style="width:64px;height:64px;background:var(--orange);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:26px;">🏕️</div>
+        <div style="font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;color:var(--orange);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Step 3</div>
+        <h3 style="font-size:16px;margin-bottom:8px;">Assign to Centers</h3>
+        <p style="font-size:13px;color:var(--gray-500);line-height:1.65;">Link beneficiaries to evacuation centers and coordinate distribution schedules.</p>
+      </div>
+      <div class="fade-in" style="text-align:center;padding:32px 20px;">
+        <div style="width:64px;height:64px;background:var(--navy-mid);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:26px;">📊</div>
+        <div style="font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;color:var(--orange);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Step 4</div>
+        <h3 style="font-size:16px;margin-bottom:8px;">Generate Reports</h3>
+        <p style="font-size:13px;color:var(--gray-500);line-height:1.65;">Admins review comprehensive reports on all operations for accountability and planning.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES PREVIEW -->
+<section class="section">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="tag">Core Features</div>
+      <h2>Everything CDRC Needs</h2>
+      <p>Built specifically for community-based disaster response operations in the Philippines.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <div class="feature-icon">👥</div>
+        <h3>Beneficiary Management</h3>
+        <p>Register and maintain detailed records of disaster-affected families including household size, location, and special needs.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">📦</div>
+        <h3>Relief Inventory Tracking</h3>
+        <p>Monitor stock levels of all relief goods, log incoming donations, and receive alerts when supplies run low.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🏕️</div>
+        <h3>Evacuation Center Info</h3>
+        <p>Manage information about active evacuation centers including capacity, location, and current occupancy.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">📋</div>
+        <h3>Distribution Records</h3>
+        <p>Log every relief distribution event with timestamps, quantities, and recipient confirmation for full accountability.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">📊</div>
+        <h3>Reports & Analytics</h3>
+        <p>Generate detailed reports on beneficiaries, inventory usage, and distribution summaries for stakeholders.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🔐</div>
+        <h3>Role-Based Access</h3>
+        <p>Separate dashboards and permissions for Administrators, Staff, and Volunteers to maintain data security.</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:48px;">
+      <a href="pages/features.html" class="btn btn-outline">View All Features →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="section-sm" style="background:var(--navy);">
+  <div class="container" style="text-align:center;">
+    <div class="tag" style="color:var(--teal-lt);">Ready to Get Started</div>
+    <h2 style="color:white;font-size:clamp(24px,4vw,40px);margin-bottom:16px;">Streamline Your Disaster Response</h2>
+    <p style="color:var(--gray-300);margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto;">
+      Join CDRC's relief operations team. Login to the system to manage beneficiaries, inventory, and distributions.
+    </p>
+    <a href="pages/login.html" class="btn btn-primary" style="font-size:16px;padding:14px 32px;">Login to System →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="index.html">
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <strong>CDRC Relief Tracker</strong>
+            <span>Citizens' Disaster Response Center</span>
+          </div>
+        </a>
+        <p style="margin-top:16px;">A web-based disaster relief distribution tracking system for efficient community-based disaster response.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <a href="index.html">Home</a>
+        <a href="pages/about.html">About CDRC</a>
+        <a href="pages/features.html">Features</a>
+        <a href="pages/contact.html">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>System Pages</h4>
+        <a href="pages/login.html">Login</a>
+        <a href="pages/dashboard.html">Dashboard</a>
+        <a href="pages/records.html">Records</a>
+        <a href="pages/reports.html">Reports</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="#">cdrc@cdrc.org.ph</a>
+        <a href="#">+63 2 8921 1765</a>
+        <a href="#">Quezon City, Philippines</a>
+        <a href="#">facebook.com/CDRCPhilippines</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span style="color:var(--gray-500);">© 2025 Citizens' Disaster Response Center. All rights reserved.</span>
+      <span>ITS131P Group 9</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
