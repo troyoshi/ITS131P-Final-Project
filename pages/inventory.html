@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory - CDRC Relief Tracker</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body { background: var(--off-white); }
+    .dash-layout { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background: var(--navy);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 100;
+    }
+
+    .sidebar-logo {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .sidebar-nav {
+      padding: 16px 10px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      color: var(--gray-300);
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: all 0.2s;
+      cursor: pointer;
+      margin-bottom: 2px;
+      text-decoration: none;
+    }
+
+    .sidebar-nav a:hover {
+      color: white;
+      background: rgba(255,255,255,0.07);
+    }
+
+    .sidebar-nav a.active {
+      color: white;
+      background: rgba(0,157,138,0.18);
+      border-left: 3px solid var(--teal);
+      padding-left: 9px;
+    }
+
+    .sidebar-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gray-700);
+      padding: 14px 12px 6px;
+      display: block;
+    }
+
+    .nav-icon {
+      font-size: 15px;
+      width: 18px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .sidebar-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+
+    .sidebar-user:hover {
+      background: rgba(255,255,255,0.06);
+    }
+
+    .sidebar-user-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .sidebar-user-role {
+      font-size: 11px;
+      color: var(--gray-500);
+    }
+
+    .dash-main {
+      margin-left: 240px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .dash-topbar {
+      background: white;
+      padding: 0 28px;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--gray-100);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px 5px 5px;
+      border-radius: 100px;
+      background: var(--off-white);
+      cursor: pointer;
+    }
+
+    .user-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--teal);
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .user-role {
+      font-size: 11px;
+      color: var(--gray-500);
+    }
+
+    .dash-content {
+      padding: 28px;
+    }
+
+    .page-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .page-head h2 {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    .page-head p {
+      font-size: 14px;
+      color: var(--gray-500);
+    }
+
+    .toolbar {
+      background: white;
+      border: 1px solid var(--gray-100);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+
+    .toolbar-top {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .search-wrap {
+      flex: 1;
+      min-width: 240px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 42px;
+      border: 1px solid var(--gray-100);
+      border-radius: 10px;
+      padding: 0 14px 0 40px;
+      font-size: 14px;
+      outline: none;
+      background: white;
+    }
+
+    .search-input:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(0,157,138,0.08);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-500);
+      font-size: 14px;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .filter-chip {
+      border: 1px solid var(--gray-100);
+      background: var(--off-white);
+      color: var(--gray-700);
+      padding: 8px 14px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-chip:hover {
+      background: var(--gray-100);
+    }
+
+    .filter-chip.active {
+      background: rgba(0,157,138,0.12);
+      color: var(--teal);
+      border-color: rgba(0,157,138,0.2);
+    }
+
+    .inventory-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.95fr;
+      gap: 20px;
+    }
+
+    .dash-card {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--gray-100);
+      overflow: hidden;
+    }
+
+    .dash-card-header {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .dash-card-header h4 {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .dash-card-body {
+      padding: 18px 22px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-green {
+      background: rgba(34,197,94,0.1);
+      color: #15803d;
+    }
+
+    .badge-orange {
+      background: rgba(232,75,26,0.1);
+      color: var(--orange);
+    }
+
+    .badge-teal {
+      background: rgba(0,157,138,0.1);
+      color: var(--teal);
+    }
+
+    .badge-gray {
+      background: var(--gray-100);
+      color: var(--gray-500);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--gray-500);
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .data-table td {
+      padding: 13px 12px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--gray-100);
+      vertical-align: middle;
+    }
+
+    .inventory-row {
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .inventory-row:hover td {
+      background: var(--off-white);
+    }
+
+    .inventory-row.active td {
+      background: rgba(0,157,138,0.06);
+    }
+
+    .item-name {
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 2px;
+    }
+
+    .item-sub {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    .stock-num {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .panel-empty {
+      color: var(--gray-500);
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 20px 0;
+    }
+
+    .detail-head {
+      margin-bottom: 16px;
+    }
+
+    .detail-head h3 {
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+
+    .detail-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .stock-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 18px 0 22px;
+    }
+
+    .mini-stat {
+      background: var(--off-white);
+      border-radius: 10px;
+      padding: 14px;
+      border: 1px solid var(--gray-100);
+    }
+
+    .mini-stat-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      margin-bottom: 6px;
+      letter-spacing: 0.06em;
+    }
+
+    .mini-stat-value {
+      font-size: 20px;
+      font-weight: 800;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .form-block {
+      border-top: 1px solid var(--gray-100);
+      padding-top: 18px;
+      margin-top: 18px;
+    }
+
+    .form-block h5 {
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--gray-700);
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      height: 40px;
+      border: 1px solid var(--gray-100);
+      border-radius: 10px;
+      padding: 0 12px;
+      font-size: 14px;
+      outline: none;
+      background: white;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(0,157,138,0.08);
+    }
+
+    .btn {
+      border: none;
+      border-radius: 10px;
+      height: 40px;
+      padding: 0 16px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--teal);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(0.97);
+    }
+
+    .record-section {
+      margin-top: 20px;
+    }
+
+    .record-section h5 {
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .record-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .record-item {
+      border: 1px solid var(--gray-100);
+      border-radius: 10px;
+      padding: 12px 14px;
+      background: var(--off-white);
+    }
+
+    .record-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 4px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .record-sub {
+      font-size: 12px;
+      color: var(--gray-500);
+      line-height: 1.5;
+    }
+
+    .muted-note {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    @media (max-width: 1024px) {
+      .inventory-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 220px;
+        transform: translateX(-100%);
+        transition: transform 0.3s;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .dash-main {
+        margin-left: 0;
+      }
+
+      .stock-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .dash-topbar {
+        padding: 0 16px;
+      }
+
+      .dash-content {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="dash-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/>
+          </svg>
+        </div>
+        <div class="logo-text"><strong>Relief Tracker</strong><span>CDRC</span></div>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="sidebar-section-label">Main</span>
+      <a href="dashboard.html" class="active"><span class="nav-icon">🏠</span> Dashboard</a>
+      <a href="records.html"><span class="nav-icon">👥</span> Beneficiaries</a>
+      <a href="inventory.html"><span class="nav-icon">📦</span> Inventory</a>
+      <a href="evac-centers.html"><span class="nav-icon">🏕️</span> Evac Centers</a>
+
+
+      <span class="sidebar-section-label">Reporting</span>
+      <a href="reports.html"><span class="nav-icon">📊</span> Reports</a>
+
+      <span class="sidebar-section-label">Administration</span>
+      <a href="profile.html"><span class="nav-icon">⚙️</span> Profile Settings</a>
+      <a href="#"><span class="nav-icon">💾</span> Backup & Restore</a>
+
+      <span class="sidebar-section-label">Links</span>
+      <a href="../index.html"><span class="nav-icon">🌐</span> Public Website</a>
+      <a href="https://www.facebook.com/CDRC1984"><span class="nav-icon">🌐</span> Facebook</a>
+      
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user" onclick="window.location.href='profile.html'">
+        <div class="user-avatar">JA</div>
+        <div>
+          <div class="sidebar-user-name">Juan Admin</div>
+          <div class="sidebar-user-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="dash-main">
+    <div class="dash-topbar">
+      <div class="topbar-title">Inventory</div>
+
+      <div class="topbar-right">
+        <div class="user-chip" onclick="window.location.href='profile.html'">
+          <div class="user-avatar">JA</div>
+          <div>
+            <div class="user-name">Juan Admin</div>
+            <div class="user-role">Administrator</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-content">
+      <div class="page-head">
+        <div>
+          <h2>Inventory Management</h2>
+          <p>Track stock levels, filter by category, add restocks, and review outgoing records.</p>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="toolbar-top">
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Search inventory item..."
+            >
+          </div>
+        </div>
+
+        <div class="filter-row">
+          <button class="filter-chip active" data-category="All">All</button>
+          <button class="filter-chip" data-category="Food">Food</button>
+          <button class="filter-chip" data-category="Water">Water</button>
+          <button class="filter-chip" data-category="Medicine">Medicine</button>
+          <button class="filter-chip" data-category="Hygiene">Hygiene</button>
+          <button class="filter-chip" data-category="Shelter">Shelter</button>
+        </div>
+      </div>
+
+      <div class="inventory-layout">
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h4>Available Inventory</h4>
+            <span class="badge badge-gray" id="itemCount">0 items</span>
+          </div>
+
+          <div class="dash-card-body" style="padding:0;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Category</th>
+                  <th>In Stock</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h4>Item Details</h4>
+            <span class="badge badge-teal" id="selectedCategoryBadge">Select an item</span>
+          </div>
+
+          <div class="dash-card-body" id="detailsPanel">
+            <div class="panel-empty">
+              Select an inventory item from the table to view stock details, add stocks, and check where previous stocks were distributed.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+<script src="../js/volunteer.js"></script>
+<script src="../js/inventory.js"></script>
+</body>
+</html>
