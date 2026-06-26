@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory - CDRC Relief Tracker</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="dash-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/>
+          </svg>
+        </div>
+        <div class="logo-text"><strong>Relief Tracker</strong><span>CDRC</span></div>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="sidebar-section-label">Main</span>
+      <a href="dashboard.html" class="active"><span class="nav-icon">🏠</span> Dashboard</a>
+      <a href="records.html"><span class="nav-icon">👥</span> Beneficiaries</a>
+      <a href="inventory.html"><span class="nav-icon">📦</span> Inventory</a>
+      <a href="evac-centers.html"><span class="nav-icon">🏕️</span> Evac Centers</a>
+
+
+      <span class="sidebar-section-label">Reporting</span>
+      <a href="reports.html"><span class="nav-icon">📊</span> Reports</a>
+
+      <span class="sidebar-section-label">Administration</span>
+      <a href="profile.html"><span class="nav-icon">⚙️</span> Profile Settings</a>
+      <a href="backup-restore.html"><span class="nav-icon">💾</span> Backup & Restore</a>
+
+      <span class="sidebar-section-label">Links</span>
+      <a href="../index.html"><span class="nav-icon">🌐</span> Public Website</a>
+      <a href="https://www.facebook.com/CDRC1984"><span class="nav-icon">🌐</span> Facebook</a>
+      
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user" onclick="window.location.href='profile.html'">
+        <div class="user-avatar">JA</div>
+        <div>
+          <div class="sidebar-user-name">Juan Admin</div>
+          <div class="sidebar-user-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="dash-main">
+    <div class="dash-topbar">
+      <div class="topbar-title">Inventory</div>
+
+      <div class="topbar-right">
+        <button class="topbar-icon-btn" title="Notifications">🔔<div class="notif-badge">3</div></button>
+
+        <div class="user-chip" onclick="window.location.href='profile.html'">
+          <div class="user-avatar">JA</div>
+          <div>
+            <div class="user-name">Juan Admin</div>
+            <div class="user-role">Volunteer</div>
+          </div>
+        </div>
+        <button class="btn btn-outline" style="padding:7px 16px;font-size:13px;" onclick="window.location.href='login.html'">Sign Out</button>
+      </div>
+    </div>
+
+    <div class="dash-content">
+      <div class="page-head">
+        <div>
+          <h2>Inventory Management</h2>
+          <p>Track stock levels, filter by category, add restocks, and review outgoing records.</p>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="toolbar-top">
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Search inventory item..."
+            >
+          </div>
+        </div>
+
+        <div class="filter-row">
+          <button class="filter-chip active" data-category="All">All</button>
+          <button class="filter-chip" data-category="Food">Food</button>
+          <button class="filter-chip" data-category="Water">Water</button>
+          <button class="filter-chip" data-category="Medicine">Medicine</button>
+          <button class="filter-chip" data-category="Hygiene">Hygiene</button>
+          <button class="filter-chip" data-category="Shelter">Shelter</button>
+        </div>
+      </div>
+
+      <div class="inventory-layout">
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h4>Available Inventory</h4>
+            <span class="badge badge-gray" id="itemCount">0 items</span>
+          </div>
+
+          <div class="dash-card-body" style="padding:0;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Category</th>
+                  <th>In Stock</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h4>Item Details</h4>
+            <span class="badge badge-teal" id="selectedCategoryBadge">Select an item</span>
+          </div>
+
+          <div class="dash-card-body" id="detailsPanel">
+            <div class="panel-empty">
+              Select an inventory item from the table to view stock details, add stocks, and check where previous stocks were distributed.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+<script src="../js/volunteer.js"></script>
+<script src="../js/inventory.js"></script>
+</body>
+</html>

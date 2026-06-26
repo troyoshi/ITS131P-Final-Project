@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evacuation Centers - CDRC Relief Tracker</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="dash-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/>
+          </svg>
+        </div>
+        <div class="logo-text"><strong>Relief Tracker</strong><span>CDRC</span></div>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="sidebar-section-label">Main</span>
+      <a href="dashboard.html" class="active"><span class="nav-icon">🏠</span> Dashboard</a>
+      <a href="records.html"><span class="nav-icon">👥</span> Beneficiaries</a>
+      <a href="inventory.html"><span class="nav-icon">📦</span> Inventory</a>
+      <a href="evac-centers.html"><span class="nav-icon">🏕️</span> Evac Centers</a>
+
+
+      <span class="sidebar-section-label">Reporting</span>
+      <a href="reports.html"><span class="nav-icon">📊</span> Reports</a>
+
+      <span class="sidebar-section-label">Administration</span>
+      <a href="profile.html"><span class="nav-icon">⚙️</span> Profile Settings</a>
+      <a href="backup-restore.html"><span class="nav-icon">💾</span> Backup & Restore</a>
+
+      <span class="sidebar-section-label">Links</span>
+      <a href="../index.html"><span class="nav-icon">🌐</span> Public Website</a>
+      <a href="https://www.facebook.com/CDRC1984"><span class="nav-icon">🌐</span> Facebook</a>
+      
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user" onclick="window.location.href='profile.html'">
+        <div class="user-avatar">JA</div>
+        <div>
+          <div class="sidebar-user-name">Juan Admin</div>
+          <div class="sidebar-user-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="dash-main">
+    <div class="dash-topbar">
+      <div class="topbar-title">Evacuation Centers</div>
+
+      <div class="topbar-right">
+        <button class="topbar-icon-btn" title="Notifications">🔔<div class="notif-badge">3</div></button>
+
+        <div class="user-chip" onclick="window.location.href='profile.html'">
+          <div class="user-avatar">JA</div>
+          <div>
+            <div class="user-name">Juan Admin</div>
+            <div class="user-role">Volunteer</div>
+          </div>
+        </div>
+
+        <button class="btn btn-outline" style="padding:7px 16px;font-size:13px;" onclick="window.location.href='login.html'">Sign Out</button>
+      </div>
+    </div>
+
+    <div class="dash-content">
+      <div class="page-header-row">
+        <div>
+          <h2>Evacuation Centers</h2>
+          <p style="font-size:13px;color:var(--gray-500);margin-top:4px;">All evacuation centers collaborating with CDRC</p>
+        </div>
+
+        <button class="btn btn-primary" onclick="openCenterModal()">+ Add Evacuation Center</button>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-icon">🏕️</div>
+          <div>
+            <div class="summary-num" id="totalCenters">6</div>
+            <div class="summary-label">Total Collaborating Centers</div>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-icon">✅</div>
+          <div>
+            <div class="summary-num" id="activeCenters">6</div>
+            <div class="summary-label">Active Evacuation Centers</div>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-icon">👥</div>
+          <div>
+            <div class="summary-num">1,248</div>
+            <div class="summary-label">Beneficiaries Across Centers</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="centers-grid" id="centersGrid"></div>
+
+      <div class="records-card" id="emptyState" style="display:none;">
+        <div class="records-card-header">Evacuation Centers</div>
+        <div class="empty-state">No evacuation centers available.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="centerModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add Evacuation Center</h3>
+      <button class="modal-close" onclick="closeCenterModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Evacuation Center Name</label>
+        <input type="text" id="centerName" placeholder="Brgy. New Hope Evacuation Center">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Status</label>
+          <select id="centerStatus">
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Total Beneficiaries</label>
+          <input type="number" id="centerBeneficiaries" placeholder="150" min="0">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Contact Person</label>
+        <input type="text" id="centerContactPerson" placeholder="Ana Reyes">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Contact Number</label>
+          <input type="text" id="centerContactNumber" placeholder="+63 912 345 6789">
+        </div>
+
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="centerEmail" placeholder="center@cdrc.org">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Address</label>
+        <textarea id="centerAddress" rows="3" placeholder="Barangay / Street / City"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeCenterModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="addCenter()">Save Center</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+<script src="../js/volunteer.js"></script>
+</body>
+</html>

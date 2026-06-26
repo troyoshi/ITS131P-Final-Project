@@ -3,121 +3,87 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login — CDRC Relief Tracker</title>
+  <title>Login - CDRC Relief Tracker</title>
   <link rel="stylesheet" href="../css/style.css">
-  <style>
-    body { margin: 0; }
-    .login-wrap { min-height: 100vh; display: flex; }
-    .login-left {
-      flex: 1; background: linear-gradient(150deg, var(--navy) 0%, #0a1e38 100%);
-      display: flex; align-items: center; justify-content: center;
-      padding: 60px; position: relative; overflow: hidden;
-    }
-    .login-left::before {
-      content: ''; position: absolute; inset: 0;
-      background: 
-        radial-gradient(ellipse 60% 60% at 30% 70%, rgba(0,157,138,0.2) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 40% at 70% 20%, rgba(232,75,26,0.1) 0%, transparent 50%);
-    }
-    .login-left-grid {
-      position: absolute; inset: 0; opacity: 0.03;
-      background-image: linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px);
-      background-size: 48px 48px;
-    }
-    .login-hero { position: relative; z-index: 1; max-width: 380px; }
-    .login-hero-logo { margin-bottom: 40px; }
-    .login-hero h2 { font-size: 36px; color: white; margin-bottom: 16px; line-height: 1.2; }
-    .login-hero p { color: var(--gray-300); line-height: 1.7; font-size: 15px; }
-    .login-features { margin-top: 48px; display: flex; flex-direction: column; gap: 16px; }
-    .lf-item { display: flex; gap: 14px; align-items: center; color: var(--gray-300); font-size: 14px; }
-    .lf-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
-    .login-right {
-      width: 480px; flex-shrink: 0; background: white;
-      display: flex; align-items: center; justify-content: center;
-      padding: 60px 48px;
-    }
-    .login-form-wrap { width: 100%; max-width: 360px; }
-    .login-form-wrap .logo { margin-bottom: 40px; }
-    .lfw-heading { font-size: 26px; margin-bottom: 6px; }
-    .lfw-sub { color: var(--gray-500); font-size: 14px; margin-bottom: 32px; }
-    .role-selector { display: flex; gap: 8px; margin-bottom: 28px; }
-    .role-btn {
-      flex: 1; padding: 10px 8px; border: 1.5px solid var(--gray-100);
-      border-radius: var(--radius); font-size: 12px; font-weight: 600;
-      cursor: pointer; background: white; transition: all 0.2s;
-      font-family: 'Inter', sans-serif; text-align: center;
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
-    }
-    .role-btn .ri { font-size: 18px; }
-    .role-btn.active { border-color: var(--teal); background: rgba(0,157,138,0.06); color: var(--teal); }
-    .role-btn:hover:not(.active) { border-color: var(--gray-300); background: var(--off-white); }
-    .forgot { font-size: 13px; color: var(--teal); display: block; text-align: right; margin-top: -8px; margin-bottom: 20px; }
-    .forgot:hover { text-decoration: underline; }
-    .login-footer { text-align: center; margin-top: 28px; font-size: 13px; color: var(--gray-500); }
-    .login-footer a { color: var(--teal); }
-    .back-link { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--gray-300); margin-bottom: 40px; transition: color 0.2s; }
-    .back-link:hover { color: white; }
-    @media(max-width:768px) { .login-left { display: none; } .login-right { width: 100%; padding: 40px 24px; } }
-  </style>
 </head>
 <body>
 
 <div class="login-wrap">
-  <!-- LEFT PANEL -->
   <div class="login-left">
     <div class="login-left-grid"></div>
     <div class="login-hero">
-      <a href="../index.html" class="back-link">← Back to Website</a>
+      <a href="../index.html" class="back-link"><- Back to Website</a>
+
       <div class="login-hero-logo">
         <div class="logo">
-          <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg></div>
-          <div class="logo-text"><strong>CDRC Relief Tracker</strong><span>Citizens' Disaster Response Center</span></div>
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <strong>CDRC Relief Tracker</strong>
+            <span>Citizens' Disaster Response Center</span>
+          </div>
         </div>
       </div>
+
       <h2>Coordinating relief. Reaching every family.</h2>
       <p>The CDRC Relief Distribution Tracking System helps staff and volunteers manage beneficiaries, inventory, and distributions from a single secure platform.</p>
+
       <div class="login-features">
         <div class="lf-item"><div class="lf-dot"></div>Centralized beneficiary and distribution records</div>
         <div class="lf-item"><div class="lf-dot"></div>Real-time inventory monitoring across all centers</div>
-        <div class="lf-item"><div class="lf-dot"></div>Secure role-based access for all team members</div>
+        <div class="lf-item"><div class="lf-dot"></div>Secure volunteer access to assigned tasks and records</div>
         <div class="lf-item"><div class="lf-dot"></div>Comprehensive reporting for accountability</div>
       </div>
     </div>
   </div>
 
-  <!-- RIGHT PANEL -->
   <div class="login-right">
     <div class="login-form-wrap">
       <div class="logo" style="margin-bottom:40px;">
-        <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg></div>
-        <div class="logo-text"><strong style="color:var(--navy);">CDRC Relief Tracker</strong><span>Citizens' Disaster Response Center</span></div>
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <strong style="color:var(--navy);">CDRC Relief Tracker</strong>
+          <span>Citizens' Disaster Response Center</span>
+        </div>
       </div>
 
       <h3 class="lfw-heading">Welcome back</h3>
-      <p class="lfw-sub">Sign in to access your dashboard</p>
+      <p class="lfw-sub">Sign in to access your volunteer dashboard</p>
 
       <div class="role-selector">
-        <button class="role-btn active" onclick="setRole(this)"><span class="ri">🛡️</span>Admin</button>
-        <button class="role-btn" onclick="setRole(this)"><span class="ri">👔</span>Staff</button>
-        <button class="role-btn" onclick="setRole(this)"><span class="ri">🙋</span>Volunteer</button>
+        <div class="role-btn">
+          <span class="ri">🙋</span>
+          Volunteer
+        </div>
       </div>
 
       <form id="loginForm">
         <div class="form-group">
-          <label>Username or Email</label>
-          <input type="text" placeholder="Enter your username" required>
+          <label for="username">Username or Email</label>
+          <input type="text" id="username" placeholder="Enter your username" required>
         </div>
+
         <div class="form-group">
-          <label>Password</label>
-          <input type="password" placeholder="Enter your password" required>
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter your password" required>
         </div>
+
         <a href="#" class="forgot">Forgot password?</a>
+
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px;">
           <input type="checkbox" id="remember" style="width:auto;">
           <label for="remember" style="font-size:13px;color:var(--gray-700);cursor:pointer;">Keep me signed in</label>
         </div>
-        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;" onclick="handleLogin(event)">
-          Sign In →
+
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;">
+          Sign In ->
         </button>
       </form>
 
@@ -127,27 +93,13 @@
 
       <div style="margin-top:32px;padding:16px;background:var(--off-white);border-radius:8px;font-size:12px;color:var(--gray-500);">
         <strong style="color:var(--gray-700);">Demo credentials</strong><br>
-        Admin: admin / admin123 &nbsp;|&nbsp; Staff: staff / staff123
+        Volunteer: volunteer / volunteer123
       </div>
     </div>
   </div>
 </div>
 
 <script src="../js/main.js"></script>
-<script>
-  function setRole(btn) {
-    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
-  function handleLogin(e) {
-    e.preventDefault();
-    const btn = e.target;
-    btn.textContent = 'Signing in...';
-    btn.disabled = true;
-    setTimeout(() => {
-      window.location.href = 'dashboard.html';
-    }, 1000);
-  }
-</script>
+<script src="../js/volunteer.js"></script>
 </body>
 </html>
