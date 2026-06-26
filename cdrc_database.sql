@@ -59,11 +59,10 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Passwords below are bcrypt hashes of 'Password123!'
 INSERT INTO users (role_id, first_name, last_name, middle_init, username, email, password, contact_no, department) VALUES
-  (1, 'Juan',    'Admin',      'B', 'juan.admin',    'juan.admin@cdrc.org.ph',    '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uFutB/ZW2', '+63 917 123 4567', 'Operations'),
-  (2, 'Ana',     'Reyes',      'C', 'ana.reyes',     'ana.reyes@cdrc.org.ph',     '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uFutB/ZW2', '+63 918 234 5678', 'Field Operations'),
-  (2, 'Ben',     'Lim',        'A', 'ben.lim',       'ben.lim@cdrc.org.ph',       '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uFutB/ZW2', '+63 919 345 6789', 'Logistics'),
-  (3, 'Francis', 'Go',         'R', 'francis.go',    'francis.go@cdrc.org.ph',    '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uFutB/ZW2', '+63 920 456 7890', 'Volunteers'),
-  (3, 'Carolyne','Abad',       'M', 'carolyne.abad', 'carolyne.abad@cdrc.org.ph', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uFutB/ZW2', '+63 921 567 8901', 'Volunteers');
+  (1, 'Alfred',    'Rasco',      'A', 'alfred.rasco',    'alfred.rasco@cdrc.org.ph',    '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uFutB/ZW2', '+63 917 123 4567', 'Operations'),
+  (2, 'Ben',     'Sevilla',        'A', 'ben.sevilla',       'ben.sevilla@cdrc.org.ph',       '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uFutB/ZW2', '+63 919 345 6789', 'Logistics'),
+  (3, 'Francis', 'Flores',         'G', 'francis.flores',    'francis.flores@cdrc.org.ph',    '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uFutB/ZW2', '+63 920 456 7890', 'Field Operations'),
+  (3, 'Carolyne','Vicencio',       'A', 'carolyne.vicencio', 'carolyne.vicencio@cdrc.org.ph', 'user', '+63 921 567 8901', 'Volunteers');
 
 
 -- ============================================================

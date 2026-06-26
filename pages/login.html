@@ -1,105 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - CDRC Relief Tracker</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body>
 
-<div class="login-wrap">
-  <div class="login-left">
-    <div class="login-left-grid"></div>
-    <div class="login-hero">
-      <a href="../index.html" class="back-link"><- Back to Website</a>
+  <div class="login-wrap">
+    <div class="login-left">
+      <div class="login-left-grid"></div>
+      <div class="login-hero">
+        <a href="../index.html" class="back-link"><- Back to Website</a>
 
-      <div class="login-hero-logo">
-        <div class="logo">
+            <div class="login-hero-logo">
+              <div class="logo">
+                <div class="logo-icon">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z" />
+                  </svg>
+                </div>
+                <div class="logo-text">
+                  <strong>CDRC Relief Tracker</strong>
+                  <span>Citizens' Disaster Response Center</span>
+                </div>
+              </div>
+            </div>
+
+            <h2>Coordinating relief. Reaching every family.</h2>
+            <p>The CDRC Relief Distribution Tracking System helps staff and volunteers manage beneficiaries, inventory,
+              and distributions from a single secure platform.</p>
+
+            <div class="login-features">
+              <div class="lf-item">
+                <div class="lf-dot"></div>Centralized beneficiary and distribution records
+              </div>
+              <div class="lf-item">
+                <div class="lf-dot"></div>Real-time inventory monitoring across all centers
+              </div>
+              <div class="lf-item">
+                <div class="lf-dot"></div>Secure volunteer access to assigned tasks and records
+              </div>
+              <div class="lf-item">
+                <div class="lf-dot"></div>Comprehensive reporting for accountability
+              </div>
+            </div>
+      </div>
+    </div>
+
+    <div class="login-right">
+      <div class="login-form-wrap">
+        <div class="logo" style="margin-bottom:40px;">
           <div class="logo-icon">
             <svg viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/>
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z" />
             </svg>
           </div>
           <div class="logo-text">
-            <strong>CDRC Relief Tracker</strong>
+            <strong style="color:var(--navy);">CDRC Relief Tracker</strong>
             <span>Citizens' Disaster Response Center</span>
           </div>
         </div>
-      </div>
 
-      <h2>Coordinating relief. Reaching every family.</h2>
-      <p>The CDRC Relief Distribution Tracking System helps staff and volunteers manage beneficiaries, inventory, and distributions from a single secure platform.</p>
+        <h3 class="lfw-heading">Welcome back</h3>
+        <p class="lfw-sub">Sign in to access your volunteer dashboard</p>
 
-      <div class="login-features">
-        <div class="lf-item"><div class="lf-dot"></div>Centralized beneficiary and distribution records</div>
-        <div class="lf-item"><div class="lf-dot"></div>Real-time inventory monitoring across all centers</div>
-        <div class="lf-item"><div class="lf-dot"></div>Secure volunteer access to assigned tasks and records</div>
-        <div class="lf-item"><div class="lf-dot"></div>Comprehensive reporting for accountability</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="login-right">
-    <div class="login-form-wrap">
-      <div class="logo" style="margin-bottom:40px;">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/>
-          </svg>
-        </div>
-        <div class="logo-text">
-          <strong style="color:var(--navy);">CDRC Relief Tracker</strong>
-          <span>Citizens' Disaster Response Center</span>
-        </div>
-      </div>
-
-      <h3 class="lfw-heading">Welcome back</h3>
-      <p class="lfw-sub">Sign in to access your volunteer dashboard</p>
-
-      <div class="role-selector">
-        <div class="role-btn">
-          <span class="ri">🙋</span>
-          Volunteer
-        </div>
-      </div>
-
-      <form id="loginForm">
-        <div class="form-group">
-          <label for="username">Username or Email</label>
-          <input type="text" id="username" placeholder="Enter your username" required>
+        <div class="role-selector">
+          <div class="role-btn">
+            <span class="ri">🙋</span>
+            Volunteer
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" placeholder="Enter your password" required>
+        <form id="loginForm">
+          <div id="loginMessage" style="margin-bottom:14px;font-size:13px;color:var(--orange);"></div>
+
+          <div class="form-group">
+            <label for="username">Username or Email</label>
+            <input type="text" id="username" placeholder="Enter your username" required>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password" required>
+          </div>
+
+          <a href="#" class="forgot">Forgot password?</a>
+
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px;">
+            <input type="checkbox" id="remember" style="width:auto;">
+            <label for="remember" style="font-size:13px;color:var(--gray-700);cursor:pointer;">Keep me signed in</label>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;">
+            Sign In ->
+          </button>
+        </form>
+
+        <div class="login-footer">
+          Need access? <a href="contact.html">Contact the Administrator</a>
         </div>
 
-        <a href="#" class="forgot">Forgot password?</a>
-
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px;">
-          <input type="checkbox" id="remember" style="width:auto;">
-          <label for="remember" style="font-size:13px;color:var(--gray-700);cursor:pointer;">Keep me signed in</label>
+        <div
+          style="margin-top:32px;padding:16px;background:var(--off-white);border-radius:8px;font-size:12px;color:var(--gray-500);">
+          <strong style="color:var(--gray-700);">Demo credentials</strong><br>
+          Administrator: juan.admin / Password123!<br>
+          Volunteer: francis.go / Password123!
         </div>
-
-        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;">
-          Sign In ->
-        </button>
-      </form>
-
-      <div class="login-footer">
-        Need access? <a href="contact.html">Contact the Administrator</a>
-      </div>
-
-      <div style="margin-top:32px;padding:16px;background:var(--off-white);border-radius:8px;font-size:12px;color:var(--gray-500);">
-        <strong style="color:var(--gray-700);">Demo credentials</strong><br>
-        Volunteer: volunteer / volunteer123
       </div>
     </div>
   </div>
-</div>
 
-<script src="../js/main.js"></script>
-<script src="../js/volunteer.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/volunteer.js"></script>
 </body>
+
 </html>
