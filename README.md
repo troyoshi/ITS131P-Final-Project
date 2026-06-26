@@ -12,9 +12,10 @@
 
 | Name | Role / Contribution |
 |------|---------------------|
-| Carolyne A. | Database Design, ERD, Logical Data Model, SQL Script |
-| Ben L. | System Analysis, Problem Identification, Impact Assessment |
-| Francis G. | Target Users, System Scope Definition |
+| Carolyne Vicencio | Leader |
+| Benedict Ian Sevilla  | Peasants |
+| Francis Noah Flores | Peasants |
+| Jan Alfred Rasco | Peasants |
 
 ---
 
