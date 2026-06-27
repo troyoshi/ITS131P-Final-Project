@@ -46,13 +46,13 @@ The system addresses CDRC's challenge of operating without a centralized digital
 
 ```
 cdrc-system/
-├── index.html              # Homepage
-├── README.md               # This file
+├── index.html             
+├── README.md             
 ├── css/
-│   └── style.css           # All styles (design system)
+│   └── style.css          
 ├── js/
-│   ├── main.js             # Interactivity & animations
-│   └── nav.js              # Shared nav helper
+│   ├── main.js        
+│   └── nav.js             
 └── pages/
     ├── about.html
     ├── features.html
