@@ -80,6 +80,7 @@
           <button class="btn btn-primary" onclick="openCenterModal()">+ Add Evacuation Center</button>
         </div>
 
+        <!-- SUMMARY CARDS -->
         <div class="summary-grid">
           <div class="summary-card">
             <div class="summary-icon">🏕️</div>
@@ -98,28 +99,30 @@
           </div>
 
           <div class="summary-card">
+            <div class="summary-icon">🏠</div>
+            <div>
+              <div class="summary-num" id="fullCenters">--</div>
+              <div class="summary-label">Full Capacity</div>
+            </div>
+          </div>
+
+          <div class="summary-card">
             <div class="summary-icon">👥</div>
             <div>
               <div class="summary-num" id="totalBeneficiaries">--</div>
               <div class="summary-label">Total Beneficiaries</div>
             </div>
           </div>
-
-          <div class="summary-card">
-            <div class="summary-icon">📊</div>
-            <div>
-              <div class="summary-num" id="totalDistributions">--</div>
-              <div class="summary-label">Distributions</div>
-            </div>
-          </div>
         </div>
 
+        <!-- CENTERS GRID -->
         <div class="centers-grid" id="centersGrid">
           <div style="grid-column: span 3; text-align: center; padding: 40px; color: var(--gray-500);">
             Loading evacuation centers...
           </div>
         </div>
 
+        <!-- EMPTY STATE -->
         <div class="records-card" id="emptyState" style="display:none;">
           <div class="records-card-header">Evacuation Centers</div>
           <div class="empty-state">No evacuation centers registered yet.</div>
@@ -191,9 +194,25 @@
 
   <script src="../js/api.js"></script>
   <script src="../js/main.js"></script>
+
   <script>
-    const API_ROOT = '../api';
+    // ============================================================
+    // STATE
+    // ============================================================
     let centersData = [];
+
+    // ============================================================
+    // UTILITIES
+    // ============================================================
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function getInitials(name) {
+      if (!name) return '--';
+      return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    }
 
     async function apiFetch(endpoint, options = {}) {
       const url = `${API_ROOT}/${endpoint}`;
@@ -205,16 +224,9 @@
       return response.json();
     }
 
-    function setText(id, value) {
-      const el = document.getElementById(id);
-      if (el) el.textContent = value;
-    }
-
-    function getInitials(name) {
-      if (!name) return '--';
-      return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-    }
-
+    // ============================================================
+    // USER INFO
+    // ============================================================
     async function loadUserInfo() {
       try {
         const data = await apiFetch('auth.php?action=me');
@@ -227,9 +239,14 @@
           setText('sidebarUserRole', data.user.role);
           setText('topbarUserRole', data.user.role);
         }
-      } catch (e) { console.error(e); }
+      } catch (e) {
+        console.error('Failed to load user info:', e);
+      }
     }
 
+    // ============================================================
+    // LOAD CENTERS
+    // ============================================================
     async function loadCenters() {
       const grid = document.getElementById('centersGrid');
       const emptyState = document.getElementById('emptyState');
@@ -243,6 +260,7 @@
           updateSummary(data.data);
         }
       } catch (e) {
+        console.error('Failed to load centers:', e);
         grid.innerHTML = '<div style="grid-column:span 3;text-align:center;color:var(--orange);">Failed to load centers.</div>';
       }
     }
@@ -250,13 +268,13 @@
     function updateSummary(centers) {
       const total = centers.length;
       const active = centers.filter(c => c.status === 'Active').length;
+      const full = centers.filter(c => c.status === 'Full').length;
       const totalBene = centers.reduce((sum, c) => sum + (parseInt(c.total_beneficiaries) || 0), 0);
-      const totalDist = centers.reduce((sum, c) => sum + (parseInt(c.total_distributions) || 0), 0);
 
       setText('totalCenters', total);
       setText('activeCenters', active);
+      setText('fullCenters', full);
       setText('totalBeneficiaries', totalBene.toLocaleString());
-      setText('totalDistributions', totalDist.toLocaleString());
     }
 
     function renderCenters(centers) {
@@ -313,18 +331,14 @@
                   <div class="stat-box-num">${center.total_beneficiaries || 0}</div>
                   <div class="stat-box-label">Beneficiaries</div>
                 </div>
-                <div class="stat-box">
-                  <div class="stat-box-num">${center.total_distributions || 0}</div>
-                  <div class="stat-box-label">Distributions</div>
-                </div>
               </div>
 
               <div class="card-actions">
-                <button class="btn btn-outline" style="padding:8px 12px;font-size:12px;" onclick="viewBeneficiaries('${center.center_name}')">
-                  View Beneficiaries
+                <button class="btn btn-primary" style="padding:8px 12px;font-size:12px;flex:1;" onclick="viewBeneficiaries('${center.center_name}')">
+                  👥 View Beneficiaries
                 </button>
                 <button class="btn btn-outline" style="padding:8px 12px;font-size:12px;color:var(--orange);border-color:rgba(232,75,26,0.25);" onclick="deleteCenter(${center.center_id})">
-                  Remove
+                  ✕ Remove
                 </button>
               </div>
             </div>
@@ -334,6 +348,7 @@
     }
 
     function viewBeneficiaries(centerName) {
+      // Pass center name as query parameter for auto-filtering
       window.location.href = `records.html?center=${encodeURIComponent(centerName)}`;
     }
 
@@ -343,30 +358,35 @@
       try {
         const data = await apiFetch(`centers.php?action=delete&id=${id}`, { method: 'POST' });
         if (data.success) {
-          alert('Center removed.');
+          alert('✅ Center removed.');
           loadCenters();
         } else {
           alert(data.message || 'Failed to remove center.');
         }
       } catch (e) {
-        alert('Failed to remove center.');
+        alert('❌ Failed to remove center.');
       }
     }
 
+    // ============================================================
+    // MODAL FUNCTIONS
+    // ============================================================
     function openCenterModal() {
-      // Reset form
-      ['centerName', 'centerBarangay', 'centerContactPerson', 'centerContactNumber', 'centerCapacity'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-      });
+      document.getElementById('centerName').value = '';
+      document.getElementById('centerBarangay').value = '';
       document.getElementById('centerCity').value = 'Quezon City';
       document.getElementById('centerStatus').value = 'Active';
+      document.getElementById('centerCapacity').value = '';
+      document.getElementById('centerContactPerson').value = '';
+      document.getElementById('centerContactNumber').value = '';
 
-      document.getElementById('centerModal').classList.add('open');
+      const modal = document.getElementById('centerModal');
+      if (modal) modal.classList.add('active');
     }
 
     function closeCenterModal() {
-      document.getElementById('centerModal').classList.remove('open');
+      const modal = document.getElementById('centerModal');
+      if (modal) modal.classList.remove('active');
     }
 
     async function saveCenter() {
@@ -400,17 +420,20 @@
         });
 
         if (data.success) {
-          alert('Center added successfully.');
+          alert('✅ Center added successfully.');
           closeCenterModal();
           loadCenters();
         } else {
           alert(data.message || 'Failed to add center.');
         }
       } catch (e) {
-        alert('Failed to add center.');
+        alert('❌ Failed to add center.');
       }
     }
 
+    // ============================================================
+    // LOGOUT
+    // ============================================================
     async function logout() {
       try {
         await apiFetch('auth.php?action=logout', { method: 'POST' });
@@ -418,13 +441,19 @@
       window.location.href = 'login.html';
     }
 
+    // ============================================================
+    // INIT
+    // ============================================================
     async function init() {
+      console.log('Initializing evacuation centers page...');
       await loadUserInfo();
       await loadCenters();
+      console.log('Page initialized');
     }
 
     document.addEventListener('DOMContentLoaded', init);
   </script>
+
 </body>
 
 </html>

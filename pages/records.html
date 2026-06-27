@@ -396,6 +396,14 @@
     }
 
     // ============================================================
+    // GET QUERY PARAMETERS
+    // ============================================================
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    // ============================================================
     // USER INFO
     // ============================================================
     async function loadUserInfo() {
@@ -551,18 +559,15 @@
     // ADD MODAL
     // ============================================================
     function openAddModal() {
-      console.log('openAddModal called');
       const modal = document.getElementById('addModal');
       if (!modal) {
         console.error('addModal element not found!');
         return;
       }
       modal.classList.add('active');
-      console.log('Added active class to addModal');
     }
 
     function closeAddModal() {
-      console.log('closeAddModal called');
       const modal = document.getElementById('addModal');
       if (modal) modal.classList.remove('active');
     }
@@ -614,7 +619,6 @@
     // VIEW/EDIT MODAL
     // ============================================================
     async function viewBeneficiary(id) {
-      console.log('viewBeneficiary called with id:', id);
       currentBeneficiaryId = id;
       editMode = false;
       setEditMode(false);
@@ -657,14 +661,13 @@
           return;
         }
         modal.classList.add('active');
-        console.log('Opened viewModal');
       } catch (e) {
         alert('Error: ' + e.message);
       }
     }
 
     // ============================================================
-    // LOAD DISTRIBUTION HISTORY (NEW)
+    // LOAD DISTRIBUTION HISTORY
     // ============================================================
     async function loadDistributionHistory(beneficiaryId) {
       const container = document.getElementById('distributionHistoryContainer');
@@ -789,6 +792,29 @@
     }
 
     // ============================================================
+    // AUTO-FILTER FROM EVAC CENTERS PAGE
+    // ============================================================
+    async function applyAutoFilter() {
+      const centerParam = getQueryParam('center');
+      
+      if (centerParam) {
+        console.log('Auto-filtering by center:', centerParam);
+        
+        // Set the center filter dropdown value
+        const centerSelect = document.getElementById('centerFilter');
+        if (centerSelect) {
+          centerSelect.value = centerParam;
+          console.log('Set centerFilter to:', centerParam);
+        }
+        
+        // Reset to page 1 and reload
+        currentPage = 1;
+        await loadBeneficiaries();
+        console.log('Beneficiaries loaded with filter applied');
+      }
+    }
+
+    // ============================================================
     // INIT
     // ============================================================
     async function init() {
@@ -796,12 +822,22 @@
       await loadUserInfo();
       await loadDropdowns();
       await loadStats();
-      await loadBeneficiaries();
+      
+      // Check if coming from evac centers with query param
+      const centerParam = getQueryParam('center');
+      if (centerParam) {
+        console.log('Coming from evac centers, applying filter...');
+        await applyAutoFilter();
+      } else {
+        await loadBeneficiaries();
+      }
+      
       console.log('Page initialized');
     }
 
     document.addEventListener('DOMContentLoaded', init);
   </script>
+
 </body>
 
 </html>
