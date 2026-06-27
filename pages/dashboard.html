@@ -71,8 +71,7 @@
             </div>
           </div>
 
-          <button class="btn btn-outline" style="padding:7px 16px;font-size:13px;"
-            onclick="window.location.href='login.html'">Sign Out</button>
+          <button class="btn btn-outline" style="padding:7px 16px;font-size:13px;" onclick="logout()">Sign Out</button>
         </div>
       </div>
 
@@ -273,11 +272,11 @@
       async function loadDashboardData() {
         try {
           const [userRes, kpiRes, inventoryRes, activityRes, distributionsRes] = await Promise.all([
-            fetch('../api/auth.php?action=me', { credentials: 'same-origin' }),
-            fetch('../api/dashboard.php?action=kpis', { credentials: 'same-origin' }),
-            fetch('../api/inventory.php?action=list', { credentials: 'same-origin' }),
-            fetch('../api/dashboard.php?action=activity', { credentials: 'same-origin' }),
-            fetch('../api/distributions.php?action=list&limit=5', { credentials: 'same-origin' })
+            apiFetch('auth.php?action=me'),
+            apiFetch('dashboard.php?action=kpis'),
+            apiFetch('inventory.php?action=list'),
+            apiFetch('dashboard.php?action=activity'),
+            apiFetch('distributions.php?action=list&limit=5')
           ]);
 
           const userData = await userRes.json().catch(() => ({}));

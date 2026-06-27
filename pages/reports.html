@@ -1,261 +1,455 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reports — CDRC Relief Tracker</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body>
 
-<div style="display:flex; min-height:100vh;">
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <a href="../index.html" class="logo">
-        <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg></div>
-        <div class="logo-text"><strong>Relief Tracker</strong><span>CDRC</span></div>
-      </a>
-    </div>
-
-    <nav class="sidebar-nav">
-      <span class="sidebar-section-label">Main</span>
-      <a href="dashboard.html" class="active"><span class="nav-icon">🏠</span> Dashboard</a>
-      <a href="records.html"><span class="nav-icon">👥</span> Beneficiaries</a>
-      <a href="inventory.html"><span class="nav-icon">📦</span> Inventory</a>
-      <a href="evac-centers.html"><span class="nav-icon">🏕️</span> Evac Centers</a>
-
-
-      <span class="sidebar-section-label">Reporting</span>
-      <a href="reports.html"><span class="nav-icon">📊</span> Reports</a>
-
-      <span class="sidebar-section-label">Administration</span>
-      <a href="profile.html"><span class="nav-icon">⚙️</span> Profile Settings</a>
-      <a href="backup-restore.html"><span class="nav-icon">💾</span> Backup & Restore</a>
-
-      <span class="sidebar-section-label">Links</span>
-      <a href="../index.html"><span class="nav-icon">🌐</span> Public Website</a>
-      <a href="https://www.facebook.com/CDRC1984"><span class="nav-icon">🌐</span> Facebook</a>
-      
-    </nav>
-
-    <div class="sidebar-footer">
-      <div class="sidebar-user" onclick="window.location.href='profile.html'">
-        <div class="user-avatar">JA</div>
-        <div><div class="sidebar-user-name">Juan Admin</div><div class="sidebar-user-role">Volunteer</div></div>
+  <div style="display:flex; min-height:100vh;">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <a href="../index.html" class="logo">
+          <div class="logo-icon"><svg viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z" />
+            </svg></div>
+          <div class="logo-text"><strong>Relief Tracker</strong><span>CDRC</span></div>
+        </a>
       </div>
-    </div>
-  </aside>
 
-  <!-- MAIN -->
-  <div class="dash-main">
-    <div class="dash-topbar">
-      <div class="topbar-title">Reports</div>
-      <div class="topbar-right">
-        <div class="print-actions">
-          <button class="btn btn-outline" style="padding:7px 16px;font-size:13px;" onclick="window.print()">🖨 Print</button>
-          <button class="btn btn-teal" style="padding:7px 16px;font-size:13px;">⬇ Export PDF</button>
-        </div>
-        <button class="topbar-icon-btn">🔔<div class="notif-badge">3</div></button>
-        <div class="user-chip" onclick="window.location.href='profile.html'">
+      <nav class="sidebar-nav">
+        <span class="sidebar-section-label">Main</span>
+        <a href="dashboard.html" class="active"><span class="nav-icon">🏠</span> Dashboard</a>
+        <a href="records.html"><span class="nav-icon">👥</span> Beneficiaries</a>
+        <a href="inventory.html"><span class="nav-icon">📦</span> Inventory</a>
+        <a href="evac-centers.html"><span class="nav-icon">🏕️</span> Evac Centers</a>
+
+
+        <span class="sidebar-section-label">Reporting</span>
+        <a href="reports.html"><span class="nav-icon">📊</span> Reports</a>
+
+        <span class="sidebar-section-label">Administration</span>
+        <a href="profile.html"><span class="nav-icon">⚙️</span> Profile Settings</a>
+        <a href="backup-restore.html"><span class="nav-icon">💾</span> Backup & Restore</a>
+
+        <span class="sidebar-section-label">Links</span>
+        <a href="../index.html"><span class="nav-icon">🌐</span> Public Website</a>
+        <a href="https://www.facebook.com/CDRC1984"><span class="nav-icon">🌐</span> Facebook</a>
+
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user" onclick="window.location.href='profile.html'">
           <div class="user-avatar">JA</div>
-          <div><div class="user-name">Juan Admin</div><div class="user-role">Volunteer</div></div>
-        </div>
-        <button class="btn btn-outline" style="padding:7px 16px;font-size:13px;" onclick="window.location.href='login.html'">Sign Out</button>
-      </div>
-    </div>
-
-    <div class="dash-content">
-      <div class="page-header-row">
-        <div>
-          <h2>Reports & Analytics</h2>
-          <p style="font-size:13px;color:var(--gray-500);margin-top:4px;">Generate and review operational reports for CDRC relief activities</p>
-        </div>
-      </div>
-
-      <!-- Report type selector -->
-      <div class="report-types">
-        <div class="rtype-card selected" onclick="selectReport(this, 'distribution')">
-          <div class="rtype-icon">📋</div>
-          <h4>Distribution Report</h4>
-          <p>Summary of all relief items distributed to beneficiaries by date and center</p>
-        </div>
-        <div class="rtype-card" onclick="selectReport(this, 'beneficiary')">
-          <div class="rtype-icon">👥</div>
-          <h4>Beneficiary Report</h4>
-          <p>Registered beneficiaries, household data, and relief service status</p>
-        </div>
-        <div class="rtype-card" onclick="selectReport(this, 'inventory')">
-          <div class="rtype-icon">📦</div>
-          <h4>Inventory Report</h4>
-          <p>Stock levels, utilization rates, and transaction history for all relief goods</p>
-        </div>
-      </div>
-
-      <!-- Filter bar -->
-      <div class="filter-bar">
-        <label>Date Range</label>
-        <input type="date" value="2025-06-01">
-        <span class="filter-divider">to</span>
-        <input type="date" value="2025-06-15">
-        <label style="margin-left:8px;">Center</label>
-        <select>
-          <option>All Centers</option>
-          <option>Brgy. Masaya</option>
-          <option>Brgy. Maliwanag</option>
-          <option>Brgy. Pag-asa</option>
-          <option>Brgy. Maligaya</option>
-        </select>
-        <button class="btn btn-primary" style="padding:8px 20px;font-size:13px;margin-left:auto;">Generate Report</button>
-      </div>
-
-      <!-- Summary stats -->
-      <div class="stats-row">
-        <div class="stat-cell">
-          <div class="stat-num">892</div>
-          <div class="stat-lbl">Total Distributions</div>
-        </div>
-        <div class="stat-cell">
-          <div class="stat-num">1,248</div>
-          <div class="stat-lbl">Beneficiaries Covered</div>
-        </div>
-        <div class="stat-cell">
-          <div class="stat-num" style="color:var(--teal);">3,482</div>
-          <div class="stat-lbl">Relief Packs Distributed</div>
-        </div>
-        <div class="stat-cell">
-          <div class="stat-num" style="color:var(--orange);">356</div>
-          <div class="stat-lbl">Families Still Pending</div>
-        </div>
-      </div>
-
-      <!-- Charts + breakdown -->
-      <div class="report-layout">
-        <!-- Bar chart -->
-        <div class="report-card">
-          <div class="rc-header">
-            <h4>Distributions by Day — June 2025</h4>
-            <span class="badge badge-teal">Jun 1–15</span>
+          <div>
+            <div class="sidebar-user-name">Juan Admin</div>
+            <div class="sidebar-user-role">Volunteer</div>
           </div>
-          <div class="rc-body">
-            <div style="display:flex;gap:12px;margin-bottom:12px;">
-              <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-500);"><span style="width:10px;height:10px;border-radius:2px;background:var(--teal);display:inline-block;"></span>Distributions</span>
-              <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-500);"><span style="width:10px;height:10px;border-radius:2px;background:var(--navy-lt);display:inline-block;"></span>Beneficiaries</span>
-            </div>
-            <div class="bar-chart">
-              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:48px;"></div><div class="bc-bar bene" style="height:60px;"></div></div><span class="bc-label">Jun 1</span></div>
-              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:72px;"></div><div class="bc-bar bene" style="height:80px;"></div></div><span class="bc-label">Jun 2</span></div>
-              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:55px;"></div><div class="bc-bar bene" style="height:65px;"></div></div><span class="bc-label">Jun 3</span></div>
-              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:90px;"></div><div class="bc-bar bene" style="height:100px;"></div></div><span class="bc-label">Jun 4</span></div>
-              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:40px;"></div><div class="bc-bar bene" style="height:50px;"></div></div><span class="bc-label">Jun 5</span></div>
-              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:30px;"></div><div class="bc-bar bene" style="height:38px;"></div></div><span class="bc-label">Jun 6</span></div>
-              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:85px;"></div><div class="bc-bar bene" style="height:95px;"></div></div><span class="bc-label">Jun 7</span></div>
-              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:65px;"></div><div class="bc-bar bene" style="height:75px;"></div></div><span class="bc-label">Jun 8</span></div>
-              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:78px;"></div><div class="bc-bar bene" style="height:88px;"></div></div><span class="bc-label">Jun 9</span></div>
-              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:60px;"></div><div class="bc-bar bene" style="height:70px;"></div></div><span class="bc-label">Jun 10</span></div>
-              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:100px;"></div><div class="bc-bar bene" style="height:108px;"></div></div><span class="bc-label">Jun 11</span></div>
-              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:45px;"></div><div class="bc-bar bene" style="height:55px;"></div></div><span class="bc-label">Jun 12</span></div>
-              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:82px;"></div><div class="bc-bar bene" style="height:90px;"></div></div><span class="bc-label">Jun 13</span></div>
-              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:70px;"></div><div class="bc-bar bene" style="height:80px;"></div></div><span class="bc-label">Jun 14</span></div>
-              <div class="bc-group"><div class="bc-bars"><div class="bc-bar dist" style="height:88px;"></div><div class="bc-bar bene" style="height:95px;"></div></div><span class="bc-label">Jun 15</span></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="dash-main">
+      <div class="dash-topbar">
+        <div class="topbar-title">Reports</div>
+        <div class="topbar-right">
+          <div class="print-actions">
+            <button class="btn btn-outline" style="padding:7px 16px;font-size:13px;" onclick="window.print()">🖨
+              Print</button>
+            <button class="btn btn-teal" style="padding:7px 16px;font-size:13px;">⬇ Export PDF</button>
+          </div>
+          <button class="topbar-icon-btn">🔔<div class="notif-badge">3</div></button>
+          <div class="user-chip" onclick="window.location.href='profile.html'">
+            <div class="user-avatar">JA</div>
+            <div>
+              <div class="user-name">Juan Admin</div>
+              <div class="user-role">Volunteer</div>
             </div>
           </div>
+          <button class="btn btn-outline" style="padding:7px 16px;font-size:13px;" onclick="logout()">Sign Out</button>
+        </div>
+      </div>
+
+      <div class="dash-content">
+        <div class="page-header-row">
+          <div>
+            <h2>Reports & Analytics</h2>
+            <p style="font-size:13px;color:var(--gray-500);margin-top:4px;">Generate and review operational reports for
+              CDRC relief activities</p>
+          </div>
         </div>
 
-        <!-- Donut + breakdown -->
-        <div class="report-card">
-          <div class="rc-header">
-            <h4>Service Coverage</h4>
-            <span class="badge badge-gray">Overall</span>
+        <!-- Report type selector -->
+        <div class="report-types">
+          <div class="rtype-card selected" onclick="selectReport(this, 'distribution')">
+            <div class="rtype-icon">📋</div>
+            <h4>Distribution Report</h4>
+            <p>Summary of all relief items distributed to beneficiaries by date and center</p>
           </div>
-          <div class="rc-body">
-            <div class="donut-wrap" style="margin-bottom:24px;">
-              <div class="donut">
-                <div class="donut-inner">
-                  <div class="donut-pct">71%</div>
-                  <div class="donut-lbl">Served</div>
+          <div class="rtype-card" onclick="selectReport(this, 'beneficiary')">
+            <div class="rtype-icon">👥</div>
+            <h4>Beneficiary Report</h4>
+            <p>Registered beneficiaries, household data, and relief service status</p>
+          </div>
+          <div class="rtype-card" onclick="selectReport(this, 'inventory')">
+            <div class="rtype-icon">📦</div>
+            <h4>Inventory Report</h4>
+            <p>Stock levels, utilization rates, and transaction history for all relief goods</p>
+          </div>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="filter-bar">
+          <label>Date Range</label>
+          <input type="date" value="2025-06-01">
+          <span class="filter-divider">to</span>
+          <input type="date" value="2025-06-15">
+          <label style="margin-left:8px;">Center</label>
+          <select>
+            <option>All Centers</option>
+            <option>Brgy. Masaya</option>
+            <option>Brgy. Maliwanag</option>
+            <option>Brgy. Pag-asa</option>
+            <option>Brgy. Maligaya</option>
+          </select>
+          <button class="btn btn-primary" style="padding:8px 20px;font-size:13px;margin-left:auto;">Generate
+            Report</button>
+        </div>
+
+        <!-- Summary stats -->
+        <div class="stats-row">
+          <div class="stat-cell">
+            <div class="stat-num">892</div>
+            <div class="stat-lbl">Total Distributions</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-num">1,248</div>
+            <div class="stat-lbl">Beneficiaries Covered</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-num" style="color:var(--teal);">3,482</div>
+            <div class="stat-lbl">Relief Packs Distributed</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-num" style="color:var(--orange);">356</div>
+            <div class="stat-lbl">Families Still Pending</div>
+          </div>
+        </div>
+
+        <!-- Charts + breakdown -->
+        <div class="report-layout">
+          <!-- Bar chart -->
+          <div class="report-card">
+            <div class="rc-header">
+              <h4>Distributions by Day — June 2025</h4>
+              <span class="badge badge-teal">Jun 1–15</span>
+            </div>
+            <div class="rc-body">
+              <div style="display:flex;gap:12px;margin-bottom:12px;">
+                <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-500);"><span
+                    style="width:10px;height:10px;border-radius:2px;background:var(--teal);display:inline-block;"></span>Distributions</span>
+                <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-500);"><span
+                    style="width:10px;height:10px;border-radius:2px;background:var(--navy-lt);display:inline-block;"></span>Beneficiaries</span>
+              </div>
+              <div class="bar-chart">
+                <div class="bc-group">
+                  <div class="bc-bars">
+                    <div class="bc-bar dist" style="height:48px;"></div>
+                    <div class="bc-bar bene" style="height:60px;"></div>
+                  </div><span class="bc-label">Jun 1</span>
+                </div>
+                <div class="bc-group">
+                  <div class="bc-bars">
+                    <div class="bc-bar dist" style="height:72px;"></div>
+                    <div class="bc-bar bene" style="height:80px;"></div>
+                  </div><span class="bc-label">Jun 2</span>
+                </div>
+                <div class="bc-group">
+                  <div class="bc-bars">
+                    <div class="bc-bar dist" style="height:55px;"></div>
+                    <div class="bc-bar bene" style="height:65px;"></div>
+                  </div><span class="bc-label">Jun 3</span>
+                </div>
+                <div class="bc-group">
+                  <div class="bc-bars">
+                    <div class="bc-bar dist" style="height:90px;"></div>
+                    <div class="bc-bar bene" style="height:100px;"></div>
+                  </div><span class="bc-label">Jun 4</span>
+                </div>
+                <div class="bc-group">
+                  <div class="bc-bars">
+                    <div class="bc-bar dist" style="height:40px;"></div>
+                    <div class="bc-bar bene" style="height:50px;"></div>
+                  </div><span class="bc-label">Jun 5</span>
+                </div>
+                <div class="bc-group">
+                  <div class="bc-bars">
+                    <div class="bc-bar dist" style="height:30px;"></div>
+                    <div class="bc-bar bene" style="height:38px;"></div>
+                  </div><span class="bc-label">Jun 6</span>
+                </div>
+                <div class="bc-group">
+                  <div class="bc-bars">
+                    <div class="bc-bar dist" style="height:85px;"></div>
+                    <div class="bc-bar bene" style="height:95px;"></div>
+                  </div><span class="bc-label">Jun 7</span>
+                </div>
+                <div class="bc-group">
+                  <div class="bc-bars">
+                    <div class="bc-bar dist" style="height:65px;"></div>
+                    <div class="bc-bar bene" style="height:75px;"></div>
+                  </div><span class="bc-label">Jun 8</span>
+                </div>
+                <div class="bc-group">
+                  <div class="bc-bars">
+                    <div class="bc-bar dist" style="height:78px;"></div>
+                    <div class="bc-bar bene" style="height:88px;"></div>
+                  </div><span class="bc-label">Jun 9</span>
+                </div>
+                <div class="bc-group">
+                  <div class="bc-bars">
+                    <div class="bc-bar dist" style="height:60px;"></div>
+                    <div class="bc-bar bene" style="height:70px;"></div>
+                  </div><span class="bc-label">Jun 10</span>
+                </div>
+                <div class="bc-group">
+                  <div class="bc-bars">
+                    <div class="bc-bar dist" style="height:100px;"></div>
+                    <div class="bc-bar bene" style="height:108px;"></div>
+                  </div><span class="bc-label">Jun 11</span>
+                </div>
+                <div class="bc-group">
+                  <div class="bc-bars">
+                    <div class="bc-bar dist" style="height:45px;"></div>
+                    <div class="bc-bar bene" style="height:55px;"></div>
+                  </div><span class="bc-label">Jun 12</span>
+                </div>
+                <div class="bc-group">
+                  <div class="bc-bars">
+                    <div class="bc-bar dist" style="height:82px;"></div>
+                    <div class="bc-bar bene" style="height:90px;"></div>
+                  </div><span class="bc-label">Jun 13</span>
+                </div>
+                <div class="bc-group">
+                  <div class="bc-bars">
+                    <div class="bc-bar dist" style="height:70px;"></div>
+                    <div class="bc-bar bene" style="height:80px;"></div>
+                  </div><span class="bc-label">Jun 14</span>
+                </div>
+                <div class="bc-group">
+                  <div class="bc-bars">
+                    <div class="bc-bar dist" style="height:88px;"></div>
+                    <div class="bc-bar bene" style="height:95px;"></div>
+                  </div><span class="bc-label">Jun 15</span>
                 </div>
               </div>
-              <div class="donut-legend">
-                <div class="dl-item"><div class="dl-dot" style="background:var(--teal);"></div><div><div style="font-weight:600;font-size:13px;">892 Served</div><div style="font-size:11px;color:var(--gray-500);">71% of total</div></div></div>
-                <div class="dl-item"><div class="dl-dot" style="background:var(--orange);"></div><div><div style="font-weight:600;font-size:13px;">356 Pending</div><div style="font-size:11px;color:var(--gray-500);">29% of total</div></div></div>
-              </div>
             </div>
-            <h5 style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--gray-500);margin-bottom:12px;">By Center</h5>
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <div>
-                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span>Brgy. Masaya</span><span style="font-weight:600;">312 / 420</span></div>
-                <div style="height:7px;background:var(--gray-100);border-radius:100px;"><div style="height:100%;width:74%;background:var(--teal);border-radius:100px;"></div></div>
+          </div>
+
+          <!-- Donut + breakdown -->
+          <div class="report-card">
+            <div class="rc-header">
+              <h4>Service Coverage</h4>
+              <span class="badge badge-gray">Overall</span>
+            </div>
+            <div class="rc-body">
+              <div class="donut-wrap" style="margin-bottom:24px;">
+                <div class="donut">
+                  <div class="donut-inner">
+                    <div class="donut-pct">71%</div>
+                    <div class="donut-lbl">Served</div>
+                  </div>
+                </div>
+                <div class="donut-legend">
+                  <div class="dl-item">
+                    <div class="dl-dot" style="background:var(--teal);"></div>
+                    <div>
+                      <div style="font-weight:600;font-size:13px;">892 Served</div>
+                      <div style="font-size:11px;color:var(--gray-500);">71% of total</div>
+                    </div>
+                  </div>
+                  <div class="dl-item">
+                    <div class="dl-dot" style="background:var(--orange);"></div>
+                    <div>
+                      <div style="font-weight:600;font-size:13px;">356 Pending</div>
+                      <div style="font-size:11px;color:var(--gray-500);">29% of total</div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div>
-                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span>Brgy. Maliwanag</span><span style="font-weight:600;">218 / 310</span></div>
-                <div style="height:7px;background:var(--gray-100);border-radius:100px;"><div style="height:100%;width:70%;background:var(--teal);border-radius:100px;"></div></div>
-              </div>
-              <div>
-                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span>Brgy. Pag-asa</span><span style="font-weight:600;">198 / 280</span></div>
-                <div style="height:7px;background:var(--gray-100);border-radius:100px;"><div style="height:100%;width:71%;background:var(--teal);border-radius:100px;"></div></div>
-              </div>
-              <div>
-                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span>Brgy. Maligaya</span><span style="font-weight:600;">164 / 238</span></div>
-                <div style="height:7px;background:var(--gray-100);border-radius:100px;"><div style="height:100%;width:69%;background:var(--orange);border-radius:100px;"></div></div>
+              <h5
+                style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--gray-500);margin-bottom:12px;">
+                By Center</h5>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span>Brgy.
+                      Masaya</span><span style="font-weight:600;">312 / 420</span></div>
+                  <div style="height:7px;background:var(--gray-100);border-radius:100px;">
+                    <div style="height:100%;width:74%;background:var(--teal);border-radius:100px;"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span>Brgy.
+                      Maliwanag</span><span style="font-weight:600;">218 / 310</span></div>
+                  <div style="height:7px;background:var(--gray-100);border-radius:100px;">
+                    <div style="height:100%;width:70%;background:var(--teal);border-radius:100px;"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span>Brgy.
+                      Pag-asa</span><span style="font-weight:600;">198 / 280</span></div>
+                  <div style="height:7px;background:var(--gray-100);border-radius:100px;">
+                    <div style="height:100%;width:71%;background:var(--teal);border-radius:100px;"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span>Brgy.
+                      Maligaya</span><span style="font-weight:600;">164 / 238</span></div>
+                  <div style="height:7px;background:var(--gray-100);border-radius:100px;">
+                    <div style="height:100%;width:69%;background:var(--orange);border-radius:100px;"></div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Detailed table -->
-      <div class="report-card" style="margin-bottom:0;">
-        <div class="rc-header">
-          <h4>Distribution Detail — June 1–15, 2025</h4>
-          <button class="btn btn-outline" style="padding:6px 14px;font-size:12px;">⬇ Export CSV</button>
-        </div>
-        <div style="overflow-x:auto;">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Center</th>
-                <th>Families Served</th>
-                <th>Rice Sacks</th>
-                <th>Canned Goods</th>
-                <th>Water (L)</th>
-                <th>Hygiene Kits</th>
-                <th>Staff In-Charge</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>Jun 15</td><td>Brgy. Masaya</td><td>89</td><td>89</td><td>178</td><td>445</td><td>44</td><td>Ana Reyes</td><td><span class="badge badge-green">Completed</span></td></tr>
-              <tr><td>Jun 14</td><td>Brgy. Maliwanag</td><td>74</td><td>74</td><td>148</td><td>370</td><td>37</td><td>Ben Lim</td><td><span class="badge badge-green">Completed</span></td></tr>
-              <tr><td>Jun 14</td><td>Brgy. Pag-asa</td><td>58</td><td>58</td><td>116</td><td>290</td><td>29</td><td>Francis Go</td><td><span class="badge badge-green">Completed</span></td></tr>
-              <tr><td>Jun 13</td><td>Brgy. Maligaya</td><td>82</td><td>82</td><td>164</td><td>410</td><td>41</td><td>Ana Reyes</td><td><span class="badge badge-green">Completed</span></td></tr>
-              <tr><td>Jun 12</td><td>Brgy. Masaya</td><td>45</td><td>45</td><td>90</td><td>225</td><td>22</td><td>Ben Lim</td><td><span class="badge badge-green">Completed</span></td></tr>
-              <tr><td>Jun 11</td><td>Brgy. Maliwanag</td><td>100</td><td>100</td><td>200</td><td>0</td><td>50</td><td>Francis Go</td><td><span class="badge badge-orange">Partial</span></td></tr>
-              <tr><td>Jun 10</td><td>Brgy. Pag-asa</td><td>60</td><td>60</td><td>120</td><td>300</td><td>30</td><td>Ana Reyes</td><td><span class="badge badge-green">Completed</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div style="padding:14px 22px;border-top:1px solid var(--gray-100);display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-size:13px;color:var(--gray-500);">Showing 7 of 15 entries for Jun 1–15, 2025</span>
-          <div style="display:flex;gap:8px;">
-            <button style="padding:6px 12px;border:1.5px solid var(--gray-100);border-radius:6px;font-size:13px;cursor:pointer;background:white;font-family:'Inter',sans-serif;">← Prev</button>
-            <button style="padding:6px 12px;border:1.5px solid var(--teal);border-radius:6px;font-size:13px;cursor:pointer;background:var(--teal);color:white;font-family:'Inter',sans-serif;">1</button>
-            <button style="padding:6px 12px;border:1.5px solid var(--gray-100);border-radius:6px;font-size:13px;cursor:pointer;background:white;font-family:'Inter',sans-serif;">2</button>
-            <button style="padding:6px 12px;border:1.5px solid var(--gray-100);border-radius:6px;font-size:13px;cursor:pointer;background:white;font-family:'Inter',sans-serif;">Next →</button>
+        <!-- Detailed table -->
+        <div class="report-card" style="margin-bottom:0;">
+          <div class="rc-header">
+            <h4>Distribution Detail — June 1–15, 2025</h4>
+            <button class="btn btn-outline" style="padding:6px 14px;font-size:12px;">⬇ Export CSV</button>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Center</th>
+                  <th>Families Served</th>
+                  <th>Rice Sacks</th>
+                  <th>Canned Goods</th>
+                  <th>Water (L)</th>
+                  <th>Hygiene Kits</th>
+                  <th>Staff In-Charge</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Jun 15</td>
+                  <td>Brgy. Masaya</td>
+                  <td>89</td>
+                  <td>89</td>
+                  <td>178</td>
+                  <td>445</td>
+                  <td>44</td>
+                  <td>Ana Reyes</td>
+                  <td><span class="badge badge-green">Completed</span></td>
+                </tr>
+                <tr>
+                  <td>Jun 14</td>
+                  <td>Brgy. Maliwanag</td>
+                  <td>74</td>
+                  <td>74</td>
+                  <td>148</td>
+                  <td>370</td>
+                  <td>37</td>
+                  <td>Ben Lim</td>
+                  <td><span class="badge badge-green">Completed</span></td>
+                </tr>
+                <tr>
+                  <td>Jun 14</td>
+                  <td>Brgy. Pag-asa</td>
+                  <td>58</td>
+                  <td>58</td>
+                  <td>116</td>
+                  <td>290</td>
+                  <td>29</td>
+                  <td>Francis Go</td>
+                  <td><span class="badge badge-green">Completed</span></td>
+                </tr>
+                <tr>
+                  <td>Jun 13</td>
+                  <td>Brgy. Maligaya</td>
+                  <td>82</td>
+                  <td>82</td>
+                  <td>164</td>
+                  <td>410</td>
+                  <td>41</td>
+                  <td>Ana Reyes</td>
+                  <td><span class="badge badge-green">Completed</span></td>
+                </tr>
+                <tr>
+                  <td>Jun 12</td>
+                  <td>Brgy. Masaya</td>
+                  <td>45</td>
+                  <td>45</td>
+                  <td>90</td>
+                  <td>225</td>
+                  <td>22</td>
+                  <td>Ben Lim</td>
+                  <td><span class="badge badge-green">Completed</span></td>
+                </tr>
+                <tr>
+                  <td>Jun 11</td>
+                  <td>Brgy. Maliwanag</td>
+                  <td>100</td>
+                  <td>100</td>
+                  <td>200</td>
+                  <td>0</td>
+                  <td>50</td>
+                  <td>Francis Go</td>
+                  <td><span class="badge badge-orange">Partial</span></td>
+                </tr>
+                <tr>
+                  <td>Jun 10</td>
+                  <td>Brgy. Pag-asa</td>
+                  <td>60</td>
+                  <td>60</td>
+                  <td>120</td>
+                  <td>300</td>
+                  <td>30</td>
+                  <td>Ana Reyes</td>
+                  <td><span class="badge badge-green">Completed</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div
+            style="padding:14px 22px;border-top:1px solid var(--gray-100);display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:13px;color:var(--gray-500);">Showing 7 of 15 entries for Jun 1–15, 2025</span>
+            <div style="display:flex;gap:8px;">
+              <button
+                style="padding:6px 12px;border:1.5px solid var(--gray-100);border-radius:6px;font-size:13px;cursor:pointer;background:white;font-family:'Inter',sans-serif;">←
+                Prev</button>
+              <button
+                style="padding:6px 12px;border:1.5px solid var(--teal);border-radius:6px;font-size:13px;cursor:pointer;background:var(--teal);color:white;font-family:'Inter',sans-serif;">1</button>
+              <button
+                style="padding:6px 12px;border:1.5px solid var(--gray-100);border-radius:6px;font-size:13px;cursor:pointer;background:white;font-family:'Inter',sans-serif;">2</button>
+              <button
+                style="padding:6px 12px;border:1.5px solid var(--gray-100);border-radius:6px;font-size:13px;cursor:pointer;background:white;font-family:'Inter',sans-serif;">Next
+                →</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<script src="../js/main.js"></script>
-<script>
-  function selectReport(card, type) {
-    document.querySelectorAll('.rtype-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-  }
-</script>
+  <script src="../js/main.js"></script>
+  <script>
+    function selectReport(card, type) {
+      document.querySelectorAll('.rtype-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+    }
+  </script>
 </body>
+
 </html>

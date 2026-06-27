@@ -62,7 +62,7 @@ INSERT INTO users (role_id, first_name, last_name, middle_init, username, email,
   (1, 'Alfred',    'Rasco',      'A', 'alfred.rasco',    'alfred.rasco@cdrc.org.ph',    '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uFutB/ZW2', '+63 917 123 4567', 'Operations'),
   (2, 'Ben',     'Sevilla',        'A', 'ben.sevilla',       'ben.sevilla@cdrc.org.ph',       '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uFutB/ZW2', '+63 919 345 6789', 'Logistics'),
   (3, 'Francis', 'Flores',         'G', 'francis.flores',    'francis.flores@cdrc.org.ph',    '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uFutB/ZW2', '+63 920 456 7890', 'Field Operations'),
-  (3, 'Carolyne','Vicencio',       'A', 'carolyne.vicencio', 'carolyne.vicencio@cdrc.org.ph', 'user', '+63 921 567 8901', 'Volunteers');
+  (4, 'Carolyne','Vicencio',       'A', 'carolyne.vicencio', 'carolyne.vicencio@cdrc.org.ph', 'user', '+63 921 567 8901', 'Volunteers');
 
 
 -- ============================================================

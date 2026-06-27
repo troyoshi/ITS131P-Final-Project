@@ -132,6 +132,24 @@
     }
   };
 
+  const API_ROOT = '../api';
+
+  async function apiFetch(endpoint, options = {}) {
+    const url = endpoint.startsWith('http') || endpoint.startsWith('/')
+      ? endpoint
+      : `${API_ROOT}/${endpoint.replace(/^\/+/, '')}`;
+
+    const mergedOptions = {
+      credentials: 'same-origin',
+      ...options,
+      headers: {
+        ...(options.headers || {}),
+      },
+    };
+
+    return fetch(url, mergedOptions);
+  }
+
   function byId(id) {
     return document.getElementById(id);
   }
@@ -194,10 +212,9 @@
       }
 
       try {
-        const response = await fetch('../api/auth.php?action=login', {
+        const response = await apiFetch('auth.php?action=login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'same-origin',
           body: JSON.stringify({ username, password, role })
         });
         const data = await response.json().catch(() => ({}));
@@ -456,6 +473,16 @@
     window.saveChanges = saveChanges;
     window.saveDistribution = saveDistribution;
     window.openEditFromTable = openEditFromTable;
+    window.logout = logout;
+    window.apiFetch = apiFetch;
+  }
+
+  function logout() {
+    apiFetch('auth.php?action=logout', { method: 'POST' })
+      .catch(() => { })
+      .finally(() => {
+        window.location.href = 'login.html';
+      });
   }
 
   function setupAuthGuard() {
@@ -464,7 +491,7 @@
 
     if (!protectedPages.includes(currentPage)) return;
 
-    fetch('../api/auth.php?action=me', { credentials: 'same-origin' })
+    apiFetch('auth.php?action=me')
       .then(async (response) => {
         const data = await response.json().catch(() => ({}));
         if (!response.ok || !data.success) {

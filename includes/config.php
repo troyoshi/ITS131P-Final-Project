@@ -5,8 +5,8 @@
 //  Adjust DB_HOST, DB_NAME, DB_USER, DB_PASS for your server
 // ============================================================
 
-define('DB_HOST', '127.0.0.1');
-define('DB_PORT', '3307');
+define('DB_HOST', 'localhost');
+define('DB_PORT', '3306');
 define('DB_NAME', 'cdrc_relief_tracker');
 define('DB_USER', 'root');
 define('DB_PASS', '');          // default XAMPP password is empty
