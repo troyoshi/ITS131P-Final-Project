@@ -1,10 +1,9 @@
-# CDRC Relief Tracker — Front-End Prototype
+# CDRC Relief Tracker
 
 **Project Title:** Implementing a Web-Based Disaster Relief Distribution Tracking System for Citizens' Disaster Response Center (CDRC)
 
 **Course:** ITS131P — Information Management  
 **Group:** Group 9  
-**Activity:** Front-End Prototype (Pre-Final Activity)
 
 ---
 
@@ -69,34 +68,3 @@ cdrc-system/
     ├── reports.html
     └── profile.html
 ```
-
----
-
-## Technical Notes
-
-- **HTML5, CSS3, Vanilla JavaScript** — no frameworks required
-- **Responsive** — adapts for desktop, tablet, and mobile
-- **Google Fonts** used: Outfit (headings) + Inter (body)
-- All navigation links are functional between pages
-- Interactive elements: modal forms, tab switching, live search/filter, counter animations, login redirect
-- Design system uses CSS custom properties (variables) for consistent theming
-
-## Color Scheme
-
-| Token | Color | Use |
-|-------|-------|-----|
-| `--navy` | `#0D2240` | Primary background, sidebar |
-| `--orange` | `#E84B1A` | Alerts, CTAs, accent |
-| `--teal` | `#009D8A` | Success, active states, secondary |
-
----
-
-## How to Run
-
-1. Extract the `.zip` file to a folder
-2. Open `index.html` in any modern browser (Chrome, Firefox, Edge)
-3. Use the navigation to explore all pages
-4. Click **System Login** to access mock system pages
-5. Demo credentials shown on the login page
-
-> No server setup required — all pages are static HTML files.
