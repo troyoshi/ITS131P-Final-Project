@@ -28,17 +28,12 @@ The system addresses CDRC's challenge of operating without a centralized digital
 
 ## Pages Included
 
-### Public Website
 | File | Description |
 |------|-------------|
 | `index.html` | Homepage / Landing Page |
 | `pages/about.html` | About CDRC & the system |
 | `pages/features.html` | System features and scope |
 | `pages/contact.html` | Contact info and form |
-
-### System Mock-Up Pages
-| File | Description |
-|------|-------------|
 | `pages/login.html` | Login page with role selector |
 | `pages/dashboard.html` | Main admin dashboard with KPIs |
 | `pages/records.html` | Beneficiary Records Management |
