@@ -1,3 +1,653 @@
-<!-- tangina alfred kaya m na to tinatamad na ko HAHAHHAHA  -->
-<p>ayoko na</p>
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backup & Restore — CDRC Relief Tracker</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+  <div style="display:flex; min-height:100vh;">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <a href="../index.html" class="logo">
+          <div class="logo-icon"><svg viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z" />
+            </svg></div>
+          <div class="logo-text"><strong>Relief Tracker</strong><span>CDRC</span></div>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <span class="sidebar-section-label">Main</span>
+        <a href="dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
+        <a href="records.html"><span class="nav-icon">👥</span> Beneficiaries</a>
+        <a href="inventory.html"><span class="nav-icon">📦</span> Inventory</a>
+        <a href="evac-centers.html"><span class="nav-icon">🏕️</span> Evac Centers</a>
+
+        <span class="sidebar-section-label">Reporting</span>
+        <a href="reports.html"><span class="nav-icon">📊</span> Reports</a>
+
+        <span class="sidebar-section-label">Administration</span>
+        <a href="profile.html"><span class="nav-icon">⚙️</span> Profile Settings</a>
+        <a href="backup-restore.html" class="active"><span class="nav-icon">💾</span> Backup & Restore</a>
+
+        <span class="sidebar-section-label">Links</span>
+        <a href="../index.html"><span class="nav-icon">🌐</span> Public Website</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user" onclick="window.location.href='profile.html'">
+          <div class="user-avatar" id="sidebarAvatar">--</div>
+          <div>
+            <div class="sidebar-user-name" id="sidebarUserName">Loading...</div>
+            <div class="sidebar-user-role" id="sidebarUserRole">...</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="dash-main">
+      <div class="dash-topbar">
+        <div class="topbar-title">Backup & Restore</div>
+        <div class="topbar-right">
+          <div class="user-chip" onclick="window.location.href='profile.html'">
+            <div class="user-avatar" id="topbarAvatar">--</div>
+            <div>
+              <div class="user-name" id="topbarUserName">Loading...</div>
+              <div class="user-role" id="topbarUserRole">--</div>
+            </div>
+          </div>
+          <button class="btn btn-outline" style="padding:7px 16px;font-size:13px;" onclick="logout()">Sign Out</button>
+        </div>
+      </div>
+
+      <div class="dash-content">
+        <div class="page-header-row">
+          <div>
+            <h2>Backup & Restore</h2>
+            <p style="font-size:13px;color:var(--gray-500);margin-top:4px;">Backup your data and restore from previous backups</p>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;">
+          <!-- BACKUP SECTION -->
+          <div class="backup-card">
+            <div class="backup-card-header">
+              <h3>💾 Backup Data</h3>
+              <p style="font-size:12px;color:var(--gray-500);margin-top:4px;">Export your relief tracker data to a file</p>
+            </div>
+
+            <div class="backup-card-body">
+              <div class="backup-option">
+                <div class="option-icon">📊</div>
+                <div class="option-info">
+                  <h4>CSV Export</h4>
+                  <p>Export individual tables as CSV files. Easy to open in Excel or spreadsheets.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openCsvExportModal()">Export as CSV</button>
+              </div>
+
+              <div class="divider" style="margin:16px 0;"></div>
+
+              <div class="backup-option">
+                <div class="option-icon">🗄️</div>
+                <div class="option-info">
+                  <h4>Full SQL Backup</h4>
+                  <p>Complete database backup including all tables and data. Best for full restoration.</p>
+                </div>
+                <button class="btn btn-primary" onclick="exportFullDatabase()">Export as SQL</button>
+              </div>
+
+              <div style="margin-top:16px;padding:12px;background:rgba(0,157,138,0.1);border-radius:8px;border-left:4px solid var(--teal);">
+                <div style="font-size:12px;color:var(--gray-700);">
+                  <strong>💡 Tip:</strong> Regular backups are recommended. Keep backups in a safe location.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RESTORE SECTION -->
+          <div class="backup-card">
+            <div class="backup-card-header">
+              <h3>🔄 Restore Data</h3>
+              <p style="font-size:12px;color:var(--gray-500);margin-top:4px;">Import data from a previous backup</p>
+            </div>
+
+            <div class="backup-card-body">
+              <div class="backup-option">
+                <div class="option-icon">📥</div>
+                <div class="option-info">
+                  <h4>CSV Import</h4>
+                  <p>Import data from CSV files. Select which table to import to.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openCsvImportModal()">Import from CSV</button>
+              </div>
+
+              <div class="divider" style="margin:16px 0;"></div>
+
+              <div class="backup-option">
+                <div class="option-icon">📂</div>
+                <div class="option-info">
+                  <h4>SQL Restore</h4>
+                  <p>Restore from a complete SQL backup file. This will replace all data.</p>
+                </div>
+                <button class="btn btn-danger" onclick="openSqlRestoreModal()">Restore from SQL</button>
+              </div>
+
+              <div style="margin-top:16px;padding:12px;background:rgba(232,75,26,0.1);border-radius:8px;border-left:4px solid var(--orange);">
+                <div style="font-size:12px;color:var(--gray-700);">
+                  <strong>⚠️ Warning:</strong> Restoring will replace existing data. Make a backup first!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BACKUP HISTORY -->
+        <div class="backup-card">
+          <div class="backup-card-header">
+            <h3>📋 Backup History</h3>
+          </div>
+
+          <div class="backup-card-body" style="padding:0;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>File Name</th>
+                  <th>Type</th>
+                  <th>Size</th>
+                  <th>Created</th>
+                  <th>By</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="backupHistoryBody">
+                <tr>
+                  <td colspan="6" style="text-align:center;color:var(--gray-500);">Loading backup history...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CSV EXPORT MODAL ============ -->
+  <div class="modal-overlay" id="csvExportModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Export as CSV</h3>
+        <button class="modal-close" onclick="closeCsvExportModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="font-size:13px;color:var(--gray-600);margin-bottom:16px;">
+          Select which table to export as CSV:
+        </p>
+
+        <div class="form-group">
+          <label>Select Table</label>
+          <select id="csvTableSelect">
+            <option value="">-- Choose a table --</option>
+            <option value="beneficiaries">Beneficiaries</option>
+            <option value="evacuation_centers">Evacuation Centers</option>
+            <option value="relief_items">Relief Items</option>
+            <option value="inventory_transactions">Inventory Transactions</option>
+            <option value="distribution_records">Distribution Records</option>
+            <option value="users">Users</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="csvIncludeHeaders" checked> Include headers in CSV
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeCsvExportModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="exportTableAsCSV()">Export CSV</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CSV IMPORT MODAL ============ -->
+  <div class="modal-overlay" id="csvImportModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Import from CSV</h3>
+        <button class="modal-close" onclick="closeCsvImportModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="font-size:13px;color:var(--gray-600);margin-bottom:16px;">
+          Upload a CSV file to import data:
+        </p>
+
+        <div class="form-group">
+          <label>Select Table to Import To</label>
+          <select id="csvImportTableSelect">
+            <option value="">-- Choose a table --</option>
+            <option value="beneficiaries">Beneficiaries</option>
+            <option value="evacuation_centers">Evacuation Centers</option>
+            <option value="relief_items">Relief Items</option>
+            <option value="inventory_transactions">Inventory Transactions</option>
+            <option value="distribution_records">Distribution Records</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>CSV File</label>
+          <input type="file" id="csvImportFile" accept=".csv" placeholder="Select CSV file">
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="csvImportHasHeaders" checked> First row contains headers
+          </label>
+        </div>
+
+        <div style="padding:12px;background:rgba(232,75,26,0.1);border-radius:8px;border-left:4px solid var(--orange);font-size:12px;color:var(--gray-700);">
+          <strong>⚠️ Note:</strong> Ensure CSV columns match the table structure exactly.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeCsvImportModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="importFromCSV()">Import CSV</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SQL RESTORE MODAL ============ -->
+  <div class="modal-overlay" id="sqlRestoreModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Restore from SQL</h3>
+        <button class="modal-close" onclick="closeSqlRestoreModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div style="padding:12px;background:rgba(232,75,26,0.1);border-radius:8px;border-left:4px solid var(--orange);margin-bottom:16px;">
+          <strong>⚠️ WARNING:</strong> This will replace ALL data in the database!
+          <div style="font-size:12px;margin-top:8px;">Make sure you have a backup before proceeding.</div>
+        </div>
+
+        <div class="form-group">
+          <label>SQL Backup File</label>
+          <input type="file" id="sqlRestoreFile" accept=".sql" placeholder="Select SQL file">
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="sqlRestoreConfirm"> I understand this will replace all data
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeSqlRestoreModal()">Cancel</button>
+        <button class="btn btn-danger" onclick="restoreFromSQL()" id="sqlRestoreBtn" disabled>Restore Database</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/api.js"></script>
+  <script>
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function getInitials(name) {
+      if (!name) return '--';
+      return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    }
+
+    async function apiFetch(endpoint, options = {}) {
+      const url = `../api/${endpoint}`;
+      const response = await fetch(url, {
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', ...options.headers },
+        ...options
+      });
+      return response.json();
+    }
+
+    async function loadUserInfo() {
+      try {
+        const data = await apiFetch('auth.php?action=me');
+        if (data.success && data.user) {
+          const initials = getInitials(data.user.name);
+          setText('sidebarAvatar', initials);
+          setText('topbarAvatar', initials);
+          setText('sidebarUserName', data.user.name);
+          setText('topbarUserName', data.user.name);
+          setText('sidebarUserRole', data.user.role);
+          setText('topbarUserRole', data.user.role);
+        }
+      } catch (e) {
+        console.error('Failed to load user info:', e);
+      }
+    }
+
+    async function loadBackupHistory() {
+      try {
+        const data = await apiFetch('backup.php?action=history');
+        if (data.success && data.data) {
+          renderBackupHistory(data.data);
+        }
+      } catch (e) {
+        console.error('Failed to load backup history:', e);
+      }
+    }
+
+    function renderBackupHistory(backups) {
+      const tbody = document.getElementById('backupHistoryBody');
+      
+      if (!backups.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gray-500);">No backups yet.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = backups.map(backup => `
+        <tr>
+          <td>${backup.filename}</td>
+          <td><span class="badge ${backup.type === 'sql' ? 'badge-navy' : 'badge-teal'}">${backup.type.toUpperCase()}</span></td>
+          <td>${formatBytes(backup.size)}</td>
+          <td>${backup.created_at}</td>
+          <td>${backup.created_by}</td>
+          <td>
+            <button class="btn btn-sm btn-primary" onclick="downloadBackup('${backup.filename}')">📥 Download</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteBackup('${backup.filename}')">🗑 Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function formatBytes(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    }
+
+    // ============================================================
+    // CSV EXPORT
+    // ============================================================
+    function openCsvExportModal() {
+      document.getElementById('csvExportModal').classList.add('active');
+    }
+
+    function closeCsvExportModal() {
+      document.getElementById('csvExportModal').classList.remove('active');
+    }
+
+    async function exportTableAsCSV() {
+      const table = document.getElementById('csvTableSelect').value;
+      const includeHeaders = document.getElementById('csvIncludeHeaders').checked;
+
+      if (!table) {
+        alert('Please select a table to export');
+        return;
+      }
+
+      try {
+        const data = await apiFetch(`backup.php?action=export_csv&table=${table}&headers=${includeHeaders ? 1 : 0}`);
+        
+        if (data.success) {
+          const csv = data.data;
+          downloadFile(csv, `${table}_${new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
+          closeCsvExportModal();
+          alert('✅ CSV exported successfully');
+          loadBackupHistory();
+        } else {
+          alert('❌ Error: ' + data.message);
+        }
+      } catch (e) {
+        alert('❌ Error exporting CSV: ' + e.message);
+      }
+    }
+
+    // ============================================================
+    // CSV IMPORT
+    // ============================================================
+    function openCsvImportModal() {
+      document.getElementById('csvImportModal').classList.add('active');
+    }
+
+    function closeCsvImportModal() {
+      document.getElementById('csvImportModal').classList.remove('active');
+    }
+
+    async function importFromCSV() {
+      const table = document.getElementById('csvImportTableSelect').value;
+      const fileInput = document.getElementById('csvImportFile');
+      const hasHeaders = document.getElementById('csvImportHasHeaders').checked;
+
+      if (!table) {
+        alert('Please select a table');
+        return;
+      }
+
+      if (!fileInput.files.length) {
+        alert('Please select a CSV file');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = async (e) => {
+        try {
+          const csv = e.target.result;
+          const data = await apiFetch('backup.php?action=import_csv', {
+            method: 'POST',
+            body: JSON.stringify({
+              table: table,
+              csv: csv,
+              has_headers: hasHeaders
+            })
+          });
+
+          if (data.success) {
+            alert('✅ ' + data.message);
+            closeCsvImportModal();
+            loadBackupHistory();
+          } else {
+            alert('❌ Error: ' + data.message);
+          }
+        } catch (e) {
+          alert('❌ Error importing CSV: ' + e.message);
+        }
+      };
+
+      reader.readAsText(file);
+    }
+
+    // ============================================================
+    // SQL EXPORT
+    // ============================================================
+    async function exportFullDatabase() {
+      try {
+        const response = await fetch('../api/backup.php?action=export_sql', {
+          credentials: 'same-origin'
+        });
+
+        if (!response.ok) throw new Error('Export failed');
+
+        const blob = await response.blob();
+        const filename = `cdrc_backup_${new Date().toISOString().split('T')[0]}.sql`;
+        
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        alert('✅ Database backup exported successfully');
+        loadBackupHistory();
+      } catch (e) {
+        alert('❌ Error exporting database: ' + e.message);
+      }
+    }
+
+    // ============================================================
+    // SQL RESTORE
+    // ============================================================
+    function openSqlRestoreModal() {
+      document.getElementById('sqlRestoreModal').classList.add('active');
+    }
+
+    function closeSqlRestoreModal() {
+      document.getElementById('sqlRestoreModal').classList.remove('active');
+    }
+
+    // Enable/disable restore button based on checkbox
+    document.addEventListener('DOMContentLoaded', () => {
+      const checkbox = document.getElementById('sqlRestoreConfirm');
+      const btn = document.getElementById('sqlRestoreBtn');
+      
+      if (checkbox) {
+        checkbox.addEventListener('change', () => {
+          btn.disabled = !checkbox.checked;
+        });
+      }
+    });
+
+    async function restoreFromSQL() {
+      const fileInput = document.getElementById('sqlRestoreFile');
+      const confirm = document.getElementById('sqlRestoreConfirm').checked;
+
+      if (!confirm) {
+        alert('Please confirm before restoring');
+        return;
+      }
+
+      if (!fileInput.files.length) {
+        alert('Please select a SQL file');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = async (e) => {
+        try {
+          const sql = e.target.result;
+          const data = await apiFetch('backup.php?action=restore_sql', {
+            method: 'POST',
+            body: JSON.stringify({ sql: sql })
+          });
+
+          if (data.success) {
+            alert('✅ Database restored successfully');
+            closeSqlRestoreModal();
+            loadBackupHistory();
+          } else {
+            alert('❌ Error: ' + data.message);
+          }
+        } catch (e) {
+          alert('❌ Error restoring database: ' + e.message);
+        }
+      };
+
+      reader.readAsText(file);
+    }
+
+    // ============================================================
+    // DOWNLOAD/DELETE BACKUPS
+    // ============================================================
+    async function downloadBackup(filename) {
+      try {
+        const response = await fetch(`../api/backup.php?action=download&file=${encodeURIComponent(filename)}`, {
+          credentials: 'same-origin'
+        });
+
+        if (!response.ok) throw new Error('Download failed');
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } catch (e) {
+        alert('❌ Error downloading backup: ' + e.message);
+      }
+    }
+
+    async function deleteBackup(filename) {
+      if (!confirm('Delete this backup? This cannot be undone.')) return;
+
+      try {
+        const data = await apiFetch('backup.php?action=delete&file=' + encodeURIComponent(filename), {
+          method: 'POST'
+        });
+
+        if (data.success) {
+          alert('✅ Backup deleted');
+          loadBackupHistory();
+        } else {
+          alert('❌ Error: ' + data.message);
+        }
+      } catch (e) {
+        alert('❌ Error: ' + e.message);
+      }
+    }
+
+    // ============================================================
+    // UTILITY
+    // ============================================================
+    function downloadFile(content, filename, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }
+
+    // ============================================================
+    // LOGOUT
+    // ============================================================
+    async function logout() {
+      if (confirm('Sign out?')) {
+        try {
+          await apiFetch('auth.php?action=logout', { method: 'POST' });
+        } catch { }
+        window.location.href = 'login.html';
+      }
+    }
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    async function init() {
+      await loadUserInfo();
+      await loadBackupHistory();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+
+</body>
+
+</html>

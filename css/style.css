@@ -3662,6 +3662,72 @@
           }
         }
 
-          
        @media(max-width:1024px) { .report-types { grid-template-columns: repeat(2, 1fr); } .report-layout { grid-template-columns: 1fr; } }
        @media(max-width:768px) { .dash-main { margin-left: 0; } .report-types { grid-template-columns: 1fr 1fr; } .stats-row { grid-template-columns: 1fr 1fr; } }
+
+       /* Backup & Restore */
+.backup-card {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid var(--gray-200);
+  overflow: hidden;
+}
+
+.backup-card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--gray-200);
+  background: var(--gray-50);
+}
+
+.backup-card-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--navy);
+}
+
+.backup-card-body {
+  padding: 20px;
+}
+
+.backup-option {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.option-icon {
+  font-size: 32px;
+  min-width: 50px;
+  text-align: center;
+}
+
+.option-info {
+  flex: 1;
+}
+
+.option-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: var(--navy);
+}
+
+.option-info p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--gray-500);
+}
+
+.divider {
+  border-top: 1px solid var(--gray-200);
+}
+
+.btn-danger {
+  background: var(--orange);
+  color: white;
+  border: 1px solid var(--orange);
+}
+
+.btn-danger:hover {
+  background: #d95e1a;
+  border-color: #d95e1a;
+}
