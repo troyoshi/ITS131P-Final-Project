@@ -4,20 +4,24 @@ session_start();
 header('Content-Type: application/json');
 require_once __DIR__ . '/../includes/config.php';
 requireLogin();
-
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? '';
 $id     = isset($_GET['id']) ? (int)$_GET['id'] : null;
-
 match(true) {
-    $method === 'GET'  && $action === 'list'    => listBeneficiaries(),
-    $method === 'GET'  && $action === 'get'     => getBeneficiary($id),
-    $method === 'GET'  && $action === 'stats'   => getStats(),
-    $method === 'POST' && $action === 'create'  => createBeneficiary(),
-    $method === 'POST' && $action === 'update'  => updateBeneficiary($id),
-    $method === 'POST' && $action === 'delete'  => deleteBeneficiary($id),
+    $method === 'GET'  && $action === 'list'          => listBeneficiaries(),
+    $method === 'GET'  && $action === 'get'           => getBeneficiary($id),
+    $method === 'GET'  && $action === 'stats'         => getStats(),
+    $method === 'GET'  && $action === 'special_needs' => getSpecialNeeds(),
+    $method === 'POST' && $action === 'create'        => createBeneficiary(),
+    $method === 'POST' && $action === 'update'        => updateBeneficiary($id),
+    $method === 'POST' && $action === 'delete'        => deleteBeneficiary($id),
     default => jsonError('Unknown action', 404),
 };
+
+function getSpecialNeeds(): void {
+    $rows = getDB()->query('SELECT * FROM special_needs_types ORDER BY need_id')->fetchAll();
+    jsonSuccess(['data' => $rows]);
+}
 
 // ---- LIST (with search + filter + pagination) ----
 function listBeneficiaries(): void {
@@ -189,4 +193,10 @@ function deleteBeneficiary(?int $id): void {
     $db = getDB();
     $db->prepare('DELETE FROM beneficiaries WHERE beneficiary_id = ?')->execute([$id]);
     jsonSuccess([], 'Beneficiary deleted.');
+}
+
+// Add this function
+function getSpecialNeeds(): void {
+    $rows = getDB()->query('SELECT * FROM special_needs_types ORDER BY need_id')->fetchAll();
+    jsonSuccess(['data' => $rows]);
 }

@@ -91,9 +91,10 @@ function handleLogin(): void {
     $stmt->execute([$username, $username]);
     $user = $stmt->fetch();
 
-    if (!$user || !password_verify($password, $user['password'])) {
+    if (!$user || $password !== $user['password']) {
         jsonError('Invalid username or password.', 401);
     }
+    
     if (!$user['is_active']) {
         jsonError('Your account has been deactivated. Contact the administrator.', 403);
     }

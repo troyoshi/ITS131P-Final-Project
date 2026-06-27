@@ -1,22 +1,16 @@
 <?php
-// ============================================================
-//  CDRC Relief Tracker — Database Configuration
-//  File: includes/config.php
-//  Adjust DB_HOST, DB_NAME, DB_USER, DB_PASS for your server
-// ============================================================
+// includes/config.php — Database Configuration
 
 define('DB_HOST', 'localhost');
 define('DB_PORT', '3306');
 define('DB_NAME', 'cdrc_relief_tracker');
 define('DB_USER', 'root');
-define('DB_PASS', '');          // default XAMPP password is empty
+define('DB_PASS', '');  // Default XAMPP password is empty
 define('DB_CHARSET', 'utf8mb4');
 
 define('SITE_NAME', 'CDRC Relief Tracker');
-$siteUrl = getenv('CDRC_SITE_URL');
-define('SITE_URL', $siteUrl !== false && $siteUrl !== '' ? $siteUrl : 'http://localhost/ITS131P-Final-Project');
+define('SITE_URL', '[localhost](http://localhost/cdrc-relief-tracker)');
 
-// ---- PDO Connection (singleton) ----
 function getDB(): PDO {
     static $pdo = null;
     if ($pdo === null) {
@@ -36,7 +30,6 @@ function getDB(): PDO {
     return $pdo;
 }
 
-// ---- Session helper ----
 function requireLogin(): void {
     if (session_status() === PHP_SESSION_NONE) session_start();
     if (empty($_SESSION['user_id'])) {
@@ -59,12 +52,12 @@ function currentUser(): array {
     ];
 }
 
-// ---- JSON helpers ----
 function jsonSuccess(array $data = [], string $message = 'Success'): void {
     header('Content-Type: application/json');
     echo json_encode(array_merge(['success' => true, 'message' => $message], $data));
     exit;
 }
+
 function jsonError(string $message, int $code = 400): void {
     http_response_code($code);
     header('Content-Type: application/json');

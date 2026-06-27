@@ -24,11 +24,10 @@
 
       <nav class="sidebar-nav">
         <span class="sidebar-section-label">Main</span>
-        <a href="dashboard.html" class="active"><span class="nav-icon">🏠</span> Dashboard</a>
-        <a href="records.html"><span class="nav-icon">👥</span> Beneficiaries</a>
+        <a href="dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
+        <a href="records.html" class="active"><span class="nav-icon">👥</span> Beneficiaries</a>
         <a href="inventory.html"><span class="nav-icon">📦</span> Inventory</a>
         <a href="evac-centers.html"><span class="nav-icon">🏕️</span> Evac Centers</a>
-
 
         <span class="sidebar-section-label">Reporting</span>
         <a href="reports.html"><span class="nav-icon">📊</span> Reports</a>
@@ -39,16 +38,14 @@
 
         <span class="sidebar-section-label">Links</span>
         <a href="../index.html"><span class="nav-icon">🌐</span> Public Website</a>
-        <a href="https://www.facebook.com/CDRC1984"><span class="nav-icon">🌐</span> Facebook</a>
-
       </nav>
 
       <div class="sidebar-footer">
         <div class="sidebar-user" onclick="window.location.href='profile.html'">
-          <div class="user-avatar">JA</div>
+          <div class="user-avatar" id="sidebarAvatar">--</div>
           <div>
-            <div class="sidebar-user-name">Juan dela Cruz</div>
-            <div class="sidebar-user-role">Volunteer</div>
+            <div class="sidebar-user-name" id="sidebarUserName">Loading...</div>
+            <div class="sidebar-user-role" id="sidebarUserRole">...</div>
           </div>
         </div>
       </div>
@@ -61,13 +58,13 @@
         </div>
 
         <div class="topbar-right">
-          <button class="topbar-icon-btn">🔔<div class="notif-badge">3</div></button>
+          <button class="topbar-icon-btn">🔔<div class="notif-badge" id="notifBadge">0</div></button>
 
           <div class="user-chip" onclick="window.location.href='profile.html'">
-            <div class="user-avatar">JA</div>
+            <div class="user-avatar" id="topbarAvatar">--</div>
             <div>
-              <div class="user-name">Juan dela Cruz</div>
-              <div class="user-role">Volunteer</div>
+              <div class="user-name" id="topbarUserName">Loading...</div>
+              <div class="user-role" id="topbarUserRole">...</div>
             </div>
           </div>
 
@@ -79,18 +76,38 @@
         <div class="page-header-row">
           <div>
             <h2>Beneficiary Records</h2>
-            <p style="font-size:13px;color:var(--gray-500);margin-top:4px;">Manage registered disaster-affected families
-            </p>
+            <p style="font-size:13px;color:var(--gray-500);margin-top:4px;">Manage registered disaster-affected families</p>
           </div>
           <button class="btn btn-primary" onclick="openAddModal()">+ Add Beneficiary</button>
         </div>
 
-        <div class="summary-single">
+        <div class="summary-grid" style="grid-template-columns: repeat(4, 1fr);">
           <div class="summary-card">
             <div class="summary-icon">👥</div>
             <div>
-              <div class="summary-number">1,248</div>
-              <div class="summary-label">Registered beneficiaries</div>
+              <div class="summary-number" id="statTotal">--</div>
+              <div class="summary-label">Total Registered</div>
+            </div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-icon">✅</div>
+            <div>
+              <div class="summary-number" id="statServed">--</div>
+              <div class="summary-label">Served</div>
+            </div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-icon">⏳</div>
+            <div>
+              <div class="summary-number" id="statPending">--</div>
+              <div class="summary-label">Pending</div>
+            </div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-icon">⚡</div>
+            <div>
+              <div class="summary-number" id="statPriority">--</div>
+              <div class="summary-label">Priority</div>
             </div>
           </div>
         </div>
@@ -98,30 +115,26 @@
         <div class="toolbar">
           <div class="search-wrap">
             <span class="search-icon">🔍</span>
-            <input type="text" placeholder="Search by name, ID, or location..." id="searchInput"
-              oninput="filterTable()">
+            <input type="text" placeholder="Search by name, ID, or location..." id="searchInput" oninput="debounceSearch()">
           </div>
 
-          <select class="filter-select" onchange="filterTable()" id="statusFilter">
+          <select class="filter-select" onchange="loadBeneficiaries()" id="statusFilter">
             <option value="">All Statuses</option>
             <option value="Served">Served</option>
             <option value="Pending">Pending</option>
             <option value="Priority">Priority</option>
           </select>
 
-          <select class="filter-select" onchange="filterTable()" id="centerFilter">
+          <select class="filter-select" onchange="loadBeneficiaries()" id="centerFilter">
             <option value="">All Centers</option>
-            <option>Brgy. Masaya</option>
-            <option>Brgy. Maliwanag</option>
-            <option>Brgy. Pag-asa</option>
-            <option>Brgy. Maligaya</option>
+            <!-- Populated dynamically -->
           </select>
         </div>
 
         <div class="records-card">
           <div class="records-card-header">
             <strong>Beneficiary List</strong>
-            <div class="records-count" id="recordCount">Showing 10 of 1,248 records</div>
+            <div class="records-count" id="recordCount">Loading...</div>
           </div>
 
           <div style="overflow-x:auto;">
@@ -131,214 +144,24 @@
                   <th>Beneficiary</th>
                   <th>Household</th>
                   <th>Evacuation Center</th>
-                  <th>Needs</th>
+                  <th>Special Needs</th>
                   <th>Status</th>
-                  <th>Last Distribution</th>
+                  <th>Registered</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="tableBody">
                 <tr>
-                  <td>
-                    <div class="beneficiary-name">Santos, Maria L.</div>
-                    <div class="beneficiary-id">BEN-0001</div>
-                  </td>
-                  <td>4 members</td>
-                  <td>Brgy. Masaya</td>
-                  <td>Infant</td>
-                  <td><span class="badge badge-green">Served</span></td>
-                  <td>Jun 15, 2025</td>
-                  <td>
-                    <div class="action-btns">
-                      <button class="action-btn view" onclick="viewRecord('BEN-0001')">View</button>
-                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0001')">Edit</button>
-                      <button class="action-btn del">Delete</button>
-                    </div>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <div class="beneficiary-name">Cruz, Jose P.</div>
-                    <div class="beneficiary-id">BEN-0002</div>
-                  </td>
-                  <td>6 members</td>
-                  <td>Brgy. Maliwanag</td>
-                  <td>None</td>
-                  <td><span class="badge badge-green">Served</span></td>
-                  <td>Jun 15, 2025</td>
-                  <td>
-                    <div class="action-btns">
-                      <button class="action-btn view" onclick="viewRecord('BEN-0002')">View</button>
-                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0002')">Edit</button>
-                      <button class="action-btn del">Delete</button>
-                    </div>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <div class="beneficiary-name">Reyes, Ana B.</div>
-                    <div class="beneficiary-id">BEN-0003</div>
-                  </td>
-                  <td>3 members</td>
-                  <td>Brgy. Masaya</td>
-                  <td>Elderly</td>
-                  <td><span class="badge badge-orange">Pending</span></td>
-                  <td>Jun 14, 2025</td>
-                  <td>
-                    <div class="action-btns">
-                      <button class="action-btn view" onclick="viewRecord('BEN-0003')">View</button>
-                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0003')">Edit</button>
-                      <button class="action-btn del">Delete</button>
-                    </div>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <div class="beneficiary-name">Lim, Pedro K.</div>
-                    <div class="beneficiary-id">BEN-0004</div>
-                  </td>
-                  <td>5 members</td>
-                  <td>Brgy. Pag-asa</td>
-                  <td>Medical</td>
-                  <td><span class="badge badge-teal">Priority</span></td>
-                  <td>Jun 14, 2025</td>
-                  <td>
-                    <div class="action-btns">
-                      <button class="action-btn view" onclick="viewRecord('BEN-0004')">View</button>
-                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0004')">Edit</button>
-                      <button class="action-btn del">Delete</button>
-                    </div>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <div class="beneficiary-name">Aquino, Rosa G.</div>
-                    <div class="beneficiary-id">BEN-0005</div>
-                  </td>
-                  <td>7 members</td>
-                  <td>Brgy. Maligaya</td>
-                  <td>None</td>
-                  <td><span class="badge badge-green">Served</span></td>
-                  <td>Jun 13, 2025</td>
-                  <td>
-                    <div class="action-btns">
-                      <button class="action-btn view" onclick="viewRecord('BEN-0005')">View</button>
-                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0005')">Edit</button>
-                      <button class="action-btn del">Delete</button>
-                    </div>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <div class="beneficiary-name">Garcia, Juan T.</div>
-                    <div class="beneficiary-id">BEN-0006</div>
-                  </td>
-                  <td>2 members</td>
-                  <td>Brgy. Masaya</td>
-                  <td>Elderly</td>
-                  <td><span class="badge badge-orange">Pending</span></td>
-                  <td>-</td>
-                  <td>
-                    <div class="action-btns">
-                      <button class="action-btn view" onclick="viewRecord('BEN-0006')">View</button>
-                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0006')">Edit</button>
-                      <button class="action-btn del">Delete</button>
-                    </div>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <div class="beneficiary-name">Villanueva, Clara S.</div>
-                    <div class="beneficiary-id">BEN-0007</div>
-                  </td>
-                  <td>4 members</td>
-                  <td>Brgy. Pag-asa</td>
-                  <td>None</td>
-                  <td><span class="badge badge-green">Served</span></td>
-                  <td>Jun 13, 2025</td>
-                  <td>
-                    <div class="action-btns">
-                      <button class="action-btn view" onclick="viewRecord('BEN-0007')">View</button>
-                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0007')">Edit</button>
-                      <button class="action-btn del">Delete</button>
-                    </div>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <div class="beneficiary-name">Mendoza, Roberto A.</div>
-                    <div class="beneficiary-id">BEN-0008</div>
-                  </td>
-                  <td>8 members</td>
-                  <td>Brgy. Maliwanag</td>
-                  <td>Infant</td>
-                  <td><span class="badge badge-teal">Priority</span></td>
-                  <td>-</td>
-                  <td>
-                    <div class="action-btns">
-                      <button class="action-btn view" onclick="viewRecord('BEN-0008')">View</button>
-                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0008')">Edit</button>
-                      <button class="action-btn del">Delete</button>
-                    </div>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <div class="beneficiary-name">Dela Cruz, Nena R.</div>
-                    <div class="beneficiary-id">BEN-0009</div>
-                  </td>
-                  <td>3 members</td>
-                  <td>Brgy. Maligaya</td>
-                  <td>Medical</td>
-                  <td><span class="badge badge-orange">Pending</span></td>
-                  <td>-</td>
-                  <td>
-                    <div class="action-btns">
-                      <button class="action-btn view" onclick="viewRecord('BEN-0009')">View</button>
-                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0009')">Edit</button>
-                      <button class="action-btn del">Delete</button>
-                    </div>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <div class="beneficiary-name">Castillo, Mario F.</div>
-                    <div class="beneficiary-id">BEN-0010</div>
-                  </td>
-                  <td>5 members</td>
-                  <td>Brgy. Masaya</td>
-                  <td>None</td>
-                  <td><span class="badge badge-green">Served</span></td>
-                  <td>Jun 15, 2025</td>
-                  <td>
-                    <div class="action-btns">
-                      <button class="action-btn view" onclick="viewRecord('BEN-0010')">View</button>
-                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0010')">Edit</button>
-                      <button class="action-btn del">Delete</button>
-                    </div>
-                  </td>
+                  <td colspan="7" style="text-align:center;color:var(--gray-500);">Loading beneficiaries...</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
           <div class="pagination">
-            <div class="pagination-info">Page 1 of 125</div>
-            <div class="pagination-btns">
-              <button class="pg-btn">Previous</button>
-              <button class="pg-btn active">1</button>
-              <button class="pg-btn">2</button>
-              <button class="pg-btn">3</button>
-              <button class="pg-btn">Next</button>
+            <div class="pagination-info" id="paginationInfo">Page 1 of 1</div>
+            <div class="pagination-btns" id="paginationBtns">
+              <!-- Populated dynamically -->
             </div>
           </div>
         </div>
@@ -346,6 +169,7 @@
     </main>
   </div>
 
+  <!-- Add Modal -->
   <div class="modal-overlay" id="addModal">
     <div class="modal">
       <div class="modal-header">
@@ -356,51 +180,73 @@
       <div class="modal-body">
         <div class="modal-form-row">
           <div class="form-group">
-            <label for="fullName">Full Name</label>
-            <input type="text" id="fullName" placeholder="Enter full name">
+            <label for="addFirstName">First Name *</label>
+            <input type="text" id="addFirstName" placeholder="Enter first name" required>
           </div>
           <div class="form-group">
-            <label for="householdCount">Household Members</label>
-            <input type="number" id="householdCount" placeholder="e.g. 5">
+            <label for="addLastName">Last Name *</label>
+            <input type="text" id="addLastName" placeholder="Enter last name" required>
           </div>
         </div>
 
         <div class="modal-form-row">
           <div class="form-group">
-            <label for="evacCenter">Evacuation Center</label>
-            <select id="evacCenter">
-              <option>Brgy. Masaya</option>
-              <option>Brgy. Maliwanag</option>
-              <option>Brgy. Pag-asa</option>
-              <option>Brgy. Maligaya</option>
+            <label for="addHousehold">Household Members *</label>
+            <input type="number" id="addHousehold" placeholder="e.g. 5" min="1" required>
+          </div>
+          <div class="form-group">
+            <label for="addContact">Contact Number</label>
+            <input type="tel" id="addContact" placeholder="+63 9XX XXX XXXX">
+          </div>
+        </div>
+
+        <div class="modal-form-row">
+          <div class="form-group">
+            <label for="addCenter">Evacuation Center *</label>
+            <select id="addCenter" required>
+              <!-- Populated dynamically -->
             </select>
           </div>
           <div class="form-group">
-            <label for="specialNeeds">Special Needs</label>
-            <select id="specialNeeds">
-              <option>None</option>
-              <option>Infant</option>
-              <option>Elderly</option>
-              <option>Medical</option>
+            <label for="addNeeds">Special Needs</label>
+            <select id="addNeeds">
+              <!-- Populated dynamically -->
             </select>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="address">Address</label>
-          <textarea id="address" rows="3" placeholder="Enter home address"></textarea>
+          <label for="addAddress">Address *</label>
+          <input type="text" id="addAddress" placeholder="Street address" required>
+        </div>
+
+        <div class="modal-form-row">
+          <div class="form-group">
+            <label for="addBarangay">Barangay *</label>
+            <input type="text" id="addBarangay" placeholder="Barangay name" required>
+          </div>
+          <div class="form-group">
+            <label for="addCity">City</label>
+            <input type="text" id="addCity" value="Quezon City">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="addNotes">Notes</label>
+          <textarea id="addNotes" rows="2" placeholder="Any additional notes..."></textarea>
         </div>
       </div>
 
       <div class="modal-footer">
         <button class="btn btn-outline" onclick="closeAddModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="saveRecord()">Save Beneficiary</button>
+        <button class="btn btn-primary" onclick="saveBeneficiary()">Save Beneficiary</button>
       </div>
     </div>
   </div>
 
+  <!-- View/Edit Modal -->
   <div class="modal-overlay" id="viewModal">
-    <div class="modal">
+    <div class="modal" style="max-width:700px;">
       <div class="modal-header">
         <h3 id="viewModalTitle">Beneficiary Details</h3>
         <button class="modal-close" onclick="closeViewModal()">✕</button>
@@ -432,117 +278,511 @@
             <div class="detail-label">Status</div>
             <div class="detail-value" id="detailStatus">-</div>
           </div>
-          <div class="detail-card">
+          <div class="detail-card" style="grid-column: span 2;">
             <div class="detail-label">Address</div>
             <div class="detail-value" id="detailAddress">-</div>
           </div>
           <div class="detail-card">
-            <div class="detail-label">Registered On</div>
+            <div class="detail-label">Contact</div>
+            <div class="detail-value" id="detailContact">-</div>
+          </div>
+          <div class="detail-card">
+            <div class="detail-label">Registered</div>
             <div class="detail-value" id="detailRegistered">-</div>
           </div>
         </div>
 
-        <div class="section-title">Distribution History</div>
+        <div class="section-title" style="margin-top:24px;">Distribution History</div>
         <div class="dist-history">
           <table>
             <thead>
               <tr>
                 <th>Date</th>
                 <th>Items</th>
-                <th>Quantity</th>
-                <th>Status</th>
+                <th>Center</th>
+                <th>Staff</th>
               </tr>
             </thead>
             <tbody id="distributionHistoryBody">
               <tr>
-                <td colspan="4" style="text-align:center;color:var(--gray-500);">No distribution records yet.</td>
+                <td colspan="4" style="text-align:center;color:var(--gray-500);">No records yet.</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <div class="section-title hidden" id="editSectionTitle">Edit Beneficiary Details</div>
+        <!-- Edit Section -->
+        <div class="section-title hidden" id="editSectionTitle" style="margin-top:24px;">Edit Information</div>
         <div class="hidden" id="editSection">
           <div class="modal-form-row">
             <div class="form-group">
-              <label for="editName">Full Name</label>
-              <input type="text" id="editName">
+              <label for="editFirstName">First Name</label>
+              <input type="text" id="editFirstName">
             </div>
             <div class="form-group">
-              <label for="editHousehold">Household Members</label>
-              <input type="number" id="editHousehold">
+              <label for="editLastName">Last Name</label>
+              <input type="text" id="editLastName">
             </div>
           </div>
-
           <div class="modal-form-row">
             <div class="form-group">
-              <label for="editCenter">Evacuation Center</label>
-              <select id="editCenter">
-                <option>Brgy. Masaya</option>
-                <option>Brgy. Maliwanag</option>
-                <option>Brgy. Pag-asa</option>
-                <option>Brgy. Maligaya</option>
+              <label for="editHousehold">Household</label>
+              <input type="number" id="editHousehold" min="1">
+            </div>
+            <div class="form-group">
+              <label for="editStatus">Status</label>
+              <select id="editStatus">
+                <option value="Pending">Pending</option>
+                <option value="Served">Served</option>
+                <option value="Priority">Priority</option>
               </select>
+            </div>
+          </div>
+          <div class="modal-form-row">
+            <div class="form-group">
+              <label for="editCenter">Center</label>
+              <select id="editCenter"></select>
             </div>
             <div class="form-group">
               <label for="editNeeds">Special Needs</label>
-              <select id="editNeeds">
-                <option>None</option>
-                <option>Infant</option>
-                <option>Elderly</option>
-                <option>Medical</option>
-              </select>
+              <select id="editNeeds"></select>
             </div>
           </div>
-
           <div class="form-group">
             <label for="editAddress">Address</label>
-            <textarea id="editAddress" rows="3"></textarea>
-          </div>
-        </div>
-
-        <div class="section-title hidden" id="distributionFormTitle">Add Distribution Record</div>
-        <div class="hidden" id="distributionForm">
-          <div class="modal-form-row">
-            <div class="form-group">
-              <label for="distDate">Date</label>
-              <input type="date" id="distDate">
-            </div>
-            <div class="form-group">
-              <label for="distStatus">Status</label>
-              <select id="distStatus">
-                <option>Completed</option>
-                <option>Pending</option>
-                <option>Processing</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="modal-form-row">
-            <div class="form-group">
-              <label for="distItems">Items Distributed</label>
-              <input type="text" id="distItems" placeholder="e.g. Rice, Water, Canned Goods">
-            </div>
-            <div class="form-group">
-              <label for="distQty">Quantity</label>
-              <input type="text" id="distQty" placeholder="e.g. 2 packs">
-            </div>
+            <input type="text" id="editAddress">
           </div>
         </div>
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-outline" onclick="toggleEditSection()">Edit Details</button>
-        <button class="btn btn-outline" onclick="toggleDistributionForm()">Add Distribution</button>
+        <button class="btn btn-outline" onclick="toggleEditSection()" id="editToggleBtn">Edit Details</button>
         <button class="btn btn-primary hidden" id="saveChangesBtn" onclick="saveChanges()">Save Changes</button>
-        <button class="btn btn-primary hidden" id="saveDistributionBtn" onclick="saveDistribution()">Save
-          Distribution</button>
+        <button class="btn btn-outline" onclick="closeViewModal()">Close</button>
       </div>
     </div>
   </div>
 
+  <script src="../js/api.js"></script>
   <script src="../js/main.js"></script>
-  <script src="../js/volunteer.js"></script>
+  <script>
+    const API_ROOT = '../api';
+    let currentPage = 1;
+    let totalPages = 1;
+    let currentBeneficiaryId = null;
+    let centers = [];
+    let specialNeeds = [];
+    let searchTimeout = null;
+
+    async function apiFetch(endpoint, options = {}) {
+      const url = `${API_ROOT}/${endpoint}`;
+      const response = await fetch(url, {
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', ...options.headers },
+        ...options
+      });
+      return response.json();
+    }
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function getInitials(name) {
+      if (!name) return '--';
+      return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    }
+
+    // Load user info
+    async function loadUserInfo() {
+      try {
+        const data = await apiFetch('auth.php?action=me');
+        if (data.success && data.user) {
+          const initials = getInitials(data.user.name);
+          setText('sidebarAvatar', initials);
+          setText('topbarAvatar', initials);
+          setText('sidebarUserName', data.user.name);
+          setText('topbarUserName', data.user.name);
+          setText('sidebarUserRole', data.user.role);
+          setText('topbarUserRole', data.user.role);
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    // Load dropdowns
+    async function loadDropdowns() {
+      try {
+        // Centers
+        const centerData = await apiFetch('centers.php?action=list');
+        if (centerData.success) {
+          centers = centerData.data;
+          const centerOptions = centers.map(c => `<option value="${c.center_id}">${c.center_name}</option>`).join('');
+
+          document.getElementById('centerFilter').innerHTML = '<option value="">All Centers</option>' +
+            centers.map(c => `<option value="${c.center_name}">${c.center_name}</option>`).join('');
+
+          document.getElementById('addCenter').innerHTML = centerOptions;
+          document.getElementById('editCenter').innerHTML = centerOptions;
+        }
+
+        // Special needs
+        const needsData = await apiFetch('beneficiaries.php?action=special_needs');
+        if (needsData.success) {
+          specialNeeds = needsData.data;
+          const needsOptions = specialNeeds.map(n => `<option value="${n.need_id}">${n.need_label}</option>`).join('');
+          document.getElementById('addNeeds').innerHTML = needsOptions;
+          document.getElementById('editNeeds').innerHTML = needsOptions;
+        }
+      } catch (e) {
+        console.error('Failed to load dropdowns:', e);
+      }
+    }
+
+    // Load stats
+    async function loadStats() {
+      try {
+        const data = await apiFetch('beneficiaries.php?action=stats');
+        if (data.success && data.data) {
+          setText('statTotal', data.data.total || 0);
+          setText('statServed', data.data.served || 0);
+          setText('statPending', data.data.pending || 0);
+          setText('statPriority', data.data.priority || 0);
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    // Load beneficiaries
+    async function loadBeneficiaries() {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Loading...</td></tr>';
+
+      const search = document.getElementById('searchInput').value;
+      const status = document.getElementById('statusFilter').value;
+      const center = document.getElementById('centerFilter').value;
+
+      try {
+        const params = new URLSearchParams({
+          page: currentPage,
+          limit: 10,
+          search: search,
+          status: status,
+          center: center
+        });
+
+        const data = await apiFetch(`beneficiaries.php?action=list&${params}`);
+
+        if (data.success) {
+          totalPages = data.total_pages;
+          setText('recordCount', `Showing ${data.data.length} of ${data.total} records`);
+          setText('paginationInfo', `Page ${data.page} of ${data.total_pages}`);
+
+          renderTable(data.data);
+          renderPagination(data.page, data.total_pages);
+        }
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--orange);">Failed to load data.</td></tr>';
+      }
+    }
+
+    function renderTable(beneficiaries) {
+      const tbody = document.getElementById('tableBody');
+
+      if (!beneficiaries.length) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--gray-500);">No beneficiaries found.</td></tr>';
+        return;
+      }
+
+      const statusBadge = (status) => {
+        const classes = { 'Served': 'badge-green', 'Pending': 'badge-orange', 'Priority': 'badge-teal' };
+        return `<span class="badge ${classes[status] || 'badge-gray'}">${status}</span>`;
+      };
+
+      tbody.innerHTML = beneficiaries.map(b => `
+        <tr>
+          <td>
+            <div class="beneficiary-name">${b.full_name}</div>
+            <div class="beneficiary-id">${b.beneficiary_code}</div>
+          </td>
+          <td>${b.household_size} members</td>
+          <td>${b.center_name}</td>
+          <td>${b.special_need || 'None'}</td>
+          <td>${statusBadge(b.status)}</td>
+          <td>${b.registered_at}</td>
+          <td>
+            <div class="action-btns">
+              <button class="action-btn view" onclick="viewBeneficiary(${b.beneficiary_id})">View</button>
+              <button class="action-btn edit" onclick="editBeneficiary(${b.beneficiary_id})">Edit</button>
+              <button class="action-btn del" onclick="deleteBeneficiary(${b.beneficiary_id})">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderPagination(current, total) {
+      const container = document.getElementById('paginationBtns');
+      let html = `<button class="pg-btn" onclick="goToPage(${current - 1})" ${current <= 1 ? 'disabled' : ''}>Previous</button>`;
+
+      for (let i = Math.max(1, current - 2); i <= Math.min(total, current + 2); i++) {
+        html += `<button class="pg-btn ${i === current ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+      }
+
+      html += `<button class="pg-btn" onclick="goToPage(${current + 1})" ${current >= total ? 'disabled' : ''}>Next</button>`;
+      container.innerHTML = html;
+    }
+
+    function goToPage(page) {
+      if (page < 1 || page > totalPages) return;
+      currentPage = page;
+      loadBeneficiaries();
+    }
+
+    function debounceSearch() {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        currentPage = 1;
+        loadBeneficiaries();
+      }, 300);
+    }
+
+    // View beneficiary
+    async function viewBeneficiary(id) {
+      try {
+        const data = await apiFetch(`beneficiaries.php?action=get&id=${id}`);
+        if (data.success && data.data) {
+          const b = data.data;
+          currentBeneficiaryId = id;
+
+          setText('viewModalTitle', `${b.first_name} ${b.last_name}`);
+          setText('detailId', b.beneficiary_code);
+          setText('detailName', `${b.first_name} ${b.last_name}`);
+          setText('detailHousehold', b.household_size);
+          setText('detailCenter', b.center_name);
+          setText('detailNeeds', b.need_label || 'None');
+          setText('detailStatus', b.status);
+          setText('detailAddress', `${b.address}, ${b.barangay}, ${b.city}`);
+          setText('detailContact', b.contact_no || 'Not provided');
+          setText('detailRegistered', b.registered_at);
+
+          // Load distribution history
+          const distData = await apiFetch(`distributions.php?action=list&search=${b.beneficiary_code}`);
+          renderDistributionHistory(distData.data || []);
+
+          // Hide edit section
+          document.getElementById('editSection').classList.add('hidden');
+          document.getElementById('editSectionTitle').classList.add('hidden');
+          document.getElementById('saveChangesBtn').classList.add('hidden');
+
+          document.getElementById('viewModal').classList.add('open');
+        }
+      } catch (e) {
+        alert('Failed to load beneficiary details.');
+      }
+    }
+
+    function renderDistributionHistory(distributions) {
+      const tbody = document.getElementById('distributionHistoryBody');
+      if (!distributions.length) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--gray-500);">No distribution records yet.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = distributions.map(d => `
+        <tr>
+          <td>${d.dist_date}</td>
+          <td>${d.items_given || '—'}</td>
+          <td>${d.center_name}</td>
+          <td>${d.staff_name}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Edit beneficiary
+    async function editBeneficiary(id) {
+      await viewBeneficiary(id);
+
+      const data = await apiFetch(`beneficiaries.php?action=get&id=${id}`);
+      if (data.success && data.data) {
+        const b = data.data;
+        document.getElementById('editFirstName').value = b.first_name;
+        document.getElementById('editLastName').value = b.last_name;
+        document.getElementById('editHousehold').value = b.household_size;
+        document.getElementById('editStatus').value = b.status;
+        document.getElementById('editCenter').value = b.center_id;
+        document.getElementById('editNeeds').value = b.need_id;
+        document.getElementById('editAddress').value = b.address;
+
+        toggleEditSection();
+      }
+    }
+
+    function toggleEditSection() {
+      const section = document.getElementById('editSection');
+      const title = document.getElementById('editSectionTitle');
+      const btn = document.getElementById('saveChangesBtn');
+
+      if (section.classList.contains('hidden')) {
+        section.classList.remove('hidden');
+        title.classList.remove('hidden');
+        btn.classList.remove('hidden');
+      } else {
+        section.classList.add('hidden');
+        title.classList.add('hidden');
+        btn.classList.add('hidden');
+      }
+    }
+
+    async function saveChanges() {
+      if (!currentBeneficiaryId) return;
+
+      const payload = {
+        first_name: document.getElementById('editFirstName').value,
+        last_name: document.getElementById('editLastName').value,
+        household_size: document.getElementById('editHousehold').value,
+        status: document.getElementById('editStatus').value,
+        center_id: document.getElementById('editCenter').value,
+        need_id: document.getElementById('editNeeds').value,
+        address: document.getElementById('editAddress').value,
+        barangay: 'Unknown',
+        city: 'Quezon City'
+      };
+
+      try {
+        const data = await apiFetch(`beneficiaries.php?action=update&id=${currentBeneficiaryId}`, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+
+        if (data.success) {
+          alert('Beneficiary updated successfully.');
+          closeViewModal();
+          loadBeneficiaries();
+          loadStats();
+        } else {
+          alert(data.message || 'Failed to update.');
+        }
+      } catch (e) {
+        alert('Failed to update beneficiary.');
+      }
+    }
+
+    // Delete beneficiary
+    async function deleteBeneficiary(id) {
+      if (!confirm('Are you sure you want to delete this beneficiary?')) return;
+
+      try {
+        const data = await apiFetch(`beneficiaries.php?action=delete&id=${id}`, { method: 'POST' });
+        if (data.success) {
+          alert('Beneficiary deleted.');
+          loadBeneficiaries();
+          loadStats();
+        } else {
+          alert(data.message || 'Failed to delete.');
+        }
+      } catch (e) {
+        alert('Failed to delete beneficiary.');
+      }
+    }
+
+    // Add beneficiary
+    function openAddModal() {
+      // Reset form
+      ['addFirstName', 'addLastName', 'addHousehold', 'addContact', 'addAddress', 'addBarangay', 'addNotes'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      document.getElementById('addCity').value = 'Quezon City';
+      document.getElementById('addModal').classList.add('open');
+    }
+
+    function closeAddModal() {
+      document.getElementById('addModal').classList.remove('open');
+    }
+
+    function closeViewModal() {
+      document.getElementById('viewModal').classList.remove('open');
+      currentBeneficiaryId = null;
+    }
+
+    async function saveBeneficiary() {
+      const firstName = document.getElementById('addFirstName').value.trim();
+      const lastName = document.getElementById('addLastName').value.trim();
+      const household = document.getElementById('addHousehold').value;
+      const centerId = document.getElementById('addCenter').value;
+      const needId = document.getElementById('addNeeds').value;
+      const address = document.getElementById('addAddress').value.trim();
+      const barangay = document.getElementById('addBarangay').value.trim();
+      const city = document.getElementById('addCity').value.trim();
+      const contact = document.getElementById('addContact').value.trim();
+      const notes = document.getElementById('addNotes').value.trim();
+
+      if (!firstName || !lastName || !household || !address || !barangay) {
+        alert('Please fill in all required fields.');
+        return;
+      }
+
+      const payload = {
+        first_name: firstName,
+        last_name: lastName,
+        household_size: parseInt(household),
+        center_id: parseInt(centerId),
+        need_id: parseInt(needId) || 1,
+        address: address,
+        barangay: barangay,
+        city: city || 'Quezon City',
+        contact_no: contact,
+        notes: notes,
+        status: 'Pending'
+      };
+
+      try {
+        const data = await apiFetch('beneficiaries.php?action=create', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+
+        if (data.success) {
+          alert(`Beneficiary registered successfully. Code: ${data.code}`);
+          closeAddModal();
+          loadBeneficiaries();
+          loadStats();
+        } else {
+          alert(data.message || 'Failed to save.');
+        }
+      } catch (e) {
+        alert('Failed to save beneficiary.');
+      }
+    }
+
+    // Logout
+    async function logout() {
+      try {
+        await apiFetch('auth.php?action=logout', { method: 'POST' });
+      } catch { }
+      window.location.href = 'login.html';
+    }
+
+    // Check URL params for center filter
+    function checkUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      const center = params.get('center');
+      if (center) {
+        document.getElementById('centerFilter').value = center;
+      }
+    }
+
+    // Initialize
+    async function init() {
+      await loadUserInfo();
+      await loadDropdowns();
+      checkUrlParams();
+      await loadStats();
+      await loadBeneficiaries();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
 </body>
 
 </html>

@@ -24,11 +24,10 @@
 
       <nav class="sidebar-nav">
         <span class="sidebar-section-label">Main</span>
-        <a href="dashboard.html" class="active"><span class="nav-icon">🏠</span> Dashboard</a>
+        <a href="dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
         <a href="records.html"><span class="nav-icon">👥</span> Beneficiaries</a>
-        <a href="inventory.html"><span class="nav-icon">📦</span> Inventory</a>
+        <a href="inventory.html" class="active"><span class="nav-icon">📦</span> Inventory</a>
         <a href="evac-centers.html"><span class="nav-icon">🏕️</span> Evac Centers</a>
-
 
         <span class="sidebar-section-label">Reporting</span>
         <a href="reports.html"><span class="nav-icon">📊</span> Reports</a>
@@ -39,16 +38,14 @@
 
         <span class="sidebar-section-label">Links</span>
         <a href="../index.html"><span class="nav-icon">🌐</span> Public Website</a>
-        <a href="https://www.facebook.com/CDRC1984"><span class="nav-icon">🌐</span> Facebook</a>
-
       </nav>
 
       <div class="sidebar-footer">
         <div class="sidebar-user" onclick="window.location.href='profile.html'">
-          <div class="user-avatar">JA</div>
+          <div class="user-avatar" id="sidebarAvatar">--</div>
           <div>
-            <div class="sidebar-user-name">Juan Admin</div>
-            <div class="sidebar-user-role">Administrator</div>
+            <div class="sidebar-user-name" id="sidebarUserName">Loading...</div>
+            <div class="sidebar-user-role" id="sidebarUserRole">...</div>
           </div>
         </div>
       </div>
@@ -59,13 +56,13 @@
         <div class="topbar-title">Inventory</div>
 
         <div class="topbar-right">
-          <button class="topbar-icon-btn" title="Notifications">🔔<div class="notif-badge">3</div></button>
+          <button class="topbar-icon-btn" title="Notifications">🔔<div class="notif-badge" id="notifBadge">0</div></button>
 
           <div class="user-chip" onclick="window.location.href='profile.html'">
-            <div class="user-avatar">JA</div>
+            <div class="user-avatar" id="topbarAvatar">--</div>
             <div>
-              <div class="user-name">Juan Admin</div>
-              <div class="user-role">Volunteer</div>
+              <div class="user-name" id="topbarUserName">Loading...</div>
+              <div class="user-role" id="topbarUserRole">...</div>
             </div>
           </div>
           <button class="btn btn-outline" style="padding:7px 16px;font-size:13px;" onclick="logout()">Sign Out</button>
@@ -76,7 +73,39 @@
         <div class="page-head">
           <div>
             <h2>Inventory Management</h2>
-            <p>Track stock levels, filter by category, add restocks, and review outgoing records.</p>
+            <p>Track stock levels, filter by category, add restocks, and review transaction history.</p>
+          </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 24px;">
+          <div class="summary-card">
+            <div class="summary-icon">📦</div>
+            <div>
+              <div class="summary-number" id="statTotalItems">--</div>
+              <div class="summary-label">Total Items</div>
+            </div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-icon">✅</div>
+            <div>
+              <div class="summary-number" id="statInStock">--</div>
+              <div class="summary-label">Adequate Stock</div>
+            </div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-icon" style="background:rgba(232,75,26,0.1);">⚠️</div>
+            <div>
+              <div class="summary-number" id="statLowStock" style="color:var(--orange);">--</div>
+              <div class="summary-label">Low Stock</div>
+            </div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-icon">📊</div>
+            <div>
+              <div class="summary-number" id="statCategories">--</div>
+              <div class="summary-label">Categories</div>
+            </div>
           </div>
         </div>
 
@@ -84,17 +113,13 @@
           <div class="toolbar-top">
             <div class="search-wrap">
               <span class="search-icon">🔍</span>
-              <input type="text" id="searchInput" class="search-input" placeholder="Search inventory item...">
+              <input type="text" id="searchInput" class="search-input" placeholder="Search inventory item..." oninput="debounceSearch()">
             </div>
           </div>
 
-          <div class="filter-row">
-            <button class="filter-chip active" data-category="All">All</button>
-            <button class="filter-chip" data-category="Food">Food</button>
-            <button class="filter-chip" data-category="Water">Water</button>
-            <button class="filter-chip" data-category="Medicine">Medicine</button>
-            <button class="filter-chip" data-category="Hygiene">Hygiene</button>
-            <button class="filter-chip" data-category="Shelter">Shelter</button>
+          <div class="filter-row" id="categoryFilters">
+            <button class="filter-chip active" data-category="">All</button>
+            <!-- Populated dynamically -->
           </div>
         </div>
 
@@ -115,7 +140,11 @@
                     <th>Status</th>
                   </tr>
                 </thead>
-                <tbody id="inventoryTableBody"></tbody>
+                <tbody id="inventoryTableBody">
+                  <tr>
+                    <td colspan="4" style="text-align:center;">Loading inventory...</td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>
@@ -128,8 +157,7 @@
 
             <div class="dash-card-body" id="detailsPanel">
               <div class="panel-empty">
-                Select an inventory item from the table to view stock details, add stocks, and check where previous
-                stocks were distributed.
+                Select an inventory item from the table to view stock details, add stocks, and check transaction history.
               </div>
             </div>
           </div>
@@ -138,9 +166,295 @@
     </div>
   </div>
 
-  <script src="../js/main.js"></script>
-  <script src="../js/volunteer.js"></script>
-  <script src="../js/inventory.js"></script>
+<!-- <script src="../js/api.js"></script> -->
+<!-- <script src="../js/main.js"></script> -->
+ 
+  <script>
+    const API_ROOT = '../api';
+    let inventoryData = [];
+    let categories = [];
+    let selectedCategory = '';
+    let selectedItemId = null;
+    let searchTimeout = null;
+    
+    async function apiFetch(endpoint, options = {}) {
+        const response = await fetch(`${API_ROOT}/${endpoint}`, {
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            ...options
+        });
+    
+        return response.json();
+    }
+    
+    function setText(id, value) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+    }
+    
+    function getInitials(name) {
+        if (!name) return '--';
+        return name.split(' ')
+            .map(n => n[0])
+            .join('')
+            .toUpperCase()
+            .substring(0, 2);
+    }
+    
+    async function loadUserInfo() {
+        try {
+            const data = await apiFetch('auth.php?action=me');
+    
+            console.log('User:', data);
+    
+            if (data.success && data.user) {
+    
+                const initials = getInitials(data.user.name);
+    
+                setText('sidebarAvatar', initials);
+                setText('topbarAvatar', initials);
+    
+                setText('sidebarUserName', data.user.name);
+                setText('topbarUserName', data.user.name);
+    
+                setText('sidebarUserRole', data.user.role);
+                setText('topbarUserRole', data.user.role);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    
+    async function loadCategories() {
+        try {
+            const data = await apiFetch('inventory.php?action=categories');
+    
+            console.log('Categories:', data);
+    
+            if (data.success && Array.isArray(data.data)) {
+    
+                categories = data.data;
+    
+                setText('statCategories', categories.length);
+    
+                const container = document.getElementById('categoryFilters');
+    
+                let html =
+                    `<button class="filter-chip active" data-category="">All</button>`;
+    
+                categories.forEach(cat => {
+                    html += `
+                        <button class="filter-chip"
+                                data-category="${cat.category_id}">
+                            ${cat.category_name}
+                        </button>`;
+                });
+    
+                container.innerHTML = html;
+    
+                container.querySelectorAll('.filter-chip').forEach(btn => {
+                    btn.addEventListener('click', function () {
+    
+                        container.querySelectorAll('.filter-chip')
+                            .forEach(c => c.classList.remove('active'));
+    
+                        this.classList.add('active');
+    
+                        selectedCategory = this.dataset.category;
+    
+                        loadInventory();
+                    });
+                });
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    
+    async function loadInventory() {
+    
+        const tbody = document.getElementById('inventoryTableBody');
+    
+        tbody.innerHTML =
+            '<tr><td colspan="4" style="text-align:center;">Loading...</td></tr>';
+    
+        const search = document.getElementById('searchInput').value;
+    
+        try {
+    
+            const params = new URLSearchParams({
+                search: search,
+                category_id: selectedCategory
+            });
+    
+            const data = await apiFetch(
+                `inventory.php?action=list&${params}`
+            );
+    
+            console.log('Inventory:', data);
+    
+            if (data.success && Array.isArray(data.data)) {
+    
+                inventoryData = data.data;
+    
+                renderInventoryTable(inventoryData);
+    
+                updateStats(inventoryData);
+    
+            } else {
+    
+                tbody.innerHTML =
+                    '<tr><td colspan="4">No inventory found.</td></tr>';
+            }
+    
+        } catch (e) {
+    
+            console.error(e);
+    
+            tbody.innerHTML =
+                '<tr><td colspan="4">Failed to load inventory.</td></tr>';
+        }
+    }
+    
+    function updateStats(items) {
+    
+        const total = items.length;
+    
+        const lowStock =
+            items.filter(i => i.stock_status === 'Low Stock').length;
+    
+        const inStock = total - lowStock;
+    
+        setText('statTotalItems', total);
+        setText('statInStock', inStock);
+        setText('statLowStock', lowStock);
+        setText('itemCount', `${total} items`);
+        setText('notifBadge', lowStock);
+    }
+    
+    function renderInventoryTable(items) {
+    
+        const tbody = document.getElementById('inventoryTableBody');
+    
+        if (!items || items.length === 0) {
+    
+            tbody.innerHTML =
+                '<tr><td colspan="4">No inventory items found.</td></tr>';
+    
+            return;
+        }
+    
+        let html = '';
+    
+        items.forEach(item => {
+    
+            const badge =
+                item.stock_status === 'Low Stock'
+                ? '<span class="badge badge-orange">Low Stock</span>'
+                : '<span class="badge badge-green">OK</span>';
+    
+            html += `
+                <tr onclick="selectItem(${item.item_id})">
+                    <td>
+                        <div class="item-name">${item.item_name}</div>
+                        <div class="item-sub">
+                            Reorder: ${item.reorder_level} ${item.unit}
+                        </div>
+                    </td>
+    
+                    <td>${item.category_name}</td>
+    
+                    <td>
+                        ${item.current_stock} ${item.unit}
+                    </td>
+    
+                    <td>${badge}</td>
+                </tr>
+            `;
+        });
+    
+        tbody.innerHTML = html;
+    }
+    
+    function selectItem(id) {
+    
+        selectedItemId = id;
+    
+        const item =
+            inventoryData.find(i => i.item_id == id);
+    
+        if (!item) return;
+    
+        document.getElementById(
+            'selectedCategoryBadge'
+        ).textContent = item.category_name;
+    
+        document.getElementById('detailsPanel').innerHTML = `
+            <div class="detail-head">
+                <h3>${item.item_name}</h3>
+            </div>
+    
+            <div class="stock-summary">
+                <div class="mini-stat">
+                    <div class="mini-stat-label">Current Stock</div>
+                    <div class="mini-stat-value">
+                        ${item.current_stock}
+                    </div>
+                </div>
+    
+                <div class="mini-stat">
+                    <div class="mini-stat-label">Unit</div>
+                    <div class="mini-stat-value">
+                        ${item.unit}
+                    </div>
+                </div>
+    
+                <div class="mini-stat">
+                    <div class="mini-stat-label">Reorder Level</div>
+                    <div class="mini-stat-value">
+                        ${item.reorder_level}
+                    </div>
+                </div>
+            </div>
+    
+            <p>${item.description || 'No description available.'}</p>
+        `;
+    }
+    
+    function debounceSearch() {
+    
+        clearTimeout(searchTimeout);
+    
+        searchTimeout =
+            setTimeout(loadInventory, 300);
+    }
+    
+    async function logout() {
+    
+        try {
+            await apiFetch(
+                'auth.php?action=logout',
+                { method: 'POST' }
+            );
+        } catch (e) {}
+    
+        window.location.href = 'login.html';
+    }
+    
+    async function init() {
+    
+        await loadUserInfo();
+        await loadCategories();
+        await loadInventory();
+    }
+    
+    document.addEventListener(
+        'DOMContentLoaded',
+        init
+    );
+    </script>
 </body>
 
 </html>

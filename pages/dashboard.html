@@ -29,7 +29,6 @@
         <a href="inventory.html"><span class="nav-icon">📦</span> Inventory</a>
         <a href="evac-centers.html"><span class="nav-icon">🏕️</span> Evac Centers</a>
 
-
         <span class="sidebar-section-label">Reporting</span>
         <a href="reports.html"><span class="nav-icon">📊</span> Reports</a>
 
@@ -39,16 +38,15 @@
 
         <span class="sidebar-section-label">Links</span>
         <a href="../index.html"><span class="nav-icon">🌐</span> Public Website</a>
-        <a href="https://www.facebook.com/CDRC1984"><span class="nav-icon">🌐</span> Facebook</a>
-
+        <a href="[facebook.com](https://www.facebook.com/CDRC1984)"><span class="nav-icon">🌐</span> Facebook</a>
       </nav>
 
       <div class="sidebar-footer">
         <div class="sidebar-user" onclick="window.location.href='profile.html'">
-          <div class="user-avatar">JA</div>
+          <div class="user-avatar" id="sidebarAvatar">--</div>
           <div>
-            <div class="sidebar-user-name">Juan Admin</div>
-            <div class="sidebar-user-role">Administrator</div>
+            <div class="sidebar-user-name" id="sidebarUserName">Loading...</div>
+            <div class="sidebar-user-role" id="sidebarUserRole">...</div>
           </div>
         </div>
       </div>
@@ -61,13 +59,15 @@
         </div>
 
         <div class="topbar-right">
-          <button class="topbar-icon-btn" title="Notifications">🔔<div class="notif-badge">3</div></button>
+          <button class="topbar-icon-btn" title="Notifications" id="notifBtn">🔔
+            <div class="notif-badge" id="notifBadge">0</div>
+          </button>
 
           <div class="user-chip" onclick="window.location.href='profile.html'">
-            <div class="user-avatar">JA</div>
+            <div class="user-avatar" id="topbarAvatar">--</div>
             <div>
-              <div class="user-name">Juan Admin</div>
-              <div class="user-role">Volunteer</div>
+              <div class="user-name" id="topbarUserName">Loading...</div>
+              <div class="user-role" id="topbarUserRole">...</div>
             </div>
           </div>
 
@@ -78,17 +78,16 @@
       <div class="dash-content">
         <div style="margin-bottom:24px;">
           <h2 id="welcomeTitle" style="font-size:22px;margin-bottom:4px;">Loading dashboard...</h2>
-          <p id="welcomeSubtitle" style="color:var(--gray-500);font-size:14px;">Fetching the latest relief operations
-            data.</p>
+          <p id="welcomeSubtitle" style="color:var(--gray-500);font-size:14px;">Fetching the latest relief operations data.</p>
         </div>
 
         <div class="kpi-grid">
           <div class="kpi-card">
             <div class="kpi-icon" style="background:rgba(13,34,64,0.07);">👥</div>
             <div>
-              <div class="kpi-num" id="kpiBeneficiaries">0</div>
+              <div class="kpi-num" id="kpiBeneficiaries">--</div>
               <div class="kpi-label">Total Beneficiaries</div>
-              <div class="kpi-change up">Registered under CDRC</div>
+              <div class="kpi-change up" id="kpiServedCount">-- served</div>
             </div>
           </div>
 
@@ -96,7 +95,7 @@
             <div class="kpi-card">
               <div class="kpi-icon" style="background:rgba(0,157,138,0.09);">🏕️</div>
               <div>
-                <div class="kpi-num" id="kpiActiveCenters">0</div>
+                <div class="kpi-num" id="kpiActiveCenters">--</div>
                 <div class="kpi-label">Active Evacuation Centers</div>
                 <div class="kpi-change up">Connected with CDRC</div>
               </div>
@@ -106,7 +105,7 @@
           <div class="kpi-card">
             <div class="kpi-icon" style="background:rgba(232,75,26,0.1);">📦</div>
             <div>
-              <div class="kpi-num" id="kpiDistributions">0</div>
+              <div class="kpi-num" id="kpiDistributions">--</div>
               <div class="kpi-label">Distribution Records</div>
               <div class="kpi-change up">Logged in the system</div>
             </div>
@@ -115,7 +114,7 @@
           <div class="kpi-card">
             <div class="kpi-icon" style="background:rgba(0,157,138,0.1);">✅</div>
             <div>
-              <div class="kpi-num" id="kpiDistributedToday">0</div>
+              <div class="kpi-num" id="kpiDistributedToday">--</div>
               <div class="kpi-label">Distributed Today</div>
               <div class="kpi-change up">Items issued this day</div>
             </div>
@@ -126,7 +125,7 @@
           <div class="dash-card">
             <div class="dash-card-header">
               <h4>Inventory Status</h4>
-              <a href="#" style="font-size:12px;color:var(--teal);">View All</a>
+              <a href="inventory.html" style="font-size:12px;color:var(--teal);">View All</a>
             </div>
             <div class="dash-card-body">
               <div id="inventoryList">
@@ -140,7 +139,7 @@
           <div class="dash-card">
             <div class="dash-card-header">
               <h4>Activity Feed</h4>
-              <span class="badge badge-gray">Today</span>
+              <span class="badge badge-gray">Recent</span>
             </div>
             <div class="dash-card-body">
               <div id="activityFeed">
@@ -158,7 +157,7 @@
         <div class="dash-card">
           <div class="dash-card-header">
             <h4>Recent Distributions</h4>
-            <a href="records.html" style="font-size:12px;color:var(--teal);">View All -></a>
+            <a href="records.html" style="font-size:12px;color:var(--teal);">View All →</a>
           </div>
           <div class="dash-card-body" style="padding:0;">
             <table class="data-table">
@@ -179,14 +178,33 @@
             </table>
           </div>
         </div>
+
+        <!-- Low Stock Alerts -->
+        <div class="dash-card" id="lowStockCard" style="display:none;">
+          <div class="dash-card-header">
+            <h4>⚠️ Low Stock Alerts</h4>
+            <span class="badge badge-orange" id="lowStockCount">0 items</span>
+          </div>
+          <div class="dash-card-body">
+            <div id="lowStockList"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
+  <script src="../js/api.js"></script>
   <script src="../js/main.js"></script>
-  <script src="../js/volunteer.js"></script>
   <script>
     (function () {
+      const API_ROOT = '../api';
+
+      async function apiFetch(endpoint) {
+        const url = `${API_ROOT}/${endpoint}`;
+        const response = await fetch(url, { credentials: 'same-origin' });
+        return response.json();
+      }
+
       function setText(id, value) {
         const el = document.getElementById(id);
         if (el) el.textContent = value;
@@ -208,127 +226,196 @@
         return 'Good evening';
       }
 
+      function getInitials(name) {
+        if (!name) return '--';
+        return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+      }
+
+      async function loadUserInfo() {
+        try {
+          const data = await apiFetch('auth.php?action=me');
+          if (data.success && data.user) {
+            const user = data.user;
+            const initials = getInitials(user.name);
+
+            setText('sidebarAvatar', initials);
+            setText('topbarAvatar', initials);
+            setText('sidebarUserName', user.name || user.username);
+            setText('topbarUserName', user.name || user.username);
+            setText('sidebarUserRole', user.role);
+            setText('topbarUserRole', user.role);
+
+            const firstName = user.name ? user.name.split(' ')[0] : 'User';
+            setText('welcomeTitle', `${getGreeting()}, ${firstName} 👋`);
+            setText('welcomeSubtitle', `Here's the latest status of CDRC relief operations.`);
+          }
+        } catch (error) {
+          console.error('Failed to load user info:', error);
+        }
+      }
+
+      async function loadKPIs() {
+        try {
+          const data = await apiFetch('dashboard.php?action=kpis');
+          if (data.success && data.data) {
+            const d = data.data;
+            setText('kpiBeneficiaries', formatNumber(d.total_beneficiaries));
+            setText('kpiActiveCenters', formatNumber(d.active_centers));
+            setText('kpiDistributions', formatNumber(d.total_distributions));
+            setText('kpiDistributedToday', formatNumber(d.distributed_today));
+            setText('kpiServedCount', `${formatNumber(d.served)} served`);
+          }
+        } catch (error) {
+          console.error('Failed to load KPIs:', error);
+        }
+      }
+
+      async function loadInventoryStatus() {
+        try {
+          const data = await apiFetch('inventory.php?action=list');
+          if (data.success && data.data) {
+            renderInventory(data.data);
+          }
+        } catch (error) {
+          setHtml('inventoryList', '<div class="inv-row"><span>Failed to load inventory.</span></div>');
+        }
+      }
+
       function renderInventory(items) {
         if (!items.length) {
-          setHtml('inventoryList', '<div class="inv-row"><div class="inv-row-top"><span>No inventory records found.</span></div></div>');
+          setHtml('inventoryList', '<div class="inv-row"><span>No inventory records.</span></div>');
           return;
         }
 
-        const rows = items.slice(0, 5).map((item) => {
-          const percent = Math.min(100, Math.max(0, Math.round((item.current_stock / Math.max(1, item.reorder_level)) * 100)));
+        const html = items.slice(0, 6).map(item => {
+          const percent = Math.min(100, Math.round((item.current_stock / Math.max(1, item.reorder_level)) * 100));
           const colorClass = item.current_stock <= item.reorder_level ? 'warn' : 'ok';
           return `
-        <div class="inv-row">
-          <div class="inv-row-top"><span>${item.item_name}</span><span style="font-weight:600;">${formatNumber(item.current_stock)} ${item.unit || ''}</span></div>
-          <div class="inv-bar"><div class="inv-fill ${colorClass}" style="width:${percent}%;"></div></div>
-        </div>`;
+            <div class="inv-row">
+              <div class="inv-row-top">
+                <span>${item.item_name}</span>
+                <span style="font-weight:600;">${formatNumber(item.current_stock)} ${item.unit}</span>
+              </div>
+              <div class="inv-bar"><div class="inv-fill ${colorClass}" style="width:${percent}%;"></div></div>
+            </div>`;
         }).join('');
 
-        setHtml('inventoryList', rows);
+        setHtml('inventoryList', html);
+      }
+
+      async function loadActivityFeed() {
+        try {
+          const data = await apiFetch('dashboard.php?action=activity');
+          if (data.success && data.data) {
+            renderActivity(data.data);
+          }
+        } catch (error) {
+          setHtml('activityFeed', '<div class="act-item"><span>Failed to load activity.</span></div>');
+        }
       }
 
       function renderActivity(feed) {
         if (!feed.length) {
-          setHtml('activityFeed', '<div class="act-item"><div class="act-dot" style="background:var(--gray-300);"></div><div><div class="act-text">No recent activity yet.</div></div></div>');
+          setHtml('activityFeed', '<div class="act-item"><div class="act-dot" style="background:var(--gray-300);"></div><div><div class="act-text">No recent activity.</div></div></div>');
           return;
         }
 
-        const html = feed.slice(0, 5).map((item) => {
+        const html = feed.slice(0, 6).map(item => {
           const dot = item.type === 'distribution' ? 'var(--teal)' : 'var(--orange)';
-          const text = item.type === 'distribution'
-            ? `${item.text} at ${item.detail || 'CDRC center'}`
-            : `${item.text} — ${item.detail || 'inventory update'}`;
           return `
-        <div class="act-item">
-          <div class="act-dot" style="background:${dot};"></div>
-          <div>
-            <div class="act-text">${text}</div>
-            <div class="act-time">${item.ts || ''}</div>
-          </div>
-        </div>`;
+            <div class="act-item">
+              <div class="act-dot" style="background:${dot};"></div>
+              <div>
+                <div class="act-text">${item.text}</div>
+                <div class="act-time">${item.detail || ''}</div>
+              </div>
+            </div>`;
         }).join('');
 
         setHtml('activityFeed', html);
       }
 
+      async function loadRecentDistributions() {
+        try {
+          const data = await apiFetch('distributions.php?action=list&limit=5');
+          if (data.success && data.data) {
+            renderDistributions(data.data);
+          }
+        } catch (error) {
+          setHtml('recentDistributionsBody', '<tr><td colspan="5" style="text-align:center;">Failed to load.</td></tr>');
+        }
+      }
+
       function renderDistributions(rows) {
         if (!rows.length) {
-          setHtml('recentDistributionsBody', '<tr><td colspan="5" style="text-align:center;color:var(--gray-500);">No distribution records found.</td></tr>');
+          setHtml('recentDistributionsBody', '<tr><td colspan="5" style="text-align:center;color:var(--gray-500);">No distribution records yet.</td></tr>');
           return;
         }
 
-        const html = rows.map((row) => `
-      <tr>
-        <td>${row.beneficiary_name || 'Unknown'}</td>
-        <td>${row.center_name || 'Unknown'}</td>
-        <td>${row.items_given || '—'}</td>
-        <td>${row.dist_date || '—'}</td>
-        <td><span class="badge badge-green">Completed</span></td>
-      </tr>`).join('');
+        const html = rows.map(row => `
+          <tr>
+            <td>
+              <div class="beneficiary-name">${row.beneficiary_name || 'Unknown'}</div>
+              <div class="beneficiary-id">${row.beneficiary_code || ''}</div>
+            </td>
+            <td>${row.center_name || 'Unknown'}</td>
+            <td>${row.items_given || '—'}</td>
+            <td>${row.dist_date || '—'}</td>
+            <td><span class="badge badge-green">Completed</span></td>
+          </tr>`).join('');
 
         setHtml('recentDistributionsBody', html);
       }
 
-      async function loadDashboardData() {
+      async function loadLowStock() {
         try {
-          const [userRes, kpiRes, inventoryRes, activityRes, distributionsRes] = await Promise.all([
-            apiFetch('auth.php?action=me'),
-            apiFetch('dashboard.php?action=kpis'),
-            apiFetch('inventory.php?action=list'),
-            apiFetch('dashboard.php?action=activity'),
-            apiFetch('distributions.php?action=list&limit=5')
-          ]);
+          const data = await apiFetch('inventory.php?action=low_stock');
+          if (data.success && data.data && data.data.length > 0) {
+            const card = document.getElementById('lowStockCard');
+            if (card) card.style.display = 'block';
 
-          const userData = await userRes.json().catch(() => ({}));
-          const kpiData = await kpiRes.json().catch(() => ({}));
-          const inventoryData = await inventoryRes.json().catch(() => ({}));
-          const activityData = await activityRes.json().catch(() => ({}));
-          const distributionsData = await distributionsRes.json().catch(() => ({}));
+            setText('lowStockCount', `${data.data.length} items`);
+            setText('notifBadge', data.data.length);
 
-          if (userRes.ok && userData.success && userData.user) {
-            const name = userData.user.name || userData.user.username || 'CDRC User';
-            const role = userData.user.role || 'User';
-            setText('welcomeTitle', `${getGreeting()}, ${name.split(' ')[0]} 👋`);
-            setText('welcomeSubtitle', `Here is the latest status for ${role.toLowerCase()} operations.`);
-          } else {
-            setText('welcomeTitle', `${getGreeting()} 👋`);
-            setText('welcomeSubtitle', 'Here is the latest status of CDRC relief operations.');
-          }
+            const html = data.data.map(item => `
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--gray-100);">
+                <div>
+                  <strong>${item.item_name}</strong>
+                  <div style="font-size:12px;color:var(--gray-500);">${item.category_name}</div>
+                </div>
+                <div style="text-align:right;">
+                  <span style="color:var(--orange);font-weight:600;">${item.current_stock} ${item.unit}</span>
+                  <div style="font-size:11px;color:var(--gray-500);">Reorder at: ${item.reorder_level}</div>
+                </div>
+              </div>
+            `).join('');
 
-          if (kpiRes.ok && kpiData.success && kpiData.data) {
-            const data = kpiData.data;
-            setText('kpiBeneficiaries', formatNumber(data.total_beneficiaries));
-            setText('kpiActiveCenters', formatNumber(data.active_centers));
-            setText('kpiDistributions', formatNumber(data.total_distributions));
-            setText('kpiDistributedToday', formatNumber(data.distributed_today));
-          }
-
-          if (inventoryRes.ok && inventoryData.success) {
-            renderInventory(inventoryData.data || []);
-          } else {
-            renderInventory([]);
-          }
-
-          if (activityRes.ok && activityData.success) {
-            renderActivity(activityData.data || []);
-          } else {
-            renderActivity([]);
-          }
-
-          if (distributionsRes.ok && distributionsData.success) {
-            renderDistributions(distributionsData.data || []);
-          } else {
-            renderDistributions([]);
+            setHtml('lowStockList', html);
           }
         } catch (error) {
-          setText('welcomeSubtitle', 'Unable to load live dashboard data right now.');
-          renderInventory([]);
-          renderActivity([]);
-          renderDistributions([]);
+          console.error('Failed to load low stock:', error);
         }
       }
 
-      document.addEventListener('DOMContentLoaded', loadDashboardData);
+      async function init() {
+        await loadUserInfo();
+        await Promise.all([
+          loadKPIs(),
+          loadInventoryStatus(),
+          loadActivityFeed(),
+          loadRecentDistributions(),
+          loadLowStock()
+        ]);
+      }
+
+      window.logout = async function () {
+        try {
+          await apiFetch('auth.php?action=logout');
+        } catch { }
+        window.location.href = 'login.html';
+      };
+
+      document.addEventListener('DOMContentLoaded', init);
     })();
   </script>
 </body>
