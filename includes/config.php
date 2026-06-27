@@ -6,19 +6,21 @@
 // ============================================================
 
 define('DB_HOST', 'localhost');
+define('DB_PORT', '3306');
 define('DB_NAME', 'cdrc_relief_tracker');
 define('DB_USER', 'root');
 define('DB_PASS', '');          // default XAMPP password is empty
 define('DB_CHARSET', 'utf8mb4');
 
 define('SITE_NAME', 'CDRC Relief Tracker');
-define('SITE_URL',  'http://localhost/cdrc-system');
+$siteUrl = getenv('CDRC_SITE_URL');
+define('SITE_URL', $siteUrl !== false && $siteUrl !== '' ? $siteUrl : 'http://localhost/ITS131P-Final-Project');
 
 // ---- PDO Connection (singleton) ----
 function getDB(): PDO {
     static $pdo = null;
     if ($pdo === null) {
-        $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
+        $dsn = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -42,7 +44,7 @@ function requireLogin(): void {
             http_response_code(401);
             die(json_encode(['success' => false, 'message' => 'Unauthorized. Please log in.']));
         }
-        header('Location: ' . SITE_URL . '/pages/login.php');
+        header('Location: ' . SITE_URL . '/pages/login.html');
         exit;
     }
 }

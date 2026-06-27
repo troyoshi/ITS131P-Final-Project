@@ -1,479 +1,374 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Beneficiary Records - CDRC Relief Tracker</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body>
-<div style="display:flex; min-height:100vh;">
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <a href="../index.html" class="logo">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/>
-          </svg>
-        </div>
-        <div class="logo-text"><strong>Relief Tracker</strong><span>CDRC</span></div>
-      </a>
-    </div>
-
-    <nav class="sidebar-nav">
-      <span class="sidebar-section-label">Main</span>
-      <a href="dashboard.html" class="active"><span class="nav-icon">🏠</span> Dashboard</a>
-      <a href="records.html"><span class="nav-icon">👥</span> Beneficiaries</a>
-      <a href="inventory.html"><span class="nav-icon">📦</span> Inventory</a>
-      <a href="evac-centers.html"><span class="nav-icon">🏕️</span> Evac Centers</a>
-
-
-      <span class="sidebar-section-label">Reporting</span>
-      <a href="reports.html"><span class="nav-icon">📊</span> Reports</a>
-
-      <span class="sidebar-section-label">Administration</span>
-      <a href="profile.html"><span class="nav-icon">⚙️</span> Profile Settings</a>
-      <a href="backup-restore.html"><span class="nav-icon">💾</span> Backup & Restore</a>
-
-      <span class="sidebar-section-label">Links</span>
-      <a href="../index.html"><span class="nav-icon">🌐</span> Public Website</a>
-      <a href="https://www.facebook.com/CDRC1984"><span class="nav-icon">🌐</span> Facebook</a>
-      
-    </nav>
-
-    <div class="sidebar-footer">
-      <div class="sidebar-user" onclick="window.location.href='profile.html'">
-        <div class="user-avatar">JA</div>
-        <div>
-          <div class="sidebar-user-name">Juan dela Cruz</div>
-          <div class="sidebar-user-role">Volunteer</div>
-        </div>
-      </div>
-    </div>
-  </aside>
-
-  <main class="dash-main">
-    <div class="dash-topbar">
-      <div>
-        <div class="topbar-title">Beneficiary Records</div>
+  <div style="display:flex; min-height:100vh;">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <a href="../index.html" class="logo">
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z" />
+            </svg>
+          </div>
+          <div class="logo-text"><strong>Relief Tracker</strong><span>CDRC</span></div>
+        </a>
       </div>
 
-      <div class="topbar-right">
-        <button class="topbar-icon-btn">🔔<div class="notif-badge">3</div></button>
+      <nav class="sidebar-nav">
+        <span class="sidebar-section-label">Main</span>
+        <a href="dashboard.html" class="active"><span class="nav-icon">🏠</span> Dashboard</a>
+        <a href="records.html"><span class="nav-icon">👥</span> Beneficiaries</a>
+        <a href="inventory.html"><span class="nav-icon">📦</span> Inventory</a>
+        <a href="evac-centers.html"><span class="nav-icon">🏕️</span> Evac Centers</a>
 
-        <div class="user-chip" onclick="window.location.href='profile.html'">
+
+        <span class="sidebar-section-label">Reporting</span>
+        <a href="reports.html"><span class="nav-icon">📊</span> Reports</a>
+
+        <span class="sidebar-section-label">Administration</span>
+        <a href="profile.html"><span class="nav-icon">⚙️</span> Profile Settings</a>
+        <a href="backup-restore.html"><span class="nav-icon">💾</span> Backup & Restore</a>
+
+        <span class="sidebar-section-label">Links</span>
+        <a href="../index.html"><span class="nav-icon">🌐</span> Public Website</a>
+        <a href="https://www.facebook.com/CDRC1984"><span class="nav-icon">🌐</span> Facebook</a>
+
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user" onclick="window.location.href='profile.html'">
           <div class="user-avatar">JA</div>
           <div>
-            <div class="user-name">Juan dela Cruz</div>
-            <div class="user-role">Volunteer</div>
+            <div class="sidebar-user-name">Juan dela Cruz</div>
+            <div class="sidebar-user-role">Volunteer</div>
           </div>
         </div>
-
-        <button class="btn btn-outline" style="padding:7px 16px;font-size:13px;" onclick="window.location.href='login.html'">Sign Out</button>
       </div>
-    </div>
+    </aside>
 
-    <div class="dash-content">
-      <div class="page-header-row">
+    <main class="dash-main">
+      <div class="dash-topbar">
         <div>
-          <h2>Beneficiary Records</h2>
-          <p style="font-size:13px;color:var(--gray-500);margin-top:4px;">Manage registered disaster-affected families</p>
+          <div class="topbar-title">Beneficiary Records</div>
         </div>
-        <button class="btn btn-primary" onclick="openAddModal()">+ Add Beneficiary</button>
+
+        <div class="topbar-right">
+          <button class="topbar-icon-btn">🔔<div class="notif-badge">3</div></button>
+
+          <div class="user-chip" onclick="window.location.href='profile.html'">
+            <div class="user-avatar">JA</div>
+            <div>
+              <div class="user-name">Juan dela Cruz</div>
+              <div class="user-role">Volunteer</div>
+            </div>
+          </div>
+
+          <button class="btn btn-outline" style="padding:7px 16px;font-size:13px;" onclick="logout()">Sign Out</button>
+        </div>
       </div>
 
-      <div class="summary-single">
-        <div class="summary-card">
-          <div class="summary-icon">👥</div>
+      <div class="dash-content">
+        <div class="page-header-row">
           <div>
-            <div class="summary-number">1,248</div>
-            <div class="summary-label">Registered beneficiaries</div>
+            <h2>Beneficiary Records</h2>
+            <p style="font-size:13px;color:var(--gray-500);margin-top:4px;">Manage registered disaster-affected families
+            </p>
+          </div>
+          <button class="btn btn-primary" onclick="openAddModal()">+ Add Beneficiary</button>
+        </div>
+
+        <div class="summary-single">
+          <div class="summary-card">
+            <div class="summary-icon">👥</div>
+            <div>
+              <div class="summary-number">1,248</div>
+              <div class="summary-label">Registered beneficiaries</div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="toolbar">
-        <div class="search-wrap">
-          <span class="search-icon">🔍</span>
-          <input type="text" placeholder="Search by name, ID, or location..." id="searchInput" oninput="filterTable()">
-        </div>
-
-        <select class="filter-select" onchange="filterTable()" id="statusFilter">
-          <option value="">All Statuses</option>
-          <option value="Served">Served</option>
-          <option value="Pending">Pending</option>
-          <option value="Priority">Priority</option>
-        </select>
-
-        <select class="filter-select" onchange="filterTable()" id="centerFilter">
-          <option value="">All Centers</option>
-          <option>Brgy. Masaya</option>
-          <option>Brgy. Maliwanag</option>
-          <option>Brgy. Pag-asa</option>
-          <option>Brgy. Maligaya</option>
-        </select>
-      </div>
-
-      <div class="records-card">
-        <div class="records-card-header">
-          <strong>Beneficiary List</strong>
-          <div class="records-count" id="recordCount">Showing 10 of 1,248 records</div>
-        </div>
-
-        <div style="overflow-x:auto;">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Beneficiary</th>
-                <th>Household</th>
-                <th>Evacuation Center</th>
-                <th>Needs</th>
-                <th>Status</th>
-                <th>Last Distribution</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="tableBody">
-              <tr>
-                <td>
-                  <div class="beneficiary-name">Santos, Maria L.</div>
-                  <div class="beneficiary-id">BEN-0001</div>
-                </td>
-                <td>4 members</td>
-                <td>Brgy. Masaya</td>
-                <td>Infant</td>
-                <td><span class="badge badge-green">Served</span></td>
-                <td>Jun 15, 2025</td>
-                <td>
-                  <div class="action-btns">
-                    <button class="action-btn view" onclick="viewRecord('BEN-0001')">View</button>
-                    <button class="action-btn edit" onclick="openEditFromTable('BEN-0001')">Edit</button>
-                    <button class="action-btn del">Delete</button>
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <div class="beneficiary-name">Cruz, Jose P.</div>
-                  <div class="beneficiary-id">BEN-0002</div>
-                </td>
-                <td>6 members</td>
-                <td>Brgy. Maliwanag</td>
-                <td>None</td>
-                <td><span class="badge badge-green">Served</span></td>
-                <td>Jun 15, 2025</td>
-                <td>
-                  <div class="action-btns">
-                    <button class="action-btn view" onclick="viewRecord('BEN-0002')">View</button>
-                    <button class="action-btn edit" onclick="openEditFromTable('BEN-0002')">Edit</button>
-                    <button class="action-btn del">Delete</button>
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <div class="beneficiary-name">Reyes, Ana B.</div>
-                  <div class="beneficiary-id">BEN-0003</div>
-                </td>
-                <td>3 members</td>
-                <td>Brgy. Masaya</td>
-                <td>Elderly</td>
-                <td><span class="badge badge-orange">Pending</span></td>
-                <td>Jun 14, 2025</td>
-                <td>
-                  <div class="action-btns">
-                    <button class="action-btn view" onclick="viewRecord('BEN-0003')">View</button>
-                    <button class="action-btn edit" onclick="openEditFromTable('BEN-0003')">Edit</button>
-                    <button class="action-btn del">Delete</button>
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <div class="beneficiary-name">Lim, Pedro K.</div>
-                  <div class="beneficiary-id">BEN-0004</div>
-                </td>
-                <td>5 members</td>
-                <td>Brgy. Pag-asa</td>
-                <td>Medical</td>
-                <td><span class="badge badge-teal">Priority</span></td>
-                <td>Jun 14, 2025</td>
-                <td>
-                  <div class="action-btns">
-                    <button class="action-btn view" onclick="viewRecord('BEN-0004')">View</button>
-                    <button class="action-btn edit" onclick="openEditFromTable('BEN-0004')">Edit</button>
-                    <button class="action-btn del">Delete</button>
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <div class="beneficiary-name">Aquino, Rosa G.</div>
-                  <div class="beneficiary-id">BEN-0005</div>
-                </td>
-                <td>7 members</td>
-                <td>Brgy. Maligaya</td>
-                <td>None</td>
-                <td><span class="badge badge-green">Served</span></td>
-                <td>Jun 13, 2025</td>
-                <td>
-                  <div class="action-btns">
-                    <button class="action-btn view" onclick="viewRecord('BEN-0005')">View</button>
-                    <button class="action-btn edit" onclick="openEditFromTable('BEN-0005')">Edit</button>
-                    <button class="action-btn del">Delete</button>
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <div class="beneficiary-name">Garcia, Juan T.</div>
-                  <div class="beneficiary-id">BEN-0006</div>
-                </td>
-                <td>2 members</td>
-                <td>Brgy. Masaya</td>
-                <td>Elderly</td>
-                <td><span class="badge badge-orange">Pending</span></td>
-                <td>-</td>
-                <td>
-                  <div class="action-btns">
-                    <button class="action-btn view" onclick="viewRecord('BEN-0006')">View</button>
-                    <button class="action-btn edit" onclick="openEditFromTable('BEN-0006')">Edit</button>
-                    <button class="action-btn del">Delete</button>
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <div class="beneficiary-name">Villanueva, Clara S.</div>
-                  <div class="beneficiary-id">BEN-0007</div>
-                </td>
-                <td>4 members</td>
-                <td>Brgy. Pag-asa</td>
-                <td>None</td>
-                <td><span class="badge badge-green">Served</span></td>
-                <td>Jun 13, 2025</td>
-                <td>
-                  <div class="action-btns">
-                    <button class="action-btn view" onclick="viewRecord('BEN-0007')">View</button>
-                    <button class="action-btn edit" onclick="openEditFromTable('BEN-0007')">Edit</button>
-                    <button class="action-btn del">Delete</button>
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <div class="beneficiary-name">Mendoza, Roberto A.</div>
-                  <div class="beneficiary-id">BEN-0008</div>
-                </td>
-                <td>8 members</td>
-                <td>Brgy. Maliwanag</td>
-                <td>Infant</td>
-                <td><span class="badge badge-teal">Priority</span></td>
-                <td>-</td>
-                <td>
-                  <div class="action-btns">
-                    <button class="action-btn view" onclick="viewRecord('BEN-0008')">View</button>
-                    <button class="action-btn edit" onclick="openEditFromTable('BEN-0008')">Edit</button>
-                    <button class="action-btn del">Delete</button>
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <div class="beneficiary-name">Dela Cruz, Nena R.</div>
-                  <div class="beneficiary-id">BEN-0009</div>
-                </td>
-                <td>3 members</td>
-                <td>Brgy. Maligaya</td>
-                <td>Medical</td>
-                <td><span class="badge badge-orange">Pending</span></td>
-                <td>-</td>
-                <td>
-                  <div class="action-btns">
-                    <button class="action-btn view" onclick="viewRecord('BEN-0009')">View</button>
-                    <button class="action-btn edit" onclick="openEditFromTable('BEN-0009')">Edit</button>
-                    <button class="action-btn del">Delete</button>
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <div class="beneficiary-name">Castillo, Mario F.</div>
-                  <div class="beneficiary-id">BEN-0010</div>
-                </td>
-                <td>5 members</td>
-                <td>Brgy. Masaya</td>
-                <td>None</td>
-                <td><span class="badge badge-green">Served</span></td>
-                <td>Jun 15, 2025</td>
-                <td>
-                  <div class="action-btns">
-                    <button class="action-btn view" onclick="viewRecord('BEN-0010')">View</button>
-                    <button class="action-btn edit" onclick="openEditFromTable('BEN-0010')">Edit</button>
-                    <button class="action-btn del">Delete</button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="pagination">
-          <div class="pagination-info">Page 1 of 125</div>
-          <div class="pagination-btns">
-            <button class="pg-btn">Previous</button>
-            <button class="pg-btn active">1</button>
-            <button class="pg-btn">2</button>
-            <button class="pg-btn">3</button>
-            <button class="pg-btn">Next</button>
+        <div class="toolbar">
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Search by name, ID, or location..." id="searchInput"
+              oninput="filterTable()">
           </div>
-        </div>
-      </div>
-    </div>
-  </main>
-</div>
 
-<div class="modal-overlay" id="addModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>Register New Beneficiary</h3>
-      <button class="modal-close" onclick="closeAddModal()">✕</button>
-    </div>
+          <select class="filter-select" onchange="filterTable()" id="statusFilter">
+            <option value="">All Statuses</option>
+            <option value="Served">Served</option>
+            <option value="Pending">Pending</option>
+            <option value="Priority">Priority</option>
+          </select>
 
-    <div class="modal-body">
-      <div class="modal-form-row">
-        <div class="form-group">
-          <label for="fullName">Full Name</label>
-          <input type="text" id="fullName" placeholder="Enter full name">
-        </div>
-        <div class="form-group">
-          <label for="householdCount">Household Members</label>
-          <input type="number" id="householdCount" placeholder="e.g. 5">
-        </div>
-      </div>
-
-      <div class="modal-form-row">
-        <div class="form-group">
-          <label for="evacCenter">Evacuation Center</label>
-          <select id="evacCenter">
+          <select class="filter-select" onchange="filterTable()" id="centerFilter">
+            <option value="">All Centers</option>
             <option>Brgy. Masaya</option>
             <option>Brgy. Maliwanag</option>
             <option>Brgy. Pag-asa</option>
             <option>Brgy. Maligaya</option>
           </select>
         </div>
-        <div class="form-group">
-          <label for="specialNeeds">Special Needs</label>
-          <select id="specialNeeds">
-            <option>None</option>
-            <option>Infant</option>
-            <option>Elderly</option>
-            <option>Medical</option>
-          </select>
+
+        <div class="records-card">
+          <div class="records-card-header">
+            <strong>Beneficiary List</strong>
+            <div class="records-count" id="recordCount">Showing 10 of 1,248 records</div>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Beneficiary</th>
+                  <th>Household</th>
+                  <th>Evacuation Center</th>
+                  <th>Needs</th>
+                  <th>Status</th>
+                  <th>Last Distribution</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                <tr>
+                  <td>
+                    <div class="beneficiary-name">Santos, Maria L.</div>
+                    <div class="beneficiary-id">BEN-0001</div>
+                  </td>
+                  <td>4 members</td>
+                  <td>Brgy. Masaya</td>
+                  <td>Infant</td>
+                  <td><span class="badge badge-green">Served</span></td>
+                  <td>Jun 15, 2025</td>
+                  <td>
+                    <div class="action-btns">
+                      <button class="action-btn view" onclick="viewRecord('BEN-0001')">View</button>
+                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0001')">Edit</button>
+                      <button class="action-btn del">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="beneficiary-name">Cruz, Jose P.</div>
+                    <div class="beneficiary-id">BEN-0002</div>
+                  </td>
+                  <td>6 members</td>
+                  <td>Brgy. Maliwanag</td>
+                  <td>None</td>
+                  <td><span class="badge badge-green">Served</span></td>
+                  <td>Jun 15, 2025</td>
+                  <td>
+                    <div class="action-btns">
+                      <button class="action-btn view" onclick="viewRecord('BEN-0002')">View</button>
+                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0002')">Edit</button>
+                      <button class="action-btn del">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="beneficiary-name">Reyes, Ana B.</div>
+                    <div class="beneficiary-id">BEN-0003</div>
+                  </td>
+                  <td>3 members</td>
+                  <td>Brgy. Masaya</td>
+                  <td>Elderly</td>
+                  <td><span class="badge badge-orange">Pending</span></td>
+                  <td>Jun 14, 2025</td>
+                  <td>
+                    <div class="action-btns">
+                      <button class="action-btn view" onclick="viewRecord('BEN-0003')">View</button>
+                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0003')">Edit</button>
+                      <button class="action-btn del">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="beneficiary-name">Lim, Pedro K.</div>
+                    <div class="beneficiary-id">BEN-0004</div>
+                  </td>
+                  <td>5 members</td>
+                  <td>Brgy. Pag-asa</td>
+                  <td>Medical</td>
+                  <td><span class="badge badge-teal">Priority</span></td>
+                  <td>Jun 14, 2025</td>
+                  <td>
+                    <div class="action-btns">
+                      <button class="action-btn view" onclick="viewRecord('BEN-0004')">View</button>
+                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0004')">Edit</button>
+                      <button class="action-btn del">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="beneficiary-name">Aquino, Rosa G.</div>
+                    <div class="beneficiary-id">BEN-0005</div>
+                  </td>
+                  <td>7 members</td>
+                  <td>Brgy. Maligaya</td>
+                  <td>None</td>
+                  <td><span class="badge badge-green">Served</span></td>
+                  <td>Jun 13, 2025</td>
+                  <td>
+                    <div class="action-btns">
+                      <button class="action-btn view" onclick="viewRecord('BEN-0005')">View</button>
+                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0005')">Edit</button>
+                      <button class="action-btn del">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="beneficiary-name">Garcia, Juan T.</div>
+                    <div class="beneficiary-id">BEN-0006</div>
+                  </td>
+                  <td>2 members</td>
+                  <td>Brgy. Masaya</td>
+                  <td>Elderly</td>
+                  <td><span class="badge badge-orange">Pending</span></td>
+                  <td>-</td>
+                  <td>
+                    <div class="action-btns">
+                      <button class="action-btn view" onclick="viewRecord('BEN-0006')">View</button>
+                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0006')">Edit</button>
+                      <button class="action-btn del">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="beneficiary-name">Villanueva, Clara S.</div>
+                    <div class="beneficiary-id">BEN-0007</div>
+                  </td>
+                  <td>4 members</td>
+                  <td>Brgy. Pag-asa</td>
+                  <td>None</td>
+                  <td><span class="badge badge-green">Served</span></td>
+                  <td>Jun 13, 2025</td>
+                  <td>
+                    <div class="action-btns">
+                      <button class="action-btn view" onclick="viewRecord('BEN-0007')">View</button>
+                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0007')">Edit</button>
+                      <button class="action-btn del">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="beneficiary-name">Mendoza, Roberto A.</div>
+                    <div class="beneficiary-id">BEN-0008</div>
+                  </td>
+                  <td>8 members</td>
+                  <td>Brgy. Maliwanag</td>
+                  <td>Infant</td>
+                  <td><span class="badge badge-teal">Priority</span></td>
+                  <td>-</td>
+                  <td>
+                    <div class="action-btns">
+                      <button class="action-btn view" onclick="viewRecord('BEN-0008')">View</button>
+                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0008')">Edit</button>
+                      <button class="action-btn del">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="beneficiary-name">Dela Cruz, Nena R.</div>
+                    <div class="beneficiary-id">BEN-0009</div>
+                  </td>
+                  <td>3 members</td>
+                  <td>Brgy. Maligaya</td>
+                  <td>Medical</td>
+                  <td><span class="badge badge-orange">Pending</span></td>
+                  <td>-</td>
+                  <td>
+                    <div class="action-btns">
+                      <button class="action-btn view" onclick="viewRecord('BEN-0009')">View</button>
+                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0009')">Edit</button>
+                      <button class="action-btn del">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="beneficiary-name">Castillo, Mario F.</div>
+                    <div class="beneficiary-id">BEN-0010</div>
+                  </td>
+                  <td>5 members</td>
+                  <td>Brgy. Masaya</td>
+                  <td>None</td>
+                  <td><span class="badge badge-green">Served</span></td>
+                  <td>Jun 15, 2025</td>
+                  <td>
+                    <div class="action-btns">
+                      <button class="action-btn view" onclick="viewRecord('BEN-0010')">View</button>
+                      <button class="action-btn edit" onclick="openEditFromTable('BEN-0010')">Edit</button>
+                      <button class="action-btn del">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination">
+            <div class="pagination-info">Page 1 of 125</div>
+            <div class="pagination-btns">
+              <button class="pg-btn">Previous</button>
+              <button class="pg-btn active">1</button>
+              <button class="pg-btn">2</button>
+              <button class="pg-btn">3</button>
+              <button class="pg-btn">Next</button>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div class="form-group">
-        <label for="address">Address</label>
-        <textarea id="address" rows="3" placeholder="Enter home address"></textarea>
-      </div>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeAddModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveRecord()">Save Beneficiary</button>
-    </div>
+    </main>
   </div>
-</div>
 
-<div class="modal-overlay" id="viewModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3 id="viewModalTitle">Beneficiary Details</h3>
-      <button class="modal-close" onclick="closeViewModal()">✕</button>
-    </div>
-
-    <div class="modal-body">
-      <div class="detail-grid">
-        <div class="detail-card">
-          <div class="detail-label">Beneficiary ID</div>
-          <div class="detail-value" id="detailId">-</div>
-        </div>
-        <div class="detail-card">
-          <div class="detail-label">Full Name</div>
-          <div class="detail-value" id="detailName">-</div>
-        </div>
-        <div class="detail-card">
-          <div class="detail-label">Household Members</div>
-          <div class="detail-value" id="detailHousehold">-</div>
-        </div>
-        <div class="detail-card">
-          <div class="detail-label">Evacuation Center</div>
-          <div class="detail-value" id="detailCenter">-</div>
-        </div>
-        <div class="detail-card">
-          <div class="detail-label">Special Needs</div>
-          <div class="detail-value" id="detailNeeds">-</div>
-        </div>
-        <div class="detail-card">
-          <div class="detail-label">Status</div>
-          <div class="detail-value" id="detailStatus">-</div>
-        </div>
-        <div class="detail-card">
-          <div class="detail-label">Address</div>
-          <div class="detail-value" id="detailAddress">-</div>
-        </div>
-        <div class="detail-card">
-          <div class="detail-label">Registered On</div>
-          <div class="detail-value" id="detailRegistered">-</div>
-        </div>
+  <div class="modal-overlay" id="addModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Register New Beneficiary</h3>
+        <button class="modal-close" onclick="closeAddModal()">✕</button>
       </div>
 
-      <div class="section-title">Distribution History</div>
-      <div class="dist-history">
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Items</th>
-              <th>Quantity</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="distributionHistoryBody">
-            <tr>
-              <td colspan="4" style="text-align:center;color:var(--gray-500);">No distribution records yet.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="section-title hidden" id="editSectionTitle">Edit Beneficiary Details</div>
-      <div class="hidden" id="editSection">
+      <div class="modal-body">
         <div class="modal-form-row">
           <div class="form-group">
-            <label for="editName">Full Name</label>
-            <input type="text" id="editName">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" placeholder="Enter full name">
           </div>
           <div class="form-group">
-            <label for="editHousehold">Household Members</label>
-            <input type="number" id="editHousehold">
+            <label for="householdCount">Household Members</label>
+            <input type="number" id="householdCount" placeholder="e.g. 5">
           </div>
         </div>
 
         <div class="modal-form-row">
           <div class="form-group">
-            <label for="editCenter">Evacuation Center</label>
-            <select id="editCenter">
+            <label for="evacCenter">Evacuation Center</label>
+            <select id="evacCenter">
               <option>Brgy. Masaya</option>
               <option>Brgy. Maliwanag</option>
               <option>Brgy. Pag-asa</option>
@@ -481,8 +376,8 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="editNeeds">Special Needs</label>
-            <select id="editNeeds">
+            <label for="specialNeeds">Special Needs</label>
+            <select id="specialNeeds">
               <option>None</option>
               <option>Infant</option>
               <option>Elderly</option>
@@ -492,51 +387,162 @@
         </div>
 
         <div class="form-group">
-          <label for="editAddress">Address</label>
-          <textarea id="editAddress" rows="3"></textarea>
+          <label for="address">Address</label>
+          <textarea id="address" rows="3" placeholder="Enter home address"></textarea>
         </div>
       </div>
 
-      <div class="section-title hidden" id="distributionFormTitle">Add Distribution Record</div>
-      <div class="hidden" id="distributionForm">
-        <div class="modal-form-row">
-          <div class="form-group">
-            <label for="distDate">Date</label>
-            <input type="date" id="distDate">
-          </div>
-          <div class="form-group">
-            <label for="distStatus">Status</label>
-            <select id="distStatus">
-              <option>Completed</option>
-              <option>Pending</option>
-              <option>Processing</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="modal-form-row">
-          <div class="form-group">
-            <label for="distItems">Items Distributed</label>
-            <input type="text" id="distItems" placeholder="e.g. Rice, Water, Canned Goods">
-          </div>
-          <div class="form-group">
-            <label for="distQty">Quantity</label>
-            <input type="text" id="distQty" placeholder="e.g. 2 packs">
-          </div>
-        </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeAddModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveRecord()">Save Beneficiary</button>
       </div>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="toggleEditSection()">Edit Details</button>
-      <button class="btn btn-outline" onclick="toggleDistributionForm()">Add Distribution</button>
-      <button class="btn btn-primary hidden" id="saveChangesBtn" onclick="saveChanges()">Save Changes</button>
-      <button class="btn btn-primary hidden" id="saveDistributionBtn" onclick="saveDistribution()">Save Distribution</button>
     </div>
   </div>
-</div>
 
-<script src="../js/main.js"></script>
-<script src="../js/volunteer.js"></script>
+  <div class="modal-overlay" id="viewModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="viewModalTitle">Beneficiary Details</h3>
+        <button class="modal-close" onclick="closeViewModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="detail-grid">
+          <div class="detail-card">
+            <div class="detail-label">Beneficiary ID</div>
+            <div class="detail-value" id="detailId">-</div>
+          </div>
+          <div class="detail-card">
+            <div class="detail-label">Full Name</div>
+            <div class="detail-value" id="detailName">-</div>
+          </div>
+          <div class="detail-card">
+            <div class="detail-label">Household Members</div>
+            <div class="detail-value" id="detailHousehold">-</div>
+          </div>
+          <div class="detail-card">
+            <div class="detail-label">Evacuation Center</div>
+            <div class="detail-value" id="detailCenter">-</div>
+          </div>
+          <div class="detail-card">
+            <div class="detail-label">Special Needs</div>
+            <div class="detail-value" id="detailNeeds">-</div>
+          </div>
+          <div class="detail-card">
+            <div class="detail-label">Status</div>
+            <div class="detail-value" id="detailStatus">-</div>
+          </div>
+          <div class="detail-card">
+            <div class="detail-label">Address</div>
+            <div class="detail-value" id="detailAddress">-</div>
+          </div>
+          <div class="detail-card">
+            <div class="detail-label">Registered On</div>
+            <div class="detail-value" id="detailRegistered">-</div>
+          </div>
+        </div>
+
+        <div class="section-title">Distribution History</div>
+        <div class="dist-history">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Items</th>
+                <th>Quantity</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="distributionHistoryBody">
+              <tr>
+                <td colspan="4" style="text-align:center;color:var(--gray-500);">No distribution records yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section-title hidden" id="editSectionTitle">Edit Beneficiary Details</div>
+        <div class="hidden" id="editSection">
+          <div class="modal-form-row">
+            <div class="form-group">
+              <label for="editName">Full Name</label>
+              <input type="text" id="editName">
+            </div>
+            <div class="form-group">
+              <label for="editHousehold">Household Members</label>
+              <input type="number" id="editHousehold">
+            </div>
+          </div>
+
+          <div class="modal-form-row">
+            <div class="form-group">
+              <label for="editCenter">Evacuation Center</label>
+              <select id="editCenter">
+                <option>Brgy. Masaya</option>
+                <option>Brgy. Maliwanag</option>
+                <option>Brgy. Pag-asa</option>
+                <option>Brgy. Maligaya</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="editNeeds">Special Needs</label>
+              <select id="editNeeds">
+                <option>None</option>
+                <option>Infant</option>
+                <option>Elderly</option>
+                <option>Medical</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="editAddress">Address</label>
+            <textarea id="editAddress" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="section-title hidden" id="distributionFormTitle">Add Distribution Record</div>
+        <div class="hidden" id="distributionForm">
+          <div class="modal-form-row">
+            <div class="form-group">
+              <label for="distDate">Date</label>
+              <input type="date" id="distDate">
+            </div>
+            <div class="form-group">
+              <label for="distStatus">Status</label>
+              <select id="distStatus">
+                <option>Completed</option>
+                <option>Pending</option>
+                <option>Processing</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="modal-form-row">
+            <div class="form-group">
+              <label for="distItems">Items Distributed</label>
+              <input type="text" id="distItems" placeholder="e.g. Rice, Water, Canned Goods">
+            </div>
+            <div class="form-group">
+              <label for="distQty">Quantity</label>
+              <input type="text" id="distQty" placeholder="e.g. 2 packs">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="toggleEditSection()">Edit Details</button>
+        <button class="btn btn-outline" onclick="toggleDistributionForm()">Add Distribution</button>
+        <button class="btn btn-primary hidden" id="saveChangesBtn" onclick="saveChanges()">Save Changes</button>
+        <button class="btn btn-primary hidden" id="saveDistributionBtn" onclick="saveDistribution()">Save
+          Distribution</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/volunteer.js"></script>
 </body>
+
 </html>
