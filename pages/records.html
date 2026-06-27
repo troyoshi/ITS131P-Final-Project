@@ -10,6 +10,7 @@
 
 <body>
   <div style="display:flex; min-height:100vh;">
+    <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="sidebar-logo">
         <a href="../index.html" class="logo">
@@ -51,6 +52,7 @@
       </div>
     </aside>
 
+    <!-- MAIN CONTENT -->
     <main class="dash-main">
       <div class="dash-topbar">
         <div>
@@ -68,7 +70,7 @@
             </div>
           </div>
 
-          <button class="btn btn-outline" style="padding:7px 16px;font-size:13px;" onclick="logout()">Sign Out</button>
+          <button class="btn btn-outline" style="padding:7px 16px;font-size:13px;" onclick="logoutUser()">Sign Out</button>
         </div>
       </div>
 
@@ -81,6 +83,7 @@
           <button class="btn btn-primary" onclick="openAddModal()">+ Add Beneficiary</button>
         </div>
 
+        <!-- SUMMARY CARDS -->
         <div class="summary-grid" style="grid-template-columns: repeat(4, 1fr);">
           <div class="summary-card">
             <div class="summary-icon">👥</div>
@@ -112,6 +115,7 @@
           </div>
         </div>
 
+        <!-- TOOLBAR -->
         <div class="toolbar">
           <div class="search-wrap">
             <span class="search-icon">🔍</span>
@@ -127,10 +131,10 @@
 
           <select class="filter-select" onchange="loadBeneficiaries()" id="centerFilter">
             <option value="">All Centers</option>
-            <!-- Populated dynamically -->
           </select>
         </div>
 
+        <!-- TABLE CARD -->
         <div class="records-card">
           <div class="records-card-header">
             <strong>Beneficiary List</strong>
@@ -160,16 +164,14 @@
 
           <div class="pagination">
             <div class="pagination-info" id="paginationInfo">Page 1 of 1</div>
-            <div class="pagination-btns" id="paginationBtns">
-              <!-- Populated dynamically -->
-            </div>
+            <div class="pagination-btns" id="paginationBtns"></div>
           </div>
         </div>
       </div>
     </main>
   </div>
 
-  <!-- Add Modal -->
+  <!-- ==================== ADD MODAL ==================== -->
   <div class="modal-overlay" id="addModal">
     <div class="modal">
       <div class="modal-header">
@@ -203,15 +205,11 @@
         <div class="modal-form-row">
           <div class="form-group">
             <label for="addCenter">Evacuation Center *</label>
-            <select id="addCenter" required>
-              <!-- Populated dynamically -->
-            </select>
+            <select id="addCenter" required></select>
           </div>
           <div class="form-group">
             <label for="addNeeds">Special Needs</label>
-            <select id="addNeeds">
-              <!-- Populated dynamically -->
-            </select>
+            <select id="addNeeds"></select>
           </div>
         </div>
 
@@ -233,7 +231,7 @@
 
         <div class="form-group">
           <label for="addNotes">Notes</label>
-          <textarea id="addNotes" rows="2" placeholder="Any additional notes..."></textarea>
+          <textarea id="addNotes" placeholder="Any additional notes..."></textarea>
         </div>
       </div>
 
@@ -244,76 +242,67 @@
     </div>
   </div>
 
-  <!-- View/Edit Modal -->
+  <!-- ==================== VIEW/EDIT MODAL ==================== -->
   <div class="modal-overlay" id="viewModal">
-    <div class="modal" style="max-width:700px;">
+    <div class="modal" style="max-width:900px; max-height:90vh; overflow-y:auto;">
       <div class="modal-header">
         <h3 id="viewModalTitle">Beneficiary Details</h3>
         <button class="modal-close" onclick="closeViewModal()">✕</button>
       </div>
 
       <div class="modal-body">
-        <div class="detail-grid">
-          <div class="detail-card">
-            <div class="detail-label">Beneficiary ID</div>
-            <div class="detail-value" id="detailId">-</div>
+        <!-- VIEW MODE -->
+        <div id="viewSection">
+          <div class="detail-grid">
+            <div class="detail-card">
+              <div class="detail-label">Beneficiary ID</div>
+              <div class="detail-value" id="detailId">-</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Full Name</div>
+              <div class="detail-value" id="detailName">-</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Household Members</div>
+              <div class="detail-value" id="detailHousehold">-</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Evacuation Center</div>
+              <div class="detail-value" id="detailCenter">-</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Special Needs</div>
+              <div class="detail-value" id="detailNeeds">-</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Status</div>
+              <div class="detail-value" id="detailStatus">-</div>
+            </div>
+            <div class="detail-card" style="grid-column: span 2;">
+              <div class="detail-label">Address</div>
+              <div class="detail-value" id="detailAddress">-</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Contact</div>
+              <div class="detail-value" id="detailContact">-</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Registered</div>
+              <div class="detail-value" id="detailRegistered">-</div>
+            </div>
           </div>
-          <div class="detail-card">
-            <div class="detail-label">Full Name</div>
-            <div class="detail-value" id="detailName">-</div>
-          </div>
-          <div class="detail-card">
-            <div class="detail-label">Household Members</div>
-            <div class="detail-value" id="detailHousehold">-</div>
-          </div>
-          <div class="detail-card">
-            <div class="detail-label">Evacuation Center</div>
-            <div class="detail-value" id="detailCenter">-</div>
-          </div>
-          <div class="detail-card">
-            <div class="detail-label">Special Needs</div>
-            <div class="detail-value" id="detailNeeds">-</div>
-          </div>
-          <div class="detail-card">
-            <div class="detail-label">Status</div>
-            <div class="detail-value" id="detailStatus">-</div>
-          </div>
-          <div class="detail-card" style="grid-column: span 2;">
-            <div class="detail-label">Address</div>
-            <div class="detail-value" id="detailAddress">-</div>
-          </div>
-          <div class="detail-card">
-            <div class="detail-label">Contact</div>
-            <div class="detail-value" id="detailContact">-</div>
-          </div>
-          <div class="detail-card">
-            <div class="detail-label">Registered</div>
-            <div class="detail-value" id="detailRegistered">-</div>
+
+          <!-- DISTRIBUTION HISTORY -->
+          <div class="form-block" style="margin-top:24px;">
+            <h5>📦 Distribution History</h5>
+            <div id="distributionHistoryContainer" style="max-height:300px;overflow-y:auto;">
+              <p style="text-align:center;color:var(--gray-500);">Loading distribution history...</p>
+            </div>
           </div>
         </div>
 
-        <div class="section-title" style="margin-top:24px;">Distribution History</div>
-        <div class="dist-history">
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Items</th>
-                <th>Center</th>
-                <th>Staff</th>
-              </tr>
-            </thead>
-            <tbody id="distributionHistoryBody">
-              <tr>
-                <td colspan="4" style="text-align:center;color:var(--gray-500);">No records yet.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Edit Section -->
-        <div class="section-title hidden" id="editSectionTitle" style="margin-top:24px;">Edit Information</div>
-        <div class="hidden" id="editSection">
+        <!-- EDIT MODE -->
+        <div id="editSection" class="hidden">
           <div class="modal-form-row">
             <div class="form-group">
               <label for="editFirstName">First Name</label>
@@ -356,37 +345,49 @@
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-outline" onclick="toggleEditSection()" id="editToggleBtn">Edit Details</button>
+        <button class="btn btn-outline" id="editToggleBtn" onclick="toggleEditMode()">Edit Details</button>
         <button class="btn btn-primary hidden" id="saveChangesBtn" onclick="saveChanges()">Save Changes</button>
+        <button class="btn btn-outline hidden" id="cancelEditBtn" onclick="toggleEditMode()">Cancel</button>
         <button class="btn btn-outline" onclick="closeViewModal()">Close</button>
       </div>
     </div>
   </div>
 
+  <!-- SCRIPTS -->
   <script src="../js/api.js"></script>
   <script src="../js/main.js"></script>
+
   <script>
-    const API_ROOT = '../api';
+    // ============================================================
+    // STATE
+    // ============================================================
     let currentPage = 1;
     let totalPages = 1;
     let currentBeneficiaryId = null;
     let centers = [];
     let specialNeeds = [];
     let searchTimeout = null;
+    let editMode = false;
 
-    async function apiFetch(endpoint, options = {}) {
-      const url = `${API_ROOT}/${endpoint}`;
-      const response = await fetch(url, {
-        credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json', ...options.headers },
-        ...options
-      });
-      return response.json();
-    }
-
+    // ============================================================
+    // UTILITIES
+    // ============================================================
     function setText(id, value) {
       const el = document.getElementById(id);
       if (el) el.textContent = value;
+    }
+
+    function showElement(id, show = true) {
+      const el = document.getElementById(id);
+      if (!el) {
+        console.error('Element not found:', id);
+        return;
+      }
+      if (show) {
+        el.classList.remove('hidden');
+      } else {
+        el.classList.add('hidden');
+      }
     }
 
     function getInitials(name) {
@@ -394,10 +395,12 @@
       return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     }
 
-    // Load user info
+    // ============================================================
+    // USER INFO
+    // ============================================================
     async function loadUserInfo() {
       try {
-        const data = await apiFetch('auth.php?action=me');
+        const data = await API.getCurrentUser();
         if (data.success && data.user) {
           const initials = getInitials(data.user.name);
           setText('sidebarAvatar', initials);
@@ -407,114 +410,114 @@
           setText('sidebarUserRole', data.user.role);
           setText('topbarUserRole', data.user.role);
         }
-      } catch (e) { console.error(e); }
+      } catch (e) {
+        console.error('Failed to load user info:', e);
+      }
     }
 
-    // Load dropdowns
+    // ============================================================
+    // DROPDOWNS
+    // ============================================================
     async function loadDropdowns() {
       try {
-        // Centers
-        const centerData = await apiFetch('centers.php?action=list');
+        const centerData = await API.getCenters();
         if (centerData.success) {
           centers = centerData.data;
-          const centerOptions = centers.map(c => `<option value="${c.center_id}">${c.center_name}</option>`).join('');
+          const options = centers.map(c =>
+            `<option value="${c.center_id}">${c.center_name}</option>`
+          ).join('');
 
-          document.getElementById('centerFilter').innerHTML = '<option value="">All Centers</option>' +
+          document.getElementById('centerFilter').innerHTML =
+            '<option value="">All Centers</option>' +
             centers.map(c => `<option value="${c.center_name}">${c.center_name}</option>`).join('');
-
-          document.getElementById('addCenter').innerHTML = centerOptions;
-          document.getElementById('editCenter').innerHTML = centerOptions;
+          document.getElementById('addCenter').innerHTML = options;
+          document.getElementById('editCenter').innerHTML = options;
         }
 
-        // Special needs
-        const needsData = await apiFetch('beneficiaries.php?action=special_needs');
+        const needsData = await API.getSpecialNeeds();
         if (needsData.success) {
           specialNeeds = needsData.data;
-          const needsOptions = specialNeeds.map(n => `<option value="${n.need_id}">${n.need_label}</option>`).join('');
-          document.getElementById('addNeeds').innerHTML = needsOptions;
-          document.getElementById('editNeeds').innerHTML = needsOptions;
+          const options = specialNeeds.map(n =>
+            `<option value="${n.need_id}">${n.need_label}</option>`
+          ).join('');
+          document.getElementById('addNeeds').innerHTML = options;
+          document.getElementById('editNeeds').innerHTML = options;
         }
       } catch (e) {
         console.error('Failed to load dropdowns:', e);
       }
     }
 
-    // Load stats
+    // ============================================================
+    // STATS
+    // ============================================================
     async function loadStats() {
       try {
-        const data = await apiFetch('beneficiaries.php?action=stats');
-        if (data.success && data.data) {
+        const data = await API.getBeneficiaryStats();
+        if (data.success) {
           setText('statTotal', data.data.total || 0);
           setText('statServed', data.data.served || 0);
           setText('statPending', data.data.pending || 0);
           setText('statPriority', data.data.priority || 0);
         }
-      } catch (e) { console.error(e); }
+      } catch (e) {
+        console.error('Failed to load stats:', e);
+      }
     }
 
-    // Load beneficiaries
+    // ============================================================
+    // LIST BENEFICIARIES
+    // ============================================================
     async function loadBeneficiaries() {
       const tbody = document.getElementById('tableBody');
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Loading...</td></tr>';
-
-      const search = document.getElementById('searchInput').value;
-      const status = document.getElementById('statusFilter').value;
-      const center = document.getElementById('centerFilter').value;
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center">Loading...</td></tr>';
 
       try {
-        const params = new URLSearchParams({
+        const params = {
           page: currentPage,
           limit: 10,
-          search: search,
-          status: status,
-          center: center
-        });
+          search: document.getElementById('searchInput').value,
+          status: document.getElementById('statusFilter').value,
+          center: document.getElementById('centerFilter').value
+        };
 
-        const data = await apiFetch(`beneficiaries.php?action=list&${params}`);
-
+        const data = await API.getBeneficiaries(params);
         if (data.success) {
           totalPages = data.total_pages;
           setText('recordCount', `Showing ${data.data.length} of ${data.total} records`);
           setText('paginationInfo', `Page ${data.page} of ${data.total_pages}`);
-
           renderTable(data.data);
           renderPagination(data.page, data.total_pages);
         }
       } catch (e) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--orange);">Failed to load data.</td></tr>';
+        console.error('Failed to load beneficiaries:', e);
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:red;">Error: ${e.message}</td></tr>`;
       }
     }
 
-    function renderTable(beneficiaries) {
+    function renderTable(list) {
       const tbody = document.getElementById('tableBody');
 
-      if (!beneficiaries.length) {
+      if (!list.length) {
         tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--gray-500);">No beneficiaries found.</td></tr>';
         return;
       }
 
-      const statusBadge = (status) => {
-        const classes = { 'Served': 'badge-green', 'Pending': 'badge-orange', 'Priority': 'badge-teal' };
-        return `<span class="badge ${classes[status] || 'badge-gray'}">${status}</span>`;
-      };
-
-      tbody.innerHTML = beneficiaries.map(b => `
+      tbody.innerHTML = list.map(b => `
         <tr>
           <td>
             <div class="beneficiary-name">${b.full_name}</div>
             <div class="beneficiary-id">${b.beneficiary_code}</div>
           </td>
           <td>${b.household_size} members</td>
-          <td>${b.center_name}</td>
+          <td>${b.center_name || '-'}</td>
           <td>${b.special_need || 'None'}</td>
-          <td>${statusBadge(b.status)}</td>
+          <td><span class="status-badge status-${b.status.toLowerCase()}">${b.status}</span></td>
           <td>${b.registered_at}</td>
           <td>
-            <div class="action-btns">
-              <button class="action-btn view" onclick="viewBeneficiary(${b.beneficiary_id})">View</button>
-              <button class="action-btn edit" onclick="editBeneficiary(${b.beneficiary_id})">Edit</button>
-              <button class="action-btn del" onclick="deleteBeneficiary(${b.beneficiary_id})">Delete</button>
-            </div>
+            <button class="btn btn-sm btn-outline" onclick="viewBeneficiary(${b.beneficiary_id})">View</button>
+            <button class="btn btn-sm btn-outline" onclick="editBeneficiary(${b.beneficiary_id})">Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteBeneficiaryRecord(${b.beneficiary_id})">Delete</button>
           </td>
         </tr>
       `).join('');
@@ -522,13 +525,11 @@
 
     function renderPagination(current, total) {
       const container = document.getElementById('paginationBtns');
-      let html = `<button class="pg-btn" onclick="goToPage(${current - 1})" ${current <= 1 ? 'disabled' : ''}>Previous</button>`;
-
-      for (let i = Math.max(1, current - 2); i <= Math.min(total, current + 2); i++) {
+      let html = `<button class="pg-btn" onclick="goToPage(${current - 1})" ${current === 1 ? 'disabled' : ''}>Previous</button>`;
+      for (let i = 1; i <= total; i++) {
         html += `<button class="pg-btn ${i === current ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
       }
-
-      html += `<button class="pg-btn" onclick="goToPage(${current + 1})" ${current >= total ? 'disabled' : ''}>Next</button>`;
+      html += `<button class="pg-btn" onclick="goToPage(${current + 1})" ${current === total ? 'disabled' : ''}>Next</button>`;
       container.innerHTML = html;
     }
 
@@ -546,239 +547,257 @@
       }, 300);
     }
 
-    // View beneficiary
-    async function viewBeneficiary(id) {
-      try {
-        const data = await apiFetch(`beneficiaries.php?action=get&id=${id}`);
-        if (data.success && data.data) {
-          const b = data.data;
-          currentBeneficiaryId = id;
-
-          setText('viewModalTitle', `${b.first_name} ${b.last_name}`);
-          setText('detailId', b.beneficiary_code);
-          setText('detailName', `${b.first_name} ${b.last_name}`);
-          setText('detailHousehold', b.household_size);
-          setText('detailCenter', b.center_name);
-          setText('detailNeeds', b.need_label || 'None');
-          setText('detailStatus', b.status);
-          setText('detailAddress', `${b.address}, ${b.barangay}, ${b.city}`);
-          setText('detailContact', b.contact_no || 'Not provided');
-          setText('detailRegistered', b.registered_at);
-
-          // Load distribution history
-          const distData = await apiFetch(`distributions.php?action=list&search=${b.beneficiary_code}`);
-          renderDistributionHistory(distData.data || []);
-
-          // Hide edit section
-          document.getElementById('editSection').classList.add('hidden');
-          document.getElementById('editSectionTitle').classList.add('hidden');
-          document.getElementById('saveChangesBtn').classList.add('hidden');
-
-          document.getElementById('viewModal').classList.add('open');
-        }
-      } catch (e) {
-        alert('Failed to load beneficiary details.');
+    // ============================================================
+    // ADD MODAL
+    // ============================================================
+    function openAddModal() {
+      console.log('openAddModal called');
+      const modal = document.getElementById('addModal');
+      if (!modal) {
+        console.error('addModal element not found!');
+        return;
       }
+      modal.classList.add('active');
+      console.log('Added active class to addModal');
     }
 
-    function renderDistributionHistory(distributions) {
-      const tbody = document.getElementById('distributionHistoryBody');
-      if (!distributions.length) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--gray-500);">No distribution records yet.</td></tr>';
+    function closeAddModal() {
+      console.log('closeAddModal called');
+      const modal = document.getElementById('addModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    async function saveBeneficiary() {
+      const payload = {
+        first_name: document.getElementById('addFirstName').value.trim(),
+        last_name: document.getElementById('addLastName').value.trim(),
+        household_size: document.getElementById('addHousehold').value,
+        contact_no: document.getElementById('addContact').value.trim(),
+        center_id: document.getElementById('addCenter').value,
+        need_id: document.getElementById('addNeeds').value,
+        address: document.getElementById('addAddress').value.trim(),
+        barangay: document.getElementById('addBarangay').value.trim(),
+        city: document.getElementById('addCity').value.trim(),
+        notes: document.getElementById('addNotes').value.trim(),
+        status: 'Pending'
+      };
+
+      if (!payload.first_name || !payload.last_name || !payload.household_size ||
+        !payload.address || !payload.barangay || !payload.center_id) {
+        alert('Please fill in all required fields (marked with *)');
         return;
       }
 
-      tbody.innerHTML = distributions.map(d => `
-        <tr>
-          <td>${d.dist_date}</td>
-          <td>${d.items_given || '—'}</td>
-          <td>${d.center_name}</td>
-          <td>${d.staff_name}</td>
-        </tr>
-      `).join('');
+      try {
+        const data = await API.createBeneficiary(payload);
+        if (data.success) {
+          alert('✅ Beneficiary registered successfully!\nID: ' + data.code);
+          closeAddModal();
+          document.getElementById('addFirstName').value = '';
+          document.getElementById('addLastName').value = '';
+          document.getElementById('addHousehold').value = '';
+          document.getElementById('addContact').value = '';
+          document.getElementById('addAddress').value = '';
+          document.getElementById('addBarangay').value = '';
+          document.getElementById('addCity').value = 'Quezon City';
+          document.getElementById('addNotes').value = '';
+          currentPage = 1;
+          loadBeneficiaries();
+          loadStats();
+        }
+      } catch (e) {
+        alert('❌ Error: ' + e.message);
+      }
     }
 
-    // Edit beneficiary
-    async function editBeneficiary(id) {
-      await viewBeneficiary(id);
+    // ============================================================
+    // VIEW/EDIT MODAL
+    // ============================================================
+    async function viewBeneficiary(id) {
+      console.log('viewBeneficiary called with id:', id);
+      currentBeneficiaryId = id;
+      editMode = false;
+      setEditMode(false);
 
-      const data = await apiFetch(`beneficiaries.php?action=get&id=${id}`);
-      if (data.success && data.data) {
+      try {
+        const data = await API.getBeneficiary(id);
+        if (!data.success) {
+          alert('Failed to load beneficiary');
+          return;
+        }
+
         const b = data.data;
+
+        // View fields
+        setText('detailId', b.beneficiary_code);
+        setText('detailName', `${b.first_name} ${b.last_name}`);
+        setText('detailHousehold', `${b.household_size} members`);
+        setText('detailCenter', b.center_name || '-');
+        setText('detailNeeds', b.need_label || 'None');
+        setText('detailStatus', b.status);
+        setText('detailAddress', `${b.address}, ${b.barangay}, ${b.city}`);
+        setText('detailContact', b.contact_no || '-');
+        setText('detailRegistered', b.registered_at || '-');
+
+        // Edit fields
         document.getElementById('editFirstName').value = b.first_name;
         document.getElementById('editLastName').value = b.last_name;
         document.getElementById('editHousehold').value = b.household_size;
         document.getElementById('editStatus').value = b.status;
         document.getElementById('editCenter').value = b.center_id;
-        document.getElementById('editNeeds').value = b.need_id;
+        document.getElementById('editNeeds').value = b.need_id || '';
         document.getElementById('editAddress').value = b.address;
 
-        toggleEditSection();
+        // Load distribution history
+        await loadDistributionHistory(id);
+
+        const modal = document.getElementById('viewModal');
+        if (!modal) {
+          console.error('viewModal element not found!');
+          return;
+        }
+        modal.classList.add('active');
+        console.log('Opened viewModal');
+      } catch (e) {
+        alert('Error: ' + e.message);
       }
     }
 
-    function toggleEditSection() {
-      const section = document.getElementById('editSection');
-      const title = document.getElementById('editSectionTitle');
-      const btn = document.getElementById('saveChangesBtn');
+    // ============================================================
+    // LOAD DISTRIBUTION HISTORY (NEW)
+    // ============================================================
+    async function loadDistributionHistory(beneficiaryId) {
+      const container = document.getElementById('distributionHistoryContainer');
+      
+      try {
+        const response = await fetch(`../api/beneficiaries.php?action=distribution_history&beneficiary_id=${beneficiaryId}&limit=50`, {
+          credentials: 'same-origin'
+        });
+        
+        const data = await response.json();
 
-      if (section.classList.contains('hidden')) {
-        section.classList.remove('hidden');
-        title.classList.remove('hidden');
-        btn.classList.remove('hidden');
-      } else {
-        section.classList.add('hidden');
-        title.classList.add('hidden');
-        btn.classList.add('hidden');
+        if (data.success && data.data && data.data.length > 0) {
+          const historyHtml = data.data.map(dist => `
+            <div style="padding:12px;border-bottom:1px solid var(--gray-200);display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <div style="font-weight:600;color:var(--gray-800);">${dist.item_name}</div>
+                <div style="font-size:13px;color:var(--gray-600);margin-top:4px;">
+                  <strong>${dist.quantity_given}</strong> ${dist.unit} • ${dist.distribution_date}
+                </div>
+                <div style="font-size:12px;color:var(--gray-500);margin-top:4px;">
+                  📍 ${dist.center_name} | by ${dist.staff_name}
+                </div>
+                ${dist.remarks ? `<div style="font-size:12px;color:var(--gray-500);margin-top:4px;font-style:italic;">"${dist.remarks}"</div>` : ''}
+              </div>
+              <div style="background:rgba(0,157,138,0.1);padding:8px 12px;border-radius:6px;text-align:center;">
+                <div style="font-size:13px;color:var(--teal);font-weight:600;">✅</div>
+                <div style="font-size:11px;color:var(--teal);margin-top:4px;">Distributed</div>
+              </div>
+            </div>
+          `).join('');
+
+          container.innerHTML = historyHtml;
+        } else {
+          container.innerHTML = '<p style="text-align:center;color:var(--gray-500);padding:20px;">No distribution history yet.</p>';
+        }
+      } catch (e) {
+        console.error('Failed to load distribution history:', e);
+        container.innerHTML = '<p style="text-align:center;color:var(--orange);padding:20px;">Failed to load distribution history.</p>';
       }
+    }
+
+    function editBeneficiary(id) {
+      viewBeneficiary(id).then(() => {
+        setEditMode(true);
+      });
+    }
+
+    function setEditMode(show) {
+      editMode = show;
+      showElement('viewSection', !show);
+      showElement('editSection', show);
+      showElement('editToggleBtn', !show);
+      showElement('saveChangesBtn', show);
+      showElement('cancelEditBtn', show);
+    }
+
+    function toggleEditMode() {
+      setEditMode(!editMode);
     }
 
     async function saveChanges() {
       if (!currentBeneficiaryId) return;
 
       const payload = {
-        first_name: document.getElementById('editFirstName').value,
-        last_name: document.getElementById('editLastName').value,
+        first_name: document.getElementById('editFirstName').value.trim(),
+        last_name: document.getElementById('editLastName').value.trim(),
         household_size: document.getElementById('editHousehold').value,
         status: document.getElementById('editStatus').value,
         center_id: document.getElementById('editCenter').value,
         need_id: document.getElementById('editNeeds').value,
-        address: document.getElementById('editAddress').value,
-        barangay: 'Unknown',
-        city: 'Quezon City'
+        address: document.getElementById('editAddress').value.trim()
       };
 
       try {
-        const data = await apiFetch(`beneficiaries.php?action=update&id=${currentBeneficiaryId}`, {
-          method: 'POST',
-          body: JSON.stringify(payload)
-        });
-
+        const data = await API.updateBeneficiary(currentBeneficiaryId, payload);
         if (data.success) {
-          alert('Beneficiary updated successfully.');
+          alert('✅ Updated successfully');
           closeViewModal();
           loadBeneficiaries();
           loadStats();
-        } else {
-          alert(data.message || 'Failed to update.');
         }
       } catch (e) {
-        alert('Failed to update beneficiary.');
+        alert('❌ Error: ' + e.message);
       }
-    }
-
-    // Delete beneficiary
-    async function deleteBeneficiary(id) {
-      if (!confirm('Are you sure you want to delete this beneficiary?')) return;
-
-      try {
-        const data = await apiFetch(`beneficiaries.php?action=delete&id=${id}`, { method: 'POST' });
-        if (data.success) {
-          alert('Beneficiary deleted.');
-          loadBeneficiaries();
-          loadStats();
-        } else {
-          alert(data.message || 'Failed to delete.');
-        }
-      } catch (e) {
-        alert('Failed to delete beneficiary.');
-      }
-    }
-
-    // Add beneficiary
-    function openAddModal() {
-      // Reset form
-      ['addFirstName', 'addLastName', 'addHousehold', 'addContact', 'addAddress', 'addBarangay', 'addNotes'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-      });
-      document.getElementById('addCity').value = 'Quezon City';
-      document.getElementById('addModal').classList.add('open');
-    }
-
-    function closeAddModal() {
-      document.getElementById('addModal').classList.remove('open');
     }
 
     function closeViewModal() {
-      document.getElementById('viewModal').classList.remove('open');
+      const modal = document.getElementById('viewModal');
+      if (modal) modal.classList.remove('active');
+      setEditMode(false);
       currentBeneficiaryId = null;
     }
 
-    async function saveBeneficiary() {
-      const firstName = document.getElementById('addFirstName').value.trim();
-      const lastName = document.getElementById('addLastName').value.trim();
-      const household = document.getElementById('addHousehold').value;
-      const centerId = document.getElementById('addCenter').value;
-      const needId = document.getElementById('addNeeds').value;
-      const address = document.getElementById('addAddress').value.trim();
-      const barangay = document.getElementById('addBarangay').value.trim();
-      const city = document.getElementById('addCity').value.trim();
-      const contact = document.getElementById('addContact').value.trim();
-      const notes = document.getElementById('addNotes').value.trim();
-
-      if (!firstName || !lastName || !household || !address || !barangay) {
-        alert('Please fill in all required fields.');
-        return;
-      }
-
-      const payload = {
-        first_name: firstName,
-        last_name: lastName,
-        household_size: parseInt(household),
-        center_id: parseInt(centerId),
-        need_id: parseInt(needId) || 1,
-        address: address,
-        barangay: barangay,
-        city: city || 'Quezon City',
-        contact_no: contact,
-        notes: notes,
-        status: 'Pending'
-      };
+    // ============================================================
+    // DELETE
+    // ============================================================
+    async function deleteBeneficiaryRecord(id) {
+      if (!confirm('Are you sure you want to delete this beneficiary?')) return;
 
       try {
-        const data = await apiFetch('beneficiaries.php?action=create', {
-          method: 'POST',
-          body: JSON.stringify(payload)
-        });
-
+        const data = await API.deleteBeneficiary(id);
         if (data.success) {
-          alert(`Beneficiary registered successfully. Code: ${data.code}`);
-          closeAddModal();
+          alert('✅ Deleted successfully');
           loadBeneficiaries();
           loadStats();
-        } else {
-          alert(data.message || 'Failed to save.');
         }
       } catch (e) {
-        alert('Failed to save beneficiary.');
+        alert('❌ Error: ' + e.message);
       }
     }
 
-    // Logout
-    async function logout() {
+    // ============================================================
+    // LOGOUT
+    // ============================================================
+    async function logoutUser() {
       try {
-        await apiFetch('auth.php?action=logout', { method: 'POST' });
-      } catch { }
-      window.location.href = 'login.html';
-    }
-
-    // Check URL params for center filter
-    function checkUrlParams() {
-      const params = new URLSearchParams(window.location.search);
-      const center = params.get('center');
-      if (center) {
-        document.getElementById('centerFilter').value = center;
+        await API.logout();
+      } catch (e) {
+        console.error('Logout error:', e);
       }
+      location.href = 'login.html';
     }
 
-    // Initialize
+    // ============================================================
+    // INIT
+    // ============================================================
     async function init() {
+      console.log('Initializing records page...');
       await loadUserInfo();
       await loadDropdowns();
-      checkUrlParams();
       await loadStats();
       await loadBeneficiaries();
+      console.log('Page initialized');
     }
 
     document.addEventListener('DOMContentLoaded', init);

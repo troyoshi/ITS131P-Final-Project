@@ -166,16 +166,134 @@
     </div>
   </div>
 
-<!-- <script src="../js/api.js"></script> -->
-<!-- <script src="../js/main.js"></script> -->
- 
+  <!-- ==================== STOCK TRANSACTION MODAL ==================== -->
+  <div class="modal-overlay" id="stockModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="stockModalTitle">Add Stock In</h3>
+        <button class="modal-close" onclick="closeStockModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="stockItemName">Item</label>
+          <input type="text" id="stockItemName" readonly disabled>
+        </div>
+
+        <div class="modal-form-row">
+          <div class="form-group">
+            <label for="stockQuantity">Quantity *</label>
+            <input type="number" id="stockQuantity" placeholder="Enter quantity" min="1" required>
+          </div>
+          <div class="form-group">
+            <label for="stockUnit">Unit</label>
+            <input type="text" id="stockUnit" readonly disabled>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="stockDate">Transaction Date *</label>
+          <input type="date" id="stockDate" required>
+        </div>
+
+        <div class="form-group">
+          <label for="stockNote">Reference / Notes</label>
+          <textarea id="stockNote" placeholder="e.g., Donation from DSWD, Purchase PO#12345..." rows="2"></textarea>
+        </div>
+
+        <div id="stockWarning" class="form-group" style="display:none;padding:12px;background:rgba(232,75,26,0.1);border-radius:8px;border-left:4px solid var(--orange);">
+          <strong style="color:var(--orange);">⚠️ Stock Out</strong>
+          <p id="stockWarningText" style="margin:8px 0 0;font-size:13px;color:var(--gray-700);"></p>
+        </div>
+
+        <!-- Distribution to Beneficiary Section (Hidden by default) -->
+        <div id="distributionSection" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--gray-200);">
+          <h5 style="margin-bottom:12px;">👥 Distribute to Beneficiary</h5>
+          
+          <div class="form-group">
+            <label for="distributionCenter">Evacuation Center *</label>
+            <select id="distributionCenter" required style="width:100%;padding:8px;border:1px solid var(--gray-300);border-radius:6px;">
+              <option value="">-- Select Center --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="distributionBeneficiary">Beneficiary *</label>
+            <select id="distributionBeneficiary" required style="width:100%;padding:8px;border:1px solid var(--gray-300);border-radius:6px;">
+              <option value="">-- Select Beneficiary --</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeStockModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitStockTransaction()">Record Transaction</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== EDIT STOCK MODAL ==================== -->
+  <div class="modal-overlay" id="editStockModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Edit Stock Amount</h3>
+        <button class="modal-close" onclick="closeEditStockModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="editStockItemName">Item</label>
+          <input type="text" id="editStockItemName" readonly disabled>
+        </div>
+
+        <div class="modal-form-row">
+          <div class="form-group">
+            <label for="editStockCurrent">Current Stock</label>
+            <input type="text" id="editStockCurrent" readonly disabled>
+          </div>
+          <div class="form-group">
+            <label for="editStockUnit">Unit</label>
+            <input type="text" id="editStockUnit" readonly disabled>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editStockNew">New Stock Amount *</label>
+          <input type="number" id="editStockNew" placeholder="Enter new stock amount" min="0" required>
+        </div>
+
+        <div class="form-group">
+          <label for="editStockReason">Reason for Change *</label>
+          <textarea id="editStockReason" placeholder="e.g., Stock correction, physical count adjustment..." rows="2" required></textarea>
+        </div>
+
+        <div id="editStockInfo" style="padding:12px;background:rgba(0,157,138,0.1);border-radius:8px;border-left:4px solid var(--teal);">
+          <p style="margin:0;font-size:13px;color:var(--gray-700);">
+            Change: <strong id="editStockChange">+0</strong>
+          </p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeEditStockModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitEditStock()">Update Stock</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const API_ROOT = '../api';
     let inventoryData = [];
     let categories = [];
+    let centers = [];
+    let beneficiaries = [];
     let selectedCategory = '';
     let selectedItemId = null;
     let searchTimeout = null;
+    let stockTransactionType = 'IN';
+    let currentItemStock = 0;
+    let currentItemUnit = '';
     
     async function apiFetch(endpoint, options = {}) {
         const response = await fetch(`${API_ROOT}/${endpoint}`, {
@@ -186,7 +304,13 @@
             ...options
         });
     
-        return response.json();
+        const text = await response.text();
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            console.error('Response was:', text);
+            throw new Error(`API returned invalid JSON: ${text.substring(0, 100)}`);
+        }
     }
     
     function setText(id, value) {
@@ -272,6 +396,53 @@
             console.error(e);
         }
     }
+
+    // ============================================================
+    // LOAD CENTERS - FIXED ENDPOINT
+    // ============================================================
+    async function loadCenters() {
+        try {
+            const data = await apiFetch('centers.php?action=list');
+            if (data.success && data.data) {
+                centers = data.data;
+                const select = document.getElementById('distributionCenter');
+                let options = '<option value="">-- Select Center --</option>';
+                centers.forEach(center => {
+                    options += `<option value="${center.center_id}">${center.center_name}</option>`;
+                });
+                select.innerHTML = options;
+            }
+        } catch (e) {
+            console.error('Failed to load centers:', e);
+        }
+    }
+
+    // Load beneficiaries for selected center
+    async function loadBeneficiariesForCenter() {
+        const centerId = document.getElementById('distributionCenter').value;
+        const select = document.getElementById('distributionBeneficiary');
+
+        if (!centerId) {
+            select.innerHTML = '<option value="">-- Select Beneficiary --</option>';
+            return;
+        }
+
+        try {
+            const data = await apiFetch(`beneficiaries.php?action=by_center&center_id=${centerId}&limit=1000`);
+            if (data.success && data.data) {
+                beneficiaries = data.data;
+                let options = '<option value="">-- Select Beneficiary --</option>';
+                beneficiaries.forEach(benef => {
+                    options += `<option value="${benef.beneficiary_id}">${benef.beneficiary_code} - ${benef.full_name}</option>`;
+                });
+                select.innerHTML = options;
+            }
+        } catch (e) {
+            console.error('Failed to load beneficiaries:', e);
+        }
+    }
+
+    document.getElementById('distributionCenter')?.addEventListener('change', loadBeneficiariesForCenter);
     
     async function loadInventory() {
     
@@ -356,7 +527,7 @@
                 : '<span class="badge badge-green">OK</span>';
     
             html += `
-                <tr onclick="selectItem(${item.item_id})">
+                <tr onclick="selectItem(${item.item_id})" style="cursor:pointer;">
                     <td>
                         <div class="item-name">${item.item_name}</div>
                         <div class="item-sub">
@@ -386,10 +557,16 @@
             inventoryData.find(i => i.item_id == id);
     
         if (!item) return;
+
+        currentItemStock = item.current_stock;
+        currentItemUnit = item.unit;
     
         document.getElementById(
             'selectedCategoryBadge'
         ).textContent = item.category_name;
+    
+        // Load transaction history
+        loadItemHistory(id);
     
         document.getElementById('detailsPanel').innerHTML = `
             <div class="detail-head">
@@ -400,7 +577,7 @@
                 <div class="mini-stat">
                     <div class="mini-stat-label">Current Stock</div>
                     <div class="mini-stat-value">
-                        ${item.current_stock}
+                        ${item.current_stock} ${item.unit}
                     </div>
                 </div>
     
@@ -418,43 +595,258 @@
                     </div>
                 </div>
             </div>
-    
+
             <p>${item.description || 'No description available.'}</p>
+
+            <div class="form-block">
+              <h5>Stock Management</h5>
+              <div class="form-row">
+                <button class="btn btn-primary" onclick="openStockModal('IN', ${item.item_id}, '${item.item_name}', '${item.unit}')">
+                  📥 Stock In
+                </button>
+                <button class="btn btn-outline" onclick="openStockModal('OUT', ${item.item_id}, '${item.item_name}', '${item.unit}')">
+                  📤 Stock Out
+                </button>
+              </div>
+              <button class="btn btn-outline" style="width:100%;margin-top:10px;" onclick="openEditStockModal(${item.item_id}, '${item.item_name}', ${item.current_stock}, '${item.unit}')">
+                ✏️ Edit Stock Amount
+              </button>
+            </div>
+
+            <div class="form-block" style="margin-top: 20px;">
+              <h5>📜 Transaction History</h5>
+              <div id="historyList" style="max-height:300px;overflow-y:auto;">
+                <p style="text-align:center;color:var(--gray-500);">Loading history...</p>
+              </div>
+            </div>
         `;
+    }
+
+    async function loadItemHistory(itemId) {
+        try {
+            const data = await apiFetch(`inventory.php?action=history&item_id=${itemId}&limit=20`);
+
+            if (data.success && data.data.length > 0) {
+                const historyHtml = data.data.map(tx => `
+                    <div style="padding:10px;border-bottom:1px solid var(--gray-200);">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                            <strong>${tx.transaction_date}</strong>
+                            <span class="badge ${tx.transaction_type === 'IN' ? 'badge-green' : 'badge-orange'}">
+                                ${tx.transaction_type === 'IN' ? '📥 IN' : '📤 OUT'}
+                            </span>
+                        </div>
+                        <div style="font-size:13px;color:var(--gray-600);">
+                            <strong>${tx.quantity}</strong> ${currentItemUnit}
+                        </div>
+                        <div style="font-size:12px;color:var(--gray-500);margin-top:4px;">
+                            ${tx.reference_note || '(No note)'}
+                        </div>
+                        <div style="font-size:12px;color:var(--gray-400);">
+                            by ${tx.user_name}
+                        </div>
+                    </div>
+                `).join('');
+
+                document.getElementById('historyList').innerHTML = historyHtml;
+            } else {
+                document.getElementById('historyList').innerHTML = 
+                    '<p style="text-align:center;color:var(--gray-500);">No transactions yet.</p>';
+            }
+        } catch (e) {
+            console.error(e);
+            document.getElementById('historyList').innerHTML = 
+                '<p style="text-align:center;color:var(--orange);">Failed to load history.</p>';
+        }
+    }
+
+    function openStockModal(type, itemId, itemName, unit) {
+      stockTransactionType = type;
+      
+      document.getElementById('stockModalTitle').textContent = 
+        type === 'IN' ? 'Stock In (Receive)' : 'Stock Out (Distribute)';
+      
+      document.getElementById('stockItemName').value = itemName;
+      document.getElementById('stockUnit').value = unit;
+      document.getElementById('stockQuantity').value = '';
+      document.getElementById('stockDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('stockNote').value = '';
+      
+      const warning = document.getElementById('stockWarning');
+      const distSection = document.getElementById('distributionSection');
+      
+      if (type === 'OUT') {
+        warning.style.display = 'block';
+        distSection.style.display = 'block';
+        document.getElementById('stockWarningText').innerHTML = 
+          `Available stock: <strong>${currentItemStock} ${unit}</strong>. Make sure quantity does not exceed available stock.`;
+      } else {
+        warning.style.display = 'none';
+        distSection.style.display = 'none';
+      }
+      
+      document.getElementById('stockModal').classList.add('active');
+    }
+
+    function closeStockModal() {
+      document.getElementById('stockModal').classList.remove('active');
+    }
+
+    async function submitStockTransaction() {
+      const quantity = parseInt(document.getElementById('stockQuantity').value);
+      const date = document.getElementById('stockDate').value;
+      const note = document.getElementById('stockNote').value.trim();
+
+      if (!quantity || quantity <= 0) {
+        alert('Please enter a valid quantity');
+        return;
+      }
+
+      if (!date) {
+        alert('Please select a transaction date');
+        return;
+      }
+
+      if (stockTransactionType === 'OUT' && quantity > currentItemStock) {
+        alert(`Cannot distribute more than available stock (${currentItemStock})`);
+        return;
+      }
+
+      try {
+        const action = stockTransactionType === 'IN' ? 'stock_in' : 'stock_out';
+        
+        const payload = {
+          item_id: selectedItemId,
+          quantity: quantity,
+          transaction_date: date,
+          reference_note: note
+        };
+
+        if (stockTransactionType === 'OUT') {
+          const benefId = document.getElementById('distributionBeneficiary').value;
+          const centerId = document.getElementById('distributionCenter').value;
+
+          if (!benefId || !centerId) {
+            alert('Please select both center and beneficiary for distribution');
+            return;
+          }
+
+          payload.beneficiary_id = parseInt(benefId);
+          payload.center_id = parseInt(centerId);
+        }
+        
+        const data = await apiFetch(`inventory.php?action=${action}`, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+
+        if (data.success) {
+          alert('✅ ' + data.message);
+          closeStockModal();
+          loadInventory();
+          selectItem(selectedItemId);
+        } else {
+          alert('❌ Error: ' + data.message);
+        }
+      } catch (e) {
+        alert('❌ Error: ' + e.message);
+        console.error(e);
+      }
+    }
+
+    function openEditStockModal(itemId, itemName, currentStock, unit) {
+      document.getElementById('editStockItemName').value = itemName;
+      document.getElementById('editStockCurrent').value = `${currentStock}`;
+      document.getElementById('editStockUnit').value = unit;
+      document.getElementById('editStockNew').value = currentStock;
+      document.getElementById('editStockReason').value = '';
+      updateEditStockChange(currentStock, currentStock);
+
+      document.getElementById('editStockModal').classList.add('active');
+    }
+
+    function closeEditStockModal() {
+      document.getElementById('editStockModal').classList.remove('active');
+    }
+
+    function updateEditStockChange(current, newAmount) {
+      const change = newAmount - current;
+      const changeEl = document.getElementById('editStockChange');
+
+      if (change > 0) {
+        changeEl.innerHTML = `+${change} ${currentItemUnit}`;
+        changeEl.style.color = 'var(--teal)';
+      } else if (change < 0) {
+        changeEl.innerHTML = `${change} ${currentItemUnit}`;
+        changeEl.style.color = 'var(--orange)';
+      } else {
+        changeEl.innerHTML = `0 ${currentItemUnit}`;
+        changeEl.style.color = 'var(--gray-500)';
+      }
+    }
+
+    document.getElementById('editStockNew')?.addEventListener('input', function () {
+      updateEditStockChange(currentItemStock, parseInt(this.value) || 0);
+    });
+
+    async function submitEditStock() {
+      const newStock = parseInt(document.getElementById('editStockNew').value);
+      const reason = document.getElementById('editStockReason').value.trim();
+
+      if (newStock < 0 || isNaN(newStock)) {
+        alert('Please enter a valid stock amount');
+        return;
+      }
+
+      if (!reason) {
+        alert('Please provide a reason for the change');
+        return;
+      }
+
+      try {
+        const data = await apiFetch('inventory.php?action=edit_stock', {
+          method: 'POST',
+          body: JSON.stringify({
+            item_id: selectedItemId,
+            new_stock: newStock,
+            reason: reason
+          })
+        });
+
+        if (data.success) {
+          alert('✅ Stock updated successfully');
+          closeEditStockModal();
+          loadInventory();
+          selectItem(selectedItemId);
+        } else {
+          alert('❌ Error: ' + data.message);
+        }
+      } catch (e) {
+        alert('❌ Error: ' + e.message);
+        console.error(e);
+      }
     }
     
     function debounceSearch() {
-    
         clearTimeout(searchTimeout);
-    
-        searchTimeout =
-            setTimeout(loadInventory, 300);
+        searchTimeout = setTimeout(loadInventory, 300);
     }
     
     async function logout() {
-    
         try {
-            await apiFetch(
-                'auth.php?action=logout',
-                { method: 'POST' }
-            );
+            await apiFetch('auth.php?action=logout', { method: 'POST' });
         } catch (e) {}
-    
         window.location.href = 'login.html';
     }
     
     async function init() {
-    
         await loadUserInfo();
         await loadCategories();
+        await loadCenters();
         await loadInventory();
     }
     
-    document.addEventListener(
-        'DOMContentLoaded',
-        init
-    );
-    </script>
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
 </body>
 
 </html>

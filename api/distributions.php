@@ -8,12 +8,14 @@ requireLogin();
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? '';
 $id     = isset($_GET['id']) ? (int)$_GET['id'] : null;
+$beneficiaryId = isset($_GET['beneficiary_id']) ? (int)$_GET['beneficiary_id'] : null;
 
 match(true) {
-    $action === 'list'   => listDistributions(),
-    $action === 'get'    => getDistribution($id),
-    $action === 'create' => createDistribution(),
-    $action === 'delete' => deleteDistribution($id),
+    $action === 'list'                   => listDistributions(),
+    $action === 'get'                    => getDistribution($id),
+    $action === 'beneficiary_history'    => getBeneficiaryDonationHistory($beneficiaryId),
+    $action === 'create'                 => createDistribution(),
+    $action === 'delete'                 => deleteDistribution($id),
     default => jsonError('Unknown action', 404),
 };
 
@@ -113,6 +115,42 @@ function getDistribution(?int $id): void {
     $row['items'] = $items->fetchAll();
 
     jsonSuccess(['data' => $row]);
+}
+
+/* =========================================================
+   GET BENEFICIARY DONATION HISTORY — NEW FUNCTION
+========================================================= */
+
+function getBeneficiaryDonationHistory(?int $beneficiaryId): void
+{
+    if (!$beneficiaryId) {
+        jsonError('Beneficiary ID required.');
+    }
+
+    $db = getDB();
+
+    $stmt = $db->prepare(
+        "SELECT 
+            DATE_FORMAT(dr.distribution_date,'%b %d, %Y') AS distribution_date,
+            di.quantity_given,
+            i.item_name,
+            i.unit,
+            CONCAT(u.first_name,' ',u.last_name) AS staff_name,
+            e.center_name
+        FROM distribution_records dr
+        JOIN distribution_items di ON dr.distribution_id = di.distribution_id
+        JOIN relief_items i ON di.item_id = i.item_id
+        JOIN users u ON dr.distributed_by = u.user_id
+        JOIN evacuation_centers e ON dr.center_id = e.center_id
+        WHERE dr.beneficiary_id = ?
+        ORDER BY dr.distribution_date DESC
+        LIMIT 50"
+    );
+
+    $stmt->execute([$beneficiaryId]);
+    $rows = $stmt->fetchAll();
+
+    jsonSuccess(['data' => $rows]);
 }
 
 function createDistribution(): void {
