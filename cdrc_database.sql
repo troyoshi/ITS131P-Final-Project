@@ -36,7 +36,7 @@ INSERT INTO roles (role_name, description) VALUES
 
 -- ============================================================
 --  TABLE 2: users
---  Staff and volunteer accounts.  Passwords hashed with bcrypt.
+--  Staff and volunteer accounts. Plaintext passwords.
 -- ============================================================
 CREATE TABLE IF NOT EXISTS users (
     user_id      INT UNSIGNED    AUTO_INCREMENT PRIMARY KEY,
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS users (
     middle_init  CHAR(2)         DEFAULT NULL,
     username     VARCHAR(50)     NOT NULL UNIQUE,
     email        VARCHAR(120)    NOT NULL UNIQUE,
-    password     VARCHAR(255)    NOT NULL,            -- bcrypt hash
+    password     VARCHAR(255)    NOT NULL,
     contact_no   VARCHAR(20)     DEFAULT NULL,
     department   VARCHAR(80)     DEFAULT NULL,
     is_active    TINYINT(1)      NOT NULL DEFAULT 1,
@@ -57,12 +57,12 @@ CREATE TABLE IF NOT EXISTS users (
         ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
--- Passwords below are bcrypt hashes of 'Password123!'
+-- Plaintext passwords: Password123! for first 3 users, 'user' for Carolyne
 INSERT INTO users (role_id, first_name, last_name, middle_init, username, email, password, contact_no, department) VALUES
-  (1, 'Alfred',    'Rasco',      'A', 'alfred.rasco',    'alfred.rasco@cdrc.org.ph',    '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uFutB/ZW2', '+63 917 123 4567', 'Operations'),
-  (2, 'Ben',     'Sevilla',        'A', 'ben.sevilla',       'ben.sevilla@cdrc.org.ph',       '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uFutB/ZW2', '+63 919 345 6789', 'Logistics'),
-  (3, 'Francis', 'Flores',         'G', 'francis.flores',    'francis.flores@cdrc.org.ph',    '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uFutB/ZW2', '+63 920 456 7890', 'Field Operations'),
-  (4, 'Carolyne','Vicencio',       'A', 'carolyne.vicencio', 'carolyne.vicencio@cdrc.org.ph', 'user', '+63 921 567 8901', 'Volunteers');
+  (1, 'Alfred',    'Rasco',      'A', 'alfred.rasco',    'alfred.rasco@cdrc.org.ph',    'Password123!', '+63 917 123 4567', 'Operations'),
+  (2, 'Ben',       'Sevilla',    'A', 'ben.sevilla',     'ben.sevilla@cdrc.org.ph',     'Password123!', '+63 919 345 6789', 'Logistics'),
+  (3, 'Francis',   'Flores',     'G', 'francis.flores',  'francis.flores@cdrc.org.ph',  'Password123!', '+63 920 456 7890', 'Field Operations'),
+  (3, 'Carolyne',  'Vicencio',   'A', 'carolyne.vicencio', 'carolyne.vicencio@cdrc.org.ph', 'user', '+63 921 567 8901', 'Volunteers');
 
 
 -- ============================================================
@@ -119,8 +119,8 @@ CREATE TABLE IF NOT EXISTS beneficiaries (
     beneficiary_id   INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     center_id        INT UNSIGNED     NOT NULL,
     need_id          TINYINT UNSIGNED NOT NULL DEFAULT 1,
-    registered_by    INT UNSIGNED     NOT NULL,           -- FK → users
-    beneficiary_code VARCHAR(12)      NOT NULL UNIQUE,    -- e.g. BEN-0001
+    registered_by    INT UNSIGNED     NOT NULL,
+    beneficiary_code VARCHAR(12)      NOT NULL UNIQUE,
     first_name       VARCHAR(60)      NOT NULL,
     last_name        VARCHAR(60)      NOT NULL,
     middle_name      VARCHAR(60)      DEFAULT NULL,
@@ -178,9 +178,9 @@ CREATE TABLE IF NOT EXISTS relief_items (
     item_id       INT UNSIGNED    AUTO_INCREMENT PRIMARY KEY,
     category_id   TINYINT UNSIGNED NOT NULL,
     item_name     VARCHAR(100)    NOT NULL,
-    unit          VARCHAR(30)     NOT NULL,   -- e.g. kg, pack, liter, piece
+    unit          VARCHAR(30)     NOT NULL,
     current_stock INT UNSIGNED    NOT NULL DEFAULT 0,
-    reorder_level INT UNSIGNED    NOT NULL DEFAULT 50,   -- alert threshold
+    reorder_level INT UNSIGNED    NOT NULL DEFAULT 50,
     description   VARCHAR(200)   DEFAULT NULL,
     created_at    TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at    TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -211,7 +211,7 @@ CREATE TABLE IF NOT EXISTS inventory_transactions (
     user_id          INT UNSIGNED NOT NULL,
     transaction_type ENUM('IN','OUT') NOT NULL,
     quantity         INT UNSIGNED NOT NULL,
-    reference_note   VARCHAR(200) DEFAULT NULL,   -- donor name, PO#, etc.
+    reference_note   VARCHAR(200) DEFAULT NULL,
     transaction_date DATE         NOT NULL,
     created_at       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_invtx_item FOREIGN KEY (item_id)  REFERENCES relief_items(item_id) ON UPDATE CASCADE ON DELETE RESTRICT,
@@ -239,7 +239,7 @@ CREATE TABLE IF NOT EXISTS distribution_records (
     distribution_id  INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     beneficiary_id   INT UNSIGNED NOT NULL,
     center_id        INT UNSIGNED NOT NULL,
-    distributed_by   INT UNSIGNED NOT NULL,   -- FK → users
+    distributed_by   INT UNSIGNED NOT NULL,
     distribution_date DATE        NOT NULL,
     remarks          VARCHAR(255) DEFAULT NULL,
     created_at       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -255,7 +255,7 @@ INSERT INTO distribution_records (beneficiary_id, center_id, distributed_by, dis
   (5, 4, 3, '2025-06-13', 'Standard pack — large family'),
   (7, 3, 4, '2025-06-12', 'Standard distribution at Pag-asa center'),
   (8, 2, 3, '2025-06-14', 'Extra canned goods for infant household'),
-  (10,1, 2, '2025-06-15', 'Standard distribution at Masaya center'),
+  (10, 1, 2, '2025-06-15', 'Standard distribution at Masaya center'),
   (3, 1, 4, '2025-06-11', 'Partial — water not available, to follow up'),
   (6, 1, 2, '2025-06-10', 'Small household — 2 persons'),
   (9, 4, 3, '2025-06-13', 'Prioritised — dialysis patient, medicine included');
@@ -277,19 +277,16 @@ CREATE TABLE IF NOT EXISTS distribution_items (
 ) ENGINE=InnoDB;
 
 INSERT INTO distribution_items (distribution_id, item_id, quantity_given) VALUES
-  (1, 1, 4),   -- Distribution 1: 4 kg rice
-  (1, 2, 8),   -- Distribution 1: 8 cans sardines
-  (1, 4, 20),  -- Distribution 1: 20L water
-  (1, 5, 1),   -- Distribution 1: 1 hygiene kit
-  (2, 1, 6),(2, 2,12),(2, 3, 6),(2, 9, 3),
-  (3, 1, 5),(3, 2,10),(3, 6, 1),(3, 7,10),
-  (4, 1, 7),(4, 2,14),(4, 4,35),(4, 5, 1),(4, 8, 4),
-  (5, 1, 4),(5, 2, 8),(5, 4,20),
-  (6, 1, 8),(6, 2,16),(6, 3, 8),(6, 4,40),(6, 5, 1),
-  (7, 1, 5),(7, 2,10),(7, 4,25),
+  (1, 1, 4),(1, 2, 8),(1, 4, 20),(1, 5, 1),
+  (2, 1, 6),(2, 2, 12),(2, 3, 6),(2, 9, 3),
+  (3, 1, 5),(3, 2, 10),(3, 6, 1),(3, 7, 10),
+  (4, 1, 7),(4, 2, 14),(4, 4, 35),(4, 5, 1),(4, 8, 4),
+  (5, 1, 4),(5, 2, 8),(5, 4, 20),
+  (6, 1, 8),(6, 2, 16),(6, 3, 8),(6, 4, 40),(6, 5, 1),
+  (7, 1, 5),(7, 2, 10),(7, 4, 25),
   (8, 1, 3),(8, 2, 6),(8, 3, 3),
   (9, 1, 2),(9, 2, 4),
-  (10,1, 3),(10,2, 6),(10,6, 1),(10,7,10);
+  (10, 1, 3),(10, 2, 6),(10, 6, 1),(10, 7, 10);
 
 
 -- ============================================================

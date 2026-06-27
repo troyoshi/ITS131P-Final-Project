@@ -1,319 +1,322 @@
 <?php
-// api/inventory.php — Inventory Management CRUD
+// api/inventory.php — Inventory management
+
 session_start();
 header('Content-Type: application/json');
 require_once __DIR__ . '/../includes/config.php';
 requireLogin();
 
-$method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? '';
-$id     = isset($_GET['id']) ? (int)$_GET['id'] : null;
+$id = isset($_GET['id']) ? (int)$_GET['id'] : null;
 
-match(true) {
-    $action === 'list'           => listInventory(),
-    $action === 'categories'     => listCategories(),
-    $action === 'stock_in'       => recordStockIn(),
-    $action === 'stock_out'      => recordStockOut(),
-    $action === 'edit_stock'     => editStockAmount(),
-    $action === 'history'        => getItemHistory(),
-    default => jsonError('Unknown action', 404),
-};
+try {
+    match(true) {
+        $action === 'list'           => listInventory(),
+        $action === 'get'            => getItem($id),
+        $action === 'categories'     => getCategories(),
+        $action === 'low_stock'      => getLowStock(),
+        $action === 'history'        => getItemHistory($id),
+        $action === 'stock_in'       => stockIn(),
+        $action === 'stock_out'      => stockOut(),
+        $action === 'edit_stock'     => editStock(),
+        default => jsonError('Unknown action', 404),
+    };
+} catch (Exception $e) {
+    jsonError('Server error: ' . $e->getMessage(), 500);
+}
 
 // ============================================================
-// List Inventory with Filters
+// LIST INVENTORY
 // ============================================================
 function listInventory(): void {
-    $db     = getDB();
-    $search = trim($_GET['search']    ?? '');
-    $catId  = (int)($_GET['category_id'] ?? 0);
-
-    $where  = ['1=1'];
+    $db = getDB();
+    $search = trim($_GET['search'] ?? '');
+    $category = trim($_GET['category_id'] ?? '');
+    
+    $where = ['1=1'];
     $params = [];
-
+    
     if ($search) {
         $where[] = "i.item_name LIKE ?";
         $params[] = "%$search%";
     }
-
-    if ($catId) {
+    
+    if ($category) {
         $where[] = "i.category_id = ?";
-        $params[] = $catId;
+        $params[] = (int)$category;
     }
-
-    $whereSQL = implode(' AND ', $where);
-
+    
     $stmt = $db->prepare(
-        "SELECT 
-            i.item_id,
-            i.item_name,
-            i.unit,
-            i.current_stock,
-            i.reorder_level,
-            i.description,
-            c.category_id,
-            c.category_name,
-            CASE 
-                WHEN i.current_stock <= i.reorder_level THEN 'Low Stock'
-                ELSE 'OK'
-            END AS stock_status
+        "SELECT i.item_id, i.item_name, i.unit, i.current_stock, i.reorder_level,
+                i.description, c.category_id, c.category_name,
+                CASE WHEN i.current_stock <= i.reorder_level THEN 'Low Stock' ELSE 'OK' END AS stock_status
          FROM relief_items i
          JOIN item_categories c ON i.category_id = c.category_id
-         WHERE $whereSQL
+         WHERE " . implode(' AND ', $where) . "
          ORDER BY c.category_name, i.item_name"
     );
-
+    
     $stmt->execute($params);
-    jsonSuccess(['data' => $stmt->fetchAll()]);
+    jsonSuccess(['data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
 }
 
 // ============================================================
-// List Categories
+// GET SINGLE ITEM
 // ============================================================
-function listCategories(): void {
+function getItem(?int $id): void {
+    if (!$id) {
+        jsonError('ID required.');
+        return;
+    }
+    
     $db = getDB();
     $stmt = $db->prepare(
-        "SELECT category_id, category_name, description
-         FROM item_categories
-         ORDER BY category_name"
+        "SELECT i.*, c.category_name
+         FROM relief_items i
+         JOIN item_categories c ON i.category_id = c.category_id
+         WHERE i.item_id = ?"
     );
-    $stmt->execute();
-    jsonSuccess(['data' => $stmt->fetchAll()]);
-}
-
-// ============================================================
-// Record Stock In (Receive/Donation)
-// ============================================================
-function recordStockIn(): void {
-    $body = json_decode(file_get_contents('php://input'), true) ?? [];
     
-    $itemId = (int)($body['item_id'] ?? 0);
-    $qty    = (int)($body['quantity'] ?? 0);
-    $date   = $body['transaction_date'] ?? date('Y-m-d');
-    $note   = trim($body['reference_note'] ?? '');
-
-    if (!$itemId || $qty <= 0) {
-        jsonError('Invalid item_id or quantity.');
-    }
-
-    $db = getDB();
-    $db->beginTransaction();
-    try {
-        // Verify item exists
-        $check = $db->prepare('SELECT item_id FROM relief_items WHERE item_id=?');
-        $check->execute([$itemId]);
-        if (!$check->fetch()) {
-            $db->rollBack();
-            jsonError('Item not found.', 404);
-        }
-
-        // Update stock
-        $db->prepare('UPDATE relief_items SET current_stock=current_stock+? WHERE item_id=?')
-           ->execute([$qty, $itemId]);
-
-        // Log transaction
-        $db->prepare(
-            "INSERT INTO inventory_transactions 
-             (item_id, user_id, transaction_type, quantity, reference_note, transaction_date)
-             VALUES (?,?,'IN',?,?,?)"
-        )->execute([$itemId, currentUser()['id'], $qty, $note ?: null, $date]);
-
-        $db->commit();
-        jsonSuccess(
-            ['item_id' => $itemId, 'quantity_added' => $qty],
-            'Stock received and recorded successfully.'
-        );
-    } catch (\Throwable $e) {
-        $db->rollBack();
-        jsonError('Failed to record stock in: ' . $e->getMessage(), 500);
-    }
-}
-
-// ============================================================
-// Record Stock Out (Distribution to Beneficiary)
-// ============================================================
-function recordStockOut(): void {
-    $body = json_decode(file_get_contents('php://input'), true) ?? [];
+    $stmt->execute([$id]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    $itemId      = (int)($body['item_id'] ?? 0);
-    $qty         = (int)($body['quantity'] ?? 0);
-    $date        = $body['transaction_date'] ?? date('Y-m-d');
-    $note        = trim($body['reference_note'] ?? '');
-    $benefId     = (int)($body['beneficiary_id'] ?? 0);
-    $centerId    = (int)($body['center_id'] ?? 0);
-
-    if (!$itemId || $qty <= 0) {
-        jsonError('Invalid item_id or quantity.');
+    if (!$row) {
+        jsonError('Item not found.', 404);
+        return;
     }
-
-    $db = getDB();
-    $db->beginTransaction();
-    try {
-        // Check current stock
-        $stock = $db->prepare('SELECT current_stock FROM relief_items WHERE item_id=?');
-        $stock->execute([$itemId]);
-        $current = (int)$stock->fetchColumn();
-
-        if ($current === false) {
-            $db->rollBack();
-            jsonError('Item not found.', 404);
-        }
-
-        if ($current < $qty) {
-            $db->rollBack();
-            jsonError("Insufficient stock. Available: $current", 400);
-        }
-
-        // Update stock
-        $db->prepare('UPDATE relief_items SET current_stock=current_stock-? WHERE item_id=?')
-           ->execute([$qty, $itemId]);
-
-        // Log transaction
-        $db->prepare(
-            "INSERT INTO inventory_transactions 
-             (item_id, user_id, transaction_type, quantity, reference_note, transaction_date)
-             VALUES (?,?,'OUT',?,?,?)"
-        )->execute([$itemId, currentUser()['id'], $qty, $note ?: null, $date]);
-
-        // If beneficiary is selected, create distribution record
-        if ($benefId && $centerId) {
-            // Check if beneficiary exists
-            $benefCheck = $db->prepare('SELECT beneficiary_id FROM beneficiaries WHERE beneficiary_id=?');
-            $benefCheck->execute([$benefId]);
-            if (!$benefCheck->fetch()) {
-                $db->rollBack();
-                jsonError('Beneficiary not found.', 404);
-            }
-
-            // Create distribution record
-            $db->prepare(
-                "INSERT INTO distribution_records (beneficiary_id, center_id, distributed_by, distribution_date, remarks)
-                 VALUES (?,?,?,?,?)"
-            )->execute([$benefId, $centerId, currentUser()['id'], $date, $note ?: null]);
-
-            $distId = $db->lastInsertId();
-
-            // Add distribution item
-            $db->prepare(
-                "INSERT INTO distribution_items (distribution_id, item_id, quantity_given)
-                 VALUES (?,?,?)"
-            )->execute([$distId, $itemId, $qty]);
-
-            // Update beneficiary status if not already served
-            $db->prepare(
-                "UPDATE beneficiaries SET status='Served' WHERE beneficiary_id=? AND status='Pending'"
-            )->execute([$benefId]);
-        }
-
-        $db->commit();
-        jsonSuccess(
-            ['item_id' => $itemId, 'quantity_removed' => $qty, 'beneficiary_id' => $benefId],
-            'Stock distributed and recorded successfully.'
-        );
-    } catch (\Throwable $e) {
-        $db->rollBack();
-        jsonError('Failed to record stock out: ' . $e->getMessage(), 500);
-    }
-}
-
-// ============================================================
-// Edit Stock Amount (Direct Correction)
-// ============================================================
-function editStockAmount(): void {
-    $body = json_decode(file_get_contents('php://input'), true) ?? [];
     
-    $itemId   = (int)($body['item_id'] ?? 0);
-    $newStock = (int)($body['new_stock'] ?? 0);
-    $reason   = trim($body['reason'] ?? '');
-
-    if (!$itemId || $newStock < 0) {
-        jsonError('Invalid item_id or stock amount.');
-    }
-    if (!$reason) {
-        jsonError('Reason is required.');
-    }
-
-    $db = getDB();
-    $db->beginTransaction();
-    try {
-        // Get current stock
-        $current = $db->prepare('SELECT current_stock FROM relief_items WHERE item_id=?');
-        $current->execute([$itemId]);
-        $currentStock = (int)$current->fetchColumn();
-
-        if ($currentStock === false) {
-            $db->rollBack();
-            jsonError('Item not found.', 404);
-        }
-
-        $difference = $newStock - $currentStock;
-
-        // Update relief_items
-        $db->prepare('UPDATE relief_items SET current_stock=? WHERE item_id=?')
-           ->execute([$newStock, $itemId]);
-
-        // Log as transaction (IN if positive, OUT if negative)
-        if ($difference != 0) {
-            $type = $difference > 0 ? 'IN' : 'OUT';
-            $quantity = abs($difference);
-
-            $db->prepare(
-                "INSERT INTO inventory_transactions 
-                 (item_id, user_id, transaction_type, quantity, reference_note, transaction_date)
-                 VALUES (?,?,'$type',?,'Stock correction: $reason',?)"
-            )->execute([$itemId, currentUser()['id'], $quantity, date('Y-m-d')]);
-        }
-
-        // Also log in stock_corrections table if it exists
-        try {
-            $db->prepare(
-                "INSERT INTO stock_corrections (item_id, old_stock, new_stock, reason, corrected_by)
-                 VALUES (?,?,?,?,?)"
-            )->execute([$itemId, $currentStock, $newStock, $reason, currentUser()['id']]);
-        } catch (\Throwable $e) {
-            // Table might not exist yet, continue anyway
-        }
-
-        $db->commit();
-        jsonSuccess(
-            ['item_id' => $itemId, 'old_stock' => $currentStock, 'new_stock' => $newStock],
-            'Stock amount updated successfully.'
-        );
-    } catch (\Throwable $e) {
-        $db->rollBack();
-        jsonError('Failed to update stock: ' . $e->getMessage(), 500);
-    }
+    jsonSuccess(['data' => $row]);
 }
 
 // ============================================================
-// Get Item Transaction History
+// GET CATEGORIES
 // ============================================================
-function getItemHistory(): void {
-    $itemId = (int)($_GET['item_id'] ?? 0);
-    $limit  = (int)($_GET['limit'] ?? 50);
-
-    if (!$itemId) {
-        jsonError('item_id is required.');
-    }
-
+function getCategories(): void {
     $db = getDB();
+    $stmt = $db->query("SELECT * FROM item_categories ORDER BY category_name");
+    jsonSuccess(['data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
+}
 
+// ============================================================
+// GET LOW STOCK ITEMS
+// ============================================================
+function getLowStock(): void {
+    $db = getDB();
     $stmt = $db->prepare(
-        "SELECT 
-            it.transaction_id,
-            DATE_FORMAT(it.transaction_date, '%b %d, %Y') AS transaction_date,
-            it.transaction_type,
-            it.quantity,
-            it.reference_note,
-            CONCAT(u.first_name, ' ', u.last_name) AS user_name,
-            u.user_id
+        "SELECT i.item_id, i.item_name, i.unit, i.current_stock, i.reorder_level,
+                c.category_name,
+                CASE WHEN i.current_stock <= i.reorder_level THEN 'Low Stock' ELSE 'OK' END AS stock_status
+         FROM relief_items i
+         JOIN item_categories c ON i.category_id = c.category_id
+         WHERE i.current_stock <= i.reorder_level
+         ORDER BY i.current_stock ASC"
+    );
+    
+    $stmt->execute();
+    jsonSuccess(['data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
+}
+
+// ============================================================
+// GET ITEM HISTORY
+// ============================================================
+function getItemHistory(?int $id): void {
+    if (!$id) {
+        jsonError('Item ID required.');
+        return;
+    }
+    
+    $db = getDB();
+    $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
+    
+    $stmt = $db->prepare(
+        "SELECT it.transaction_id, it.transaction_type, it.quantity, it.transaction_date,
+                it.reference_note, i.unit,
+                u.first_name, u.last_name
          FROM inventory_transactions it
+         JOIN relief_items i ON it.item_id = i.item_id
          JOIN users u ON it.user_id = u.user_id
          WHERE it.item_id = ?
          ORDER BY it.transaction_date DESC, it.transaction_id DESC
          LIMIT ?"
     );
-    $stmt->execute([$itemId, $limit]);
-
-    jsonSuccess(['data' => $stmt->fetchAll()]);
+    
+    $stmt->execute([$id, $limit]);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    $data = array_map(function($row) {
+        return [
+            'transaction_id' => $row['transaction_id'],
+            'transaction_type' => $row['transaction_type'],
+            'quantity' => $row['quantity'],
+            'unit' => $row['unit'],
+            'transaction_date' => $row['transaction_date'],
+            'reference_note' => $row['reference_note'],
+            'user_name' => $row['first_name'] . ' ' . $row['last_name']
+        ];
+    }, $rows);
+    
+    jsonSuccess(['data' => $data]);
 }
+
+// ============================================================
+// STOCK IN
+// ============================================================
+function stockIn(): void {
+    $body = json_decode(file_get_contents('php://input'), true) ?? [];
+    
+    $item_id = (int)($body['item_id'] ?? 0);
+    $quantity = (int)($body['quantity'] ?? 0);
+    $date = $body['transaction_date'] ?? date('Y-m-d');
+    $note = trim($body['reference_note'] ?? $body['reference_note'] ?? '');
+    
+    if (!$item_id || !$quantity || $quantity <= 0) {
+        jsonError('Invalid item or quantity.');
+        return;
+    }
+    
+    $db = getDB();
+    $uid = currentUser()['id'];
+    
+    // Get current stock
+    $stmt = $db->prepare('SELECT current_stock FROM relief_items WHERE item_id = ?');
+    $stmt->execute([$item_id]);
+    $current = (int)$stmt->fetchColumn();
+    
+    if ($current === null) {
+        jsonError('Item not found.', 404);
+        return;
+    }
+    
+    // Update stock
+    $newStock = $current + $quantity;
+    $db->prepare('UPDATE relief_items SET current_stock = ? WHERE item_id = ?')
+       ->execute([$newStock, $item_id]);
+    
+    // Record transaction
+    $db->prepare(
+        "INSERT INTO inventory_transactions (item_id, user_id, transaction_type, quantity, reference_note, transaction_date)
+         VALUES (?, ?, 'IN', ?, ?, ?)"
+    )->execute([$item_id, $uid, $quantity, $note, $date]);
+    
+    jsonSuccess([], 'Stock in recorded successfully.');
+}
+
+// ============================================================
+// STOCK OUT
+// ============================================================
+function stockOut(): void {
+    $body = json_decode(file_get_contents('php://input'), true) ?? [];
+    
+    $item_id = (int)($body['item_id'] ?? 0);
+    $quantity = (int)($body['quantity'] ?? 0);
+    $date = $body['transaction_date'] ?? date('Y-m-d');
+    $note = trim($body['reference_note'] ?? '');
+    $beneficiary_id = (int)($body['beneficiary_id'] ?? 0);
+    $center_id = (int)($body['center_id'] ?? 0);
+    
+    if (!$item_id || !$quantity || $quantity <= 0) {
+        jsonError('Invalid item or quantity.');
+        return;
+    }
+    
+    $db = getDB();
+    $uid = currentUser()['id'];
+    
+    // Get current stock
+    $stmt = $db->prepare('SELECT current_stock FROM relief_items WHERE item_id = ?');
+    $stmt->execute([$item_id]);
+    $current = (int)$stmt->fetchColumn();
+    
+    if ($current === null) {
+        jsonError('Item not found.', 404);
+        return;
+    }
+    
+    if ($quantity > $current) {
+        jsonError('Insufficient stock. Available: ' . $current);
+        return;
+    }
+    
+    // Update stock
+    $newStock = $current - $quantity;
+    $db->prepare('UPDATE relief_items SET current_stock = ? WHERE item_id = ?')
+       ->execute([$newStock, $item_id]);
+    
+    // Record transaction
+    $db->prepare(
+        "INSERT INTO inventory_transactions (item_id, user_id, transaction_type, quantity, reference_note, transaction_date)
+         VALUES (?, ?, 'OUT', ?, ?, ?)"
+    )->execute([$item_id, $uid, $quantity, $note, $date]);
+    
+    // If distribution info provided, create distribution record
+    if ($beneficiary_id && $center_id) {
+        $db->prepare(
+            "INSERT INTO distribution_records (beneficiary_id, center_id, distributed_by, distribution_date, remarks)
+             VALUES (?, ?, ?, ?, ?)"
+        )->execute([$beneficiary_id, $center_id, $uid, $date, $note]);
+        
+        $dist_id = $db->lastInsertId();
+        
+        $db->prepare(
+            "INSERT INTO distribution_items (distribution_id, item_id, quantity_given)
+             VALUES (?, ?, ?)"
+        )->execute([$dist_id, $item_id, $quantity]);
+    }
+    
+    jsonSuccess([], 'Stock out recorded successfully.');
+}
+
+// ============================================================
+// EDIT STOCK
+// ============================================================
+function editStock(): void {
+    $body = json_decode(file_get_contents('php://input'), true) ?? [];
+    
+    $item_id = (int)($body['item_id'] ?? 0);
+    $new_stock = (int)($body['new_stock'] ?? 0);
+    $reason = trim($body['reason'] ?? '');
+    
+    if (!$item_id || $new_stock < 0) {
+        jsonError('Invalid item or stock amount.');
+        return;
+    }
+    
+    if (!$reason) {
+        jsonError('Reason is required.');
+        return;
+    }
+    
+    $db = getDB();
+    
+    // Get current stock
+    $stmt = $db->prepare('SELECT current_stock FROM relief_items WHERE item_id = ?');
+    $stmt->execute([$item_id]);
+    $current = (int)$stmt->fetchColumn();
+    
+    if ($current === null) {
+        jsonError('Item not found.', 404);
+        return;
+    }
+    
+    // Calculate difference
+    $difference = $new_stock - $current;
+    
+    // Update stock
+    $db->prepare('UPDATE relief_items SET current_stock = ? WHERE item_id = ?')
+       ->execute([$new_stock, $item_id]);
+    
+    // Record as transaction
+    $uid = currentUser()['id'];
+    $type = $difference > 0 ? 'IN' : 'OUT';
+    $qty = abs($difference);
+    $note = "Stock adjustment: $reason";
+    
+    $db->prepare(
+        "INSERT INTO inventory_transactions (item_id, user_id, transaction_type, quantity, reference_note, transaction_date)
+         VALUES (?, ?, ?, ?, ?, ?)"
+    )->execute([$item_id, $uid, $type, $qty, $note, date('Y-m-d')]);
+    
+    jsonSuccess([], 'Stock updated successfully.');
+}
+
 ?>
